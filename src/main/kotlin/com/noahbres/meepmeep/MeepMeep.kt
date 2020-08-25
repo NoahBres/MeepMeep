@@ -224,6 +224,14 @@ open class MeepMeep(private val windowSize: Int) {
                 colorManager.isDarkMode = false
                 ImageIO.read(classLoader.getResourceAsStream("background/grid-blue.jpg"))
             }
+            Background.GRID_GREEN -> {
+                colorManager.isDarkMode = false
+                ImageIO.read(classLoader.getResourceAsStream("background/grid-green.jpg"))
+            }
+            Background.GRID_GRAY -> {
+                colorManager.isDarkMode = false
+                ImageIO.read(classLoader.getResourceAsStream("background/grid-gray.jpg"))
+            }
             Background.FIELD_SKYSTONE -> {
                 colorManager.isDarkMode = false
                 ImageIO.read(classLoader.getResourceAsStream("background/field-skystone.png"))
@@ -427,6 +435,8 @@ open class MeepMeep(private val windowSize: Int) {
 
     enum class Background {
         GRID_BLUE,
+        GRID_GREEN,
+        GRID_GRAY,
         FIELD_SKYSTONE,
         FIELD_SKYSTONE_GF,
         FIELD_SKYSTONE_LIGHT,
