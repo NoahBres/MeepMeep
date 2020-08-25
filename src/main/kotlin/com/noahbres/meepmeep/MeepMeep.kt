@@ -2,12 +2,19 @@ package com.noahbres.meepmeep
 
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.geometry.Vector2d
+import com.acmerobotics.roadrunner.trajectory.Trajectory
+import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints
 import com.noahbres.meepmeep.core.colorscheme.ColorManager
 import com.noahbres.meepmeep.core.colorscheme.ColorScheme
 import com.noahbres.meepmeep.core.entity.*
 import com.noahbres.meepmeep.core.ui.WindowFrame
 import com.noahbres.meepmeep.core.util.FieldUtil
 import com.noahbres.meepmeep.core.util.LoopManager
+import com.noahbres.meepmeep.roadrunner.AddTrajectoryCallback
+import com.noahbres.meepmeep.roadrunner.AddTrajectorySequenceCallback
+import com.noahbres.meepmeep.roadrunner.DriveTrainType
+import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity
+import com.noahbres.meepmeep.roadrunner.trajectorysequence.TrajectorySequence
 import java.awt.Font
 import java.awt.Graphics2D
 import java.awt.Image
@@ -16,10 +23,12 @@ import java.awt.event.MouseListener
 import java.awt.event.MouseMotionListener
 import java.io.File
 import javax.imageio.ImageIO
-import javax.swing.UIManager
+import javax.swing.*
+import javax.swing.border.EtchedBorder
 
 open class MeepMeep(private val windowSize: Int) {
     companion object {
+        // Default entities
         @JvmStatic
         lateinit var DEFAULT_BOT_ENTITY: BotEntity
 
@@ -29,6 +38,7 @@ open class MeepMeep(private val windowSize: Int) {
         @JvmStatic
         lateinit var DEFAULT_COMPASS_ENTITY: CompassEntity
 
+        // Custom Fonts
         @JvmStatic
         lateinit var FONT_CMU_BOLD_LIGHT: Font
 
@@ -37,6 +47,10 @@ open class MeepMeep(private val windowSize: Int) {
 
         @JvmStatic
         lateinit var FONT_CMU_BOLD: Font
+
+        // Road Runner Entities
+        @JvmStatic
+        lateinit var DEFAULT_ROADRUNNER_BOT_ENTITY: RoadRunnerBotEntity
     }
 
     val windowFrame = WindowFrame("Meep Meep", windowSize)
@@ -104,7 +118,17 @@ open class MeepMeep(private val windowSize: Int) {
 
     private val loopManager = LoopManager(120, update, render)
 
+    // Road Runner UI Elements
+    val sliderPanel = JPanel()
+    var middleButtonPanel = JPanel()
+
+    private val standardCursorButton = JButton("test")
+    private val pathSelectionButton = JButton("test 2")
+
+    private val middleButtonList = mutableListOf(standardCursorButton, pathSelectionButton)
+
     init {
+        // Core init
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
 
         windowFrame.contentPane.background = colorManager.theme.UI_MAIN_BG
@@ -128,9 +152,46 @@ open class MeepMeep(private val windowSize: Int) {
         addEntity(DEFAULT_BOT_ENTITY)
         addEntity(DEFAULT_AXES_ENTITY)
         addEntity(DEFAULT_COMPASS_ENTITY)
+
+        // Road Runner Init
+        // Handle UI
+        sliderPanel.layout = BoxLayout(sliderPanel, BoxLayout.Y_AXIS)
+
+        middleButtonList.forEach {
+            it.alignmentX = 0.5f
+            it.background = colorManager.theme.UI_MAIN_BG
+        }
+
+        middleButtonPanel.background = colorManager.theme.UI_MAIN_BG
+        middleButtonPanel.border = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED)
+        middleButtonPanel.layout = BoxLayout(middleButtonPanel, BoxLayout.Y_AXIS)
+
+        middleButtonPanel.add(Box.createVerticalGlue())
+        middleButtonPanel.add(standardCursorButton)
+        middleButtonPanel.add(pathSelectionButton)
+        middleButtonPanel.add(Box.createVerticalGlue())
+
+        windowFrame.canvasPanel.add(sliderPanel)
+        windowFrame.contentPane.add(middleButtonPanel)
+
+        windowFrame.pack()
+
+        // Handle entities
+        DEFAULT_ROADRUNNER_BOT_ENTITY = RoadRunnerBotEntity(
+                this,
+                DriveConstraints(
+                        30.0, 30.0, 0.0,
+                        Math.toRadians(180.0), Math.toRadians(180.0), 0.0
+                ),
+                18.0, 18.0,
+                15.0,
+                Pose2d(), colorManager.theme, 0.8)
+
+        addEntity(DEFAULT_ROADRUNNER_BOT_ENTITY)
     }
 
     open fun start(): MeepMeep {
+        // Core Start
         if(bg == null) setBackground(Background.GRID_BLUE)
         windowFrame.isVisible = true
 
@@ -143,6 +204,10 @@ open class MeepMeep(private val windowSize: Int) {
         onCanvasResize()
 
         Thread(loopManager).start()
+
+        // Road Runner Start
+        removeEntity(DEFAULT_BOT_ENTITY)
+        if (DEFAULT_ROADRUNNER_BOT_ENTITY in entityList) DEFAULT_ROADRUNNER_BOT_ENTITY.start()
 
         return this
     }
@@ -197,12 +262,20 @@ open class MeepMeep(private val windowSize: Int) {
     }
 
     open fun refreshTheme() {
+        // Core Refresh
         entityList.forEach {
             if (it is ThemedEntity) it.switchScheme(colorManager.theme)
         }
 
         windowFrame.contentPane.background = colorManager.theme.UI_MAIN_BG
         windowFrame.canvasPanel.background = colorManager.theme.UI_MAIN_BG
+
+        // Road Runner Refresh
+        middleButtonPanel.background = colorManager.theme.UI_MAIN_BG
+
+        middleButtonList.forEach {
+            it.background = colorManager.theme.UI_MAIN_BG
+        }
     }
 
     fun setDarkMode(isDarkMode: Boolean): MeepMeep {
@@ -222,9 +295,14 @@ open class MeepMeep(private val windowSize: Int) {
 
     //-------------Robot Settings-------------//
     open fun setBotDimensions(width: Double, height: Double): MeepMeep {
+        // Core
         if (DEFAULT_BOT_ENTITY in entityList) {
             DEFAULT_BOT_ENTITY.setDimensions(width, height)
         }
+
+        // Road Runner
+        if (DEFAULT_ROADRUNNER_BOT_ENTITY in entityList)
+            DEFAULT_ROADRUNNER_BOT_ENTITY.setDimensions(width, height)
 
         return this
     }
@@ -271,6 +349,66 @@ open class MeepMeep(private val windowSize: Int) {
     fun requestToClearEntity(entity: Entity): MeepMeep {
         requestedClearEntityList.add(entity)
         entityListDirty = true
+
+        return this
+    }
+
+    //-------------Road Runner Settings-------------//
+    fun setStartPose(pose: Pose2d): MeepMeep {
+        if (DEFAULT_ROADRUNNER_BOT_ENTITY in entityList) DEFAULT_ROADRUNNER_BOT_ENTITY.pose = pose
+
+        return this
+    }
+
+    fun setConstraints(constraints: DriveConstraints): MeepMeep {
+        if (DEFAULT_ROADRUNNER_BOT_ENTITY in entityList)
+            DEFAULT_ROADRUNNER_BOT_ENTITY.setConstraints(constraints)
+
+        return this
+    }
+
+    fun setTrackWidth(trackWidth: Double): MeepMeep {
+        if(DEFAULT_ROADRUNNER_BOT_ENTITY in entityList)
+            DEFAULT_ROADRUNNER_BOT_ENTITY.setTrackWidth(trackWidth)
+
+        return this
+    }
+
+    fun setDriveTrainType(driveTrainType: DriveTrainType): MeepMeep {
+        if(DEFAULT_ROADRUNNER_BOT_ENTITY in entityList)
+            DEFAULT_ROADRUNNER_BOT_ENTITY.setDriveTrainType(driveTrainType)
+
+        return this
+    }
+
+    fun followTrajectorySequence(callback: AddTrajectorySequenceCallback): MeepMeep {
+        if (DEFAULT_ROADRUNNER_BOT_ENTITY in entityList)
+            DEFAULT_ROADRUNNER_BOT_ENTITY.followTrajectorySequence(
+                    callback.buildTrajectorySequence(DEFAULT_ROADRUNNER_BOT_ENTITY.drive)
+            )
+
+        return this
+    }
+
+    fun followTrajectorySequence(trajectorySequence: TrajectorySequence): MeepMeep {
+        if (DEFAULT_ROADRUNNER_BOT_ENTITY in entityList)
+            DEFAULT_ROADRUNNER_BOT_ENTITY.followTrajectorySequence(trajectorySequence)
+
+        return this
+    }
+
+    fun followTrajectory(callback: AddTrajectoryCallback): MeepMeep {
+        if (DEFAULT_ROADRUNNER_BOT_ENTITY in entityList)
+            DEFAULT_ROADRUNNER_BOT_ENTITY.followTrajectoryList(
+                    callback.buildTrajectory(DEFAULT_ROADRUNNER_BOT_ENTITY.drive)
+            )
+
+        return this
+    }
+
+    fun followTrajectory(trajectory: List<Trajectory>): MeepMeep {
+        if (DEFAULT_ROADRUNNER_BOT_ENTITY in entityList)
+            DEFAULT_ROADRUNNER_BOT_ENTITY.followTrajectoryList(trajectory)
 
         return this
     }
