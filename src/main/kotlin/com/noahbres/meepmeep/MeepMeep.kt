@@ -134,11 +134,13 @@ open class MeepMeep(private val windowSize: Int) {
         windowFrame.contentPane.background = colorManager.theme.UI_MAIN_BG
         windowFrame.canvasPanel.background = colorManager.theme.UI_MAIN_BG
 
+        val classLoader = Thread.currentThread().contextClassLoader
+
         FONT_CMU_BOLD_LIGHT = Font.createFont(
-                Font.TRUETYPE_FONT, File("res/font/cmunbi.ttf")
+                Font.TRUETYPE_FONT, classLoader.getResourceAsStream("font/cmunbi.ttf")
         ).deriveFont(20f)
-        FONT_CMU = Font.createFont(Font.TRUETYPE_FONT, File("res/font/cmunrm.ttf"))
-        FONT_CMU_BOLD = Font.createFont(Font.TRUETYPE_FONT, File("res/font/cmunbx.ttf"))
+        FONT_CMU = Font.createFont(Font.TRUETYPE_FONT, classLoader.getResourceAsStream("font/cmunrm.ttf"))
+        FONT_CMU_BOLD = Font.createFont(Font.TRUETYPE_FONT, classLoader.getResourceAsStream("font/cmunbx.ttf"))
 
         FieldUtil.CANVAS_WIDTH = windowSize.toDouble()
         FieldUtil.CANVAS_HEIGHT = windowSize.toDouble()
@@ -214,30 +216,32 @@ open class MeepMeep(private val windowSize: Int) {
 
     //-------------Theme Settings-------------//
     fun setBackground(background: Background = Background.GRID_BLUE): MeepMeep {
+        val classLoader = Thread.currentThread().contextClassLoader
+
         bg = when (background) {
             Background.GRID_BLUE -> {
                 colorManager.isDarkMode = false
-                ImageIO.read(File("res/background/grid-blue.jpg"))
+                ImageIO.read(classLoader.getResourceAsStream("background/grid-blue.jpg"))
             }
             Background.FIELD_SKYSTONE -> {
                 colorManager.isDarkMode = false
-                ImageIO.read(File("res/background/field-skystone.png"))
+                ImageIO.read(classLoader.getResourceAsStream("background/field-skystone.png"))
             }
             Background.FIELD_SKYSTONE_GF -> {
                 colorManager.isDarkMode = true
-                ImageIO.read(File("res/background/field-skystone-gf.png"))
+                ImageIO.read(classLoader.getResourceAsStream("background/field-skystone-gf.png"))
             }
             Background.FIELD_SKYSTONE_LIGHT -> {
                 colorManager.isDarkMode = false
-                ImageIO.read(File("res/background/field-skystone-light-fix.jpg"))
+                ImageIO.read(classLoader.getResourceAsStream("background/field-skystone-light-fix.jpg"))
             }
             Background.FIELD_SKYSTONE_DARK -> {
                 colorManager.isDarkMode = true
-                ImageIO.read(File("res/background/field-skystone-dark-fix.jpg"))
+                ImageIO.read(classLoader.getResourceAsStream("background/field-skystone-dark-fix.jpg"))
             }
             Background.FIELD_SKYSTONE_STARWARS -> {
                 colorManager.isDarkMode = true
-                ImageIO.read(File("res/background/field-skystone-starwars.png"))
+                ImageIO.read(classLoader.getResourceAsStream("background/field-skystone-starwars.png"))
             }
         }.getScaledInstance(windowSize, windowSize, Image.SCALE_SMOOTH)
 

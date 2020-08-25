@@ -37,11 +37,13 @@ class CompassEntity(
     private val animationController = AnimationController(currentOpacity).clip(0.0, 1.0)
 
     private val bgLight: Image by lazy {
-        ImageIO.read(File("res/misc/compass-rose-black-text.png"))
+        val classLoader = Thread.currentThread().contextClassLoader
+        ImageIO.read(classLoader.getResourceAsStream("misc/compass-rose-black-text.png"))
     }
 
     private val bgDark: Image by lazy {
-        ImageIO.read(File("res/misc/compass-rose-white-text.png"))
+        val classLoader = Thread.currentThread().contextClassLoader
+        ImageIO.read(classLoader.getResourceAsStream("misc/compass-rose-white-text.png"))
     }
 
     init {

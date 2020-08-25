@@ -81,7 +81,7 @@ class TrajectorySequenceEntity(
 
         var currentEndPose = trajectorySequence.firstPose
 
-        val firstVec = trajectorySequence.firstPose.vec()
+        val firstVec = trajectorySequence.firstPose.vec().toScreenCoord()
         trajectoryDrawnPath.moveTo(firstVec.x, firstVec.y)
 
         trajectorySequence.forEach { step ->
@@ -114,7 +114,7 @@ class TrajectorySequenceEntity(
                             markerEntityList.add(markerEntity)
                             meepMeep.requestToAddEntity(markerEntity)
                         }
-                    } else {}
+                    }
                 }
                 is TurnStep -> {
                     val turnEntity = TurnIndicatorEntity(
@@ -126,7 +126,7 @@ class TrajectorySequenceEntity(
                 }
                 is WaitStep,
                 is WaitConditionalStep -> {}
-            }.exhaustive
+            }
         }
 
         gfx.stroke = outerStroke
