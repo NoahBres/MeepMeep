@@ -15,10 +15,7 @@ import com.noahbres.meepmeep.roadrunner.AddTrajectorySequenceCallback
 import com.noahbres.meepmeep.roadrunner.DriveTrainType
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity
 import com.noahbres.meepmeep.roadrunner.trajectorysequence.TrajectorySequence
-import java.awt.Font
-import java.awt.Graphics2D
-import java.awt.Image
-import java.awt.RenderingHints
+import java.awt.*
 import java.awt.event.MouseListener
 import java.awt.event.MouseMotionListener
 import java.io.File
@@ -68,6 +65,8 @@ open class MeepMeep(private val windowSize: Int) {
     // Returns true if entity list needs to be sorted
     private var entityListDirty = false
 
+    private var bgAlpha = 1.0f
+
     private val render: () -> Unit = {
         val g = canvas.bufferStrat.drawGraphics as Graphics2D
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
@@ -75,13 +74,15 @@ open class MeepMeep(private val windowSize: Int) {
 
         // render
         if (bg != null) {
-//            val bgAlpha = 0.8f
-//            val resetComposite = g.composite
-//            val alphaComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, bgAlpha)
-//
-//            g.composite = alphaComposite
-            g.drawImage(bg, 0, 0, null)
-//            g.composite = resetComposite
+            if(bgAlpha < 1.0f) {
+                val resetComposite = g.composite
+                val alphaComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, bgAlpha)
+                g.composite = alphaComposite
+                g.drawImage(bg, 0, 0, null)
+                g.composite = resetComposite
+            } else {
+                g.drawImage(bg, 0, 0, null)
+            }
         }
 
         entityList.forEach { it.render(g, canvas.width, canvas.height) }
@@ -353,6 +354,13 @@ open class MeepMeep(private val windowSize: Int) {
     fun requestToClearEntity(entity: Entity): MeepMeep {
         requestedClearEntityList.add(entity)
         entityListDirty = true
+
+        return this
+    }
+
+    //-------------Misc-------------//
+    fun setBackgroundAlpha(alpha: Float): MeepMeep {
+        bgAlpha = alpha
 
         return this
     }
