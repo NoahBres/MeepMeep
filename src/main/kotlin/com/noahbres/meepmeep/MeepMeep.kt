@@ -53,11 +53,11 @@ open class MeepMeep(private val windowSize: Int) {
     val windowFrame = WindowFrame("Meep Meep", windowSize)
     val canvas = windowFrame.canvas
 
-    protected var bg: Image? = null
+    private var bg: Image? = null
 
-    protected val colorManager = ColorManager()
+    private val colorManager = ColorManager()
 
-    protected val entityList = mutableListOf<Entity>()
+    private val entityList = mutableListOf<Entity>()
     private val requestedAddEntityList = mutableListOf<Entity>()
     private val requestedClearEntityList = mutableListOf<Entity>()
 
@@ -341,6 +341,7 @@ open class MeepMeep(private val windowSize: Int) {
 
     fun removeEntity(entity: Entity): MeepMeep {
         entityList.remove(entity)
+        requestedAddEntityList.remove(entity)
         entityListDirty = true
 
 
