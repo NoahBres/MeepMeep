@@ -152,7 +152,7 @@ open class MeepMeep(private val windowSize: Int) {
                 this, colorManager.theme, 30.0, 30.0, Vector2d(-54.0, 54.0)
         )
 
-        addEntity(DEFAULT_BOT_ENTITY)
+//        addEntity(DEFAULT_BOT_ENTITY)
         addEntity(DEFAULT_AXES_ENTITY)
         addEntity(DEFAULT_COMPASS_ENTITY)
 
@@ -175,7 +175,7 @@ open class MeepMeep(private val windowSize: Int) {
         middleButtonPanel.add(Box.createVerticalGlue())
 
         windowFrame.canvasPanel.add(sliderPanel)
-        windowFrame.contentPane.add(middleButtonPanel)
+//        windowFrame.contentPane.add(middleButtonPanel)
 
         windowFrame.pack()
 
@@ -209,7 +209,7 @@ open class MeepMeep(private val windowSize: Int) {
         Thread(loopManager).start()
 
         // Road Runner Start
-        removeEntity(DEFAULT_BOT_ENTITY)
+//        removeEntity(DEFAULT_BOT_ENTITY)
         if (DEFAULT_ROADRUNNER_BOT_ENTITY in entityList) DEFAULT_ROADRUNNER_BOT_ENTITY.start()
 
         return this
