@@ -27,15 +27,7 @@ class TrajectorySequenceBuilder(
             constraints: DriveConstraints,
             resolution: Double = 0.25
     ) : this(startPose, startPose.heading, constraints, resolution)
-
-    @JvmOverloads
-    constructor(
-            startPose: Pose2d,
-            reversed: Boolean,
-            constraints: DriveConstraints,
-            resolution: Double = 0.25
-    ) : this(startPose, Angle.norm(startPose.heading + if (reversed) PI else 0.0), constraints, resolution)
-
+    
     private val sequenceSegments = mutableListOf<SequenceSegment>()
 
     private val temporalMarkers = mutableListOf<TemporalMarker>()
