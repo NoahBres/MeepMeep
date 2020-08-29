@@ -12,6 +12,7 @@ import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryConstraints
 import com.acmerobotics.roadrunner.util.Angle
 import com.acmerobotics.roadrunner.util.epsilonEquals
 import kotlin.math.PI
+import kotlin.math.hypot
 
 class TrajectorySequenceBuilder(
         startPose: Pose2d,
@@ -258,7 +259,7 @@ class TrajectorySequenceBuilder(
             TrajectoryMarker(time(currentDuration), callback)
         } + displacementMarkers.map { (displacement, callback) ->
             TrajectoryMarker(displacementToTime(sequenceSegments, displacement(sequenceTotalDisplacement(sequenceSegments))), callback)
-        }
+        } + spatialMarkers.map { (point, callback) -> TrajectoryMarker(pointToTime(sequenceSegments, point), callback) }
     }
 
     private fun sequenceTotalDisplacement(sequenceSegments: List<SequenceSegment>): Double {
@@ -308,5 +309,25 @@ class TrajectorySequenceBuilder(
         }
 
         return 0.0
+    }
+
+    private fun pointToTime(sequenceSegments: List<SequenceSegment>, point: Vector2d): Double {
+        val justTrajectories = sequenceSegments.filterIsInstance<TrajectorySegment>()
+
+        val projectedPoints = justTrajectories.fold(listOf<Triple<Double, Double, Double>>()) { segmentList, it ->
+            val displacement = it.trajectory.path.project(point)
+            val projectedPoint = it.trajectory.path[displacement].vec()
+            val distanceToPoint = hypot((point - projectedPoint).x, (point - projectedPoint).y)
+
+            val totalDisplacement = segmentList.fold(0.0) { acc, segment ->
+                acc + segment.second
+            } + displacement
+
+            segmentList + Triple(distanceToPoint, displacement, totalDisplacement)
+        }
+
+        val closestPoint = projectedPoints.minByOrNull { it.first }
+
+        return displacementToTime(sequenceSegments, closestPoint!!.third)
     }
 }
