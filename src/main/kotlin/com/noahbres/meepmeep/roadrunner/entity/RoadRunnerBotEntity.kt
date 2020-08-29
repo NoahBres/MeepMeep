@@ -74,30 +74,6 @@ class RoadRunnerBotEntity(
 
             when {
                 trajectorySequenceElapsedTime <= currentTrajectorySequence!!.duration -> {
-//                    val (currentStateStep, currentStateOffset) = currentTrajectorySequence!!.getCurrentState(
-//                            trajectorySequenceElapsedTime
-//                    )
-//                    when (currentStateStep) {
-//                        is TrajectorySegment -> {
-//                            pose = currentStateStep.trajectory[currentStateOffset]
-//
-//                            trajectorySequenceEntity!!.markerEntityList.forEach {
-//                                if (it.trajectoryStep == currentStateStep) {
-//                                    if (currentStateOffset >= it.time) it.passed()
-//                                }
-//                            }
-//                        }
-//                        is TurnSegment -> {
-//                            val currVec = currentStateStep.pos
-//                            pose = Pose2d(
-//                                    currVec.x, currVec.y,
-//                                    currentStateStep.motionProfile[currentStateOffset].x
-//                            )
-//                        }
-//                        is WaitStep,
-//                        is WaitConditionalStep -> {}
-//                    }.exhaustive
-
                     pose = currentTrajectorySequence!![trajectorySequenceElapsedTime]
 
                     trajectorySequenceEntity!!.markerEntityList.forEach { if (trajectorySequenceElapsedTime >= it.time) it.passed() }
