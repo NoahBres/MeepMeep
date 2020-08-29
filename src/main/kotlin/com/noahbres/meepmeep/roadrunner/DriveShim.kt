@@ -5,7 +5,6 @@ import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder
 import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints
 import com.acmerobotics.roadrunner.trajectory.constraints.MecanumConstraints
 import com.acmerobotics.roadrunner.trajectory.constraints.TankConstraints
-import com.noahbres.meepmeep.roadrunner.trajectorysequence.TrajectorySequenceBuilder
 
 class DriveShim(driveTrainType: DriveTrainType, trajectoryConstraints: DriveConstraints, trackWidth: Double) {
     private val constraints = when (driveTrainType) {

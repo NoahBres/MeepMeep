@@ -18,7 +18,6 @@ import com.noahbres.meepmeep.roadrunner.trajectorysequence.TrajectorySequence
 import java.awt.*
 import java.awt.event.MouseListener
 import java.awt.event.MouseMotionListener
-import java.io.File
 import javax.imageio.ImageIO
 import javax.swing.*
 import javax.swing.border.EtchedBorder
@@ -418,21 +417,21 @@ open class MeepMeep(private val windowSize: Int) {
         return this
     }
 
-    fun followTrajectory(callback: AddTrajectoryCallback): MeepMeep {
-        if (DEFAULT_ROADRUNNER_BOT_ENTITY in entityList)
-            DEFAULT_ROADRUNNER_BOT_ENTITY.followTrajectoryList(
-                    callback.buildTrajectory(DEFAULT_ROADRUNNER_BOT_ENTITY.drive)
-            )
+//    fun followTrajectory(callback: AddTrajectoryCallback): MeepMeep {
+//        if (DEFAULT_ROADRUNNER_BOT_ENTITY in entityList)
+//            DEFAULT_ROADRUNNER_BOT_ENTITY.followTrajectoryList(
+//                    callback.buildTrajectory(DEFAULT_ROADRUNNER_BOT_ENTITY.drive)
+//            )
+//
+//        return this
+//    }
 
-        return this
-    }
-
-    fun followTrajectory(trajectory: List<Trajectory>): MeepMeep {
-        if (DEFAULT_ROADRUNNER_BOT_ENTITY in entityList)
-            DEFAULT_ROADRUNNER_BOT_ENTITY.followTrajectoryList(trajectory)
-
-        return this
-    }
+//    fun followTrajectory(trajectory: List<Trajectory>): MeepMeep {
+//        if (DEFAULT_ROADRUNNER_BOT_ENTITY in entityList)
+//            DEFAULT_ROADRUNNER_BOT_ENTITY.followTrajectoryList(trajectory)
+//
+//        return this
+//    }
 
     enum class Background {
         GRID_BLUE,

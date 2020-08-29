@@ -7,11 +7,7 @@ import com.noahbres.meepmeep.core.entity.ThemedEntity
 import com.noahbres.meepmeep.core.exhaustive
 import com.noahbres.meepmeep.core.toScreenCoord
 import com.noahbres.meepmeep.core.util.FieldUtil
-import com.noahbres.meepmeep.roadrunner.trajectorysequence.TrajectorySequence
-import com.noahbres.meepmeep.roadrunner.trajectorysequence.TrajectoryStep
-import com.noahbres.meepmeep.roadrunner.trajectorysequence.TurnStep
-import com.noahbres.meepmeep.roadrunner.trajectorysequence.WaitConditionalStep
-import com.noahbres.meepmeep.roadrunner.trajectorysequence.WaitStep
+import com.noahbres.meepmeep.roadrunner.trajectorysequence.*
 import java.awt.*
 import java.awt.geom.Path2D
 import java.awt.image.BufferedImage
@@ -79,15 +75,14 @@ class TrajectorySequenceEntity(
                 BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND
         )
 
-        var currentEndPose = trajectorySequence.firstPose
+        var currentEndPose = trajectorySequence.start()
 
-        val firstVec = trajectorySequence.firstPose.vec().toScreenCoord()
+        val firstVec = trajectorySequence.start().vec().toScreenCoord()
         trajectoryDrawnPath.moveTo(firstVec.x, firstVec.y)
 
-        trajectorySequence.forEach { step ->
+        trajectorySequence.sequenceSegments.forEach { step ->
             when (step) {
-                is TrajectoryStep -> {
-                    // Draw trajectory
+                is TrajectorySegment -> {
                     val traj = step.trajectory
 
                     val displacementSamples = (traj.path.length() / SAMPLE_RESOLUTION).roundToInt()
@@ -98,36 +93,70 @@ class TrajectorySequenceEntity(
 
                     val poses = displacements.map { traj.path[it] }
 
-                    for (pose in poses.drop(1)) {
+                    for(pose in poses.drop(1)) {
                         val coord = pose.vec().toScreenCoord()
                         trajectoryDrawnPath.lineTo(coord.x, coord.y)
                     }
 
                     currentEndPose = step.trajectory.end()
-
-                    // Get markers
-                    if (traj.markers.isNotEmpty()) {
-                        traj.markers.forEach {
-                            val markerEntity = MarkerIndicatorEntity(
-                                    meepMeep, colorScheme, traj[it.time], it.time, step
-                            )
-                            markerEntityList.add(markerEntity)
-                            meepMeep.requestToAddEntity(markerEntity)
-                        }
-                    }
                 }
-                is TurnStep -> {
+
+                is TurnSegment -> {
                     val turnEntity = TurnIndicatorEntity(
                             meepMeep, colorScheme, currentEndPose.vec(), currentEndPose.heading,
-                            currentEndPose.heading + step.angle
+                            currentEndPose.heading + step.totalRotation
                     )
                     turnEntityList.add(turnEntity)
                     meepMeep.requestToAddEntity(turnEntity)
                 }
-                is WaitStep,
-                is WaitConditionalStep -> {}
+                is WaitSegment -> {}
             }
         }
+
+//        trajectorySequence.forEach { step ->
+//            when (step) {
+//                is TrajectorySegment -> {
+//                    // Draw trajectory
+//                    val traj = step.trajectory
+//
+//                    val displacementSamples = (traj.path.length() / SAMPLE_RESOLUTION).roundToInt()
+//
+//                    val displacements = (0..displacementSamples).map {
+//                        it / displacementSamples.toDouble() * traj.path.length()
+//                    }
+//
+//                    val poses = displacements.map { traj.path[it] }
+//
+//                    for (pose in poses.drop(1)) {
+//                        val coord = pose.vec().toScreenCoord()
+//                        trajectoryDrawnPath.lineTo(coord.x, coord.y)
+//                    }
+//
+//                    currentEndPose = step.trajectory.end()
+//
+//                    // Get markers
+//                    if (traj.markers.isNotEmpty()) {
+//                        traj.markers.forEach {
+//                            val markerEntity = MarkerIndicatorEntity(
+//                                    meepMeep, colorScheme, traj[it.time], it.time, step
+//                            )
+//                            markerEntityList.add(markerEntity)
+//                            meepMeep.requestToAddEntity(markerEntity)
+//                        }
+//                    }
+//                }
+//                is TurnSegment -> {
+//                    val turnEntity = TurnIndicatorEntity(
+//                            meepMeep, colorScheme, currentEndPose.vec(), currentEndPose.heading,
+//                            currentEndPose.heading + step.angle
+//                    )
+//                    turnEntityList.add(turnEntity)
+//                    meepMeep.requestToAddEntity(turnEntity)
+//                }
+//                is WaitStep,
+//                is WaitConditionalStep -> {}
+//            }
+//        }
 
         gfx.stroke = outerStroke
         gfx.color = Color(

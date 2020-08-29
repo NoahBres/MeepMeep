@@ -63,57 +63,57 @@ class RoadRunnerBotEntity(
     }
 
     override fun update(deltaTime: Long) {
-        if (!running) return
-
-        if (skippedLoops++ < SKIP_LOOPS) return
-
-        if (followMode == FollowMode.TRAJECTORY_LIST) {
-
-        } else if (followMode == FollowMode.TRAJECTORY_SEQUENCE && currentTrajectorySequence != null) {
-            if (!trajectoryPaused) trajectorySequenceElapsedTime += deltaTime / 1000.0
-
-            when {
-                trajectorySequenceElapsedTime <= currentTrajectorySequence!!.duration -> {
-                    val (currentStateStep, currentStateOffset) = currentTrajectorySequence!!.getCurrentState(
-                            trajectorySequenceElapsedTime
-                    )
-                    when (currentStateStep) {
-                        is TrajectoryStep -> {
-                            pose = currentStateStep.trajectory[currentStateOffset]
-
-                            trajectorySequenceEntity!!.markerEntityList.forEach {
-                                if (it.trajectoryStep == currentStateStep) {
-                                    if (currentStateOffset >= it.time) it.passed()
-                                }
-                            }
-                        }
-                        is TurnStep -> {
-                            val currVec = currentStateStep.pos
-                            pose = Pose2d(
-                                    currVec.x, currVec.y,
-                                    currentStateStep.motionProfile[currentStateOffset].x
-                            )
-                        }
-                        is WaitStep,
-                        is WaitConditionalStep -> {}
-                    }.exhaustive
-
-                    progressSlider.progress = (trajectorySequenceElapsedTime / currentTrajectorySequence!!.duration)
-                }
-
-                looping -> {
-                    trajectorySequenceEntity!!.markerEntityList.forEach {
-                        it.reset()
-                    }
-                    trajectorySequenceElapsedTime = 0.0
-                }
-
-                else -> {
-                    trajectorySequenceElapsedTime = 0.0
-                    currentTrajectorySequence = null
-                }
-            }.exhaustive
-        }
+//        if (!running) return
+//
+//        if (skippedLoops++ < SKIP_LOOPS) return
+//
+//        if (followMode == FollowMode.TRAJECTORY_LIST) {
+//
+//        } else if (followMode == FollowMode.TRAJECTORY_SEQUENCE && currentTrajectorySequence != null) {
+//            if (!trajectoryPaused) trajectorySequenceElapsedTime += deltaTime / 1000.0
+//
+//            when {
+//                trajectorySequenceElapsedTime <= currentTrajectorySequence!!.duration -> {
+//                    val (currentStateStep, currentStateOffset) = currentTrajectorySequence!!.getCurrentState(
+//                            trajectorySequenceElapsedTime
+//                    )
+//                    when (currentStateStep) {
+//                        is TrajectorySegment -> {
+//                            pose = currentStateStep.trajectory[currentStateOffset]
+//
+//                            trajectorySequenceEntity!!.markerEntityList.forEach {
+//                                if (it.trajectoryStep == currentStateStep) {
+//                                    if (currentStateOffset >= it.time) it.passed()
+//                                }
+//                            }
+//                        }
+//                        is TurnSegment -> {
+//                            val currVec = currentStateStep.pos
+//                            pose = Pose2d(
+//                                    currVec.x, currVec.y,
+//                                    currentStateStep.motionProfile[currentStateOffset].x
+//                            )
+//                        }
+//                        is WaitStep,
+//                        is WaitConditionalStep -> {}
+//                    }.exhaustive
+//
+//                    progressSlider.progress = (trajectorySequenceElapsedTime / currentTrajectorySequence!!.duration)
+//                }
+//
+//                looping -> {
+//                    trajectorySequenceEntity!!.markerEntityList.forEach {
+//                        it.reset()
+//                    }
+//                    trajectorySequenceElapsedTime = 0.0
+//                }
+//
+//                else -> {
+//                    trajectorySequenceElapsedTime = 0.0
+//                    currentTrajectorySequence = null
+//                }
+//            }.exhaustive
+//        }
     }
 
     fun start() {
