@@ -1,90 +1,63 @@
 package com.noahbres.meepmeep.roadrunner.trajectorysequence
 
 import com.acmerobotics.roadrunner.geometry.Pose2d
+import com.acmerobotics.roadrunner.trajectory.TrajectoryMarker
 
-class TrajectorySequence : List<SequenceStep> {
-    private val sequenceList = mutableListOf<SequenceStep>()
+class TrajectorySequence(
+        val sequenceSegments: List<SequenceSegment>,
+        val duration: Double,
+        val markers: List<TrajectoryMarker> = emptyList()
+) {
+    operator fun get(time: Double): Pose2d {
+        val (currentSegment, segmentTime) = getCurrentState(time)
 
-    private var cachedFirstPose = Pose2d()
-    private var firstPoseCacheDirty = false
-
-    private var cachedDuration = 0.0
-    private var durationCacheDirty = false
-
-    val firstPose: Pose2d
-        get() {
-            if (!firstPoseCacheDirty) return cachedFirstPose
-
-            this.forEach {
-                if (it is TrajectoryStep) {
-                    cachedFirstPose = it.trajectory.start()
-                    return cachedFirstPose
-                }
-            }
-
-            return Pose2d()
+        return when (currentSegment) {
+            is TrajectorySegment -> currentSegment.trajectory[segmentTime]
+            is TurnSegment -> currentSegment.startPose.copy(heading = currentSegment.motionProfile[segmentTime].x)
+            is WaitSegment -> currentSegment.pose
+            null -> Pose2d()
         }
-
-    val duration: Double
-        get() {
-            if (!durationCacheDirty) return cachedDuration
-
-            cachedDuration = 0.0
-            this.forEach {
-                cachedDuration += when (it) {
-                    is TrajectoryStep -> it.trajectory.duration()
-                    is TurnStep -> it.motionProfile.duration()
-                    is WaitStep -> it.seconds
-                    else -> 0.0
-                }
-            }
-
-            return cachedDuration
-        }
-
-    fun getCurrentState(time: Double): Pair<SequenceStep, Double> {
-        var currentStep: SequenceStep? = null
-        var currentOffset = 0.0
-
-        this.forEach {
-            if(time >= it.startTime) {
-                currentStep = it
-                currentOffset = time - it.startTime
-            }
-        }
-
-        return Pair(currentStep!!, currentOffset)
     }
 
-    fun add(step: SequenceStep) {
-        sequenceList.add(step)
+    fun velocity(time: Double): Pose2d {
+        val (currentSegment, segmentTime) = getCurrentState(time)
 
-        firstPoseCacheDirty = true
-        durationCacheDirty = true
+        return when (currentSegment) {
+            is TrajectorySegment -> currentSegment.trajectory.velocity(segmentTime)
+            is TurnSegment -> Pose2d(0.0, 0.0, currentSegment.motionProfile[segmentTime].v)
+            is WaitSegment -> Pose2d()
+            null -> Pose2d()
+        }
     }
 
-    override fun contains(element: SequenceStep) = sequenceList.contains(element)
+    fun acceleration(time: Double): Pose2d {
+        val (currentSegment, segmentTime) = getCurrentState(time)
 
-    override fun containsAll(elements: Collection<SequenceStep>) = sequenceList.containsAll(elements)
-
-    override fun indexOf(element: SequenceStep) = sequenceList.indexOf(element)
-
-    override fun isEmpty() = sequenceList.isEmpty()
-
-    override fun iterator() = sequenceList.iterator()
-
-    override fun lastIndexOf(element: SequenceStep) = sequenceList.lastIndexOf(element)
-
-    override fun listIterator() = sequenceList.listIterator()
-
-    override fun listIterator(index: Int) = sequenceList.listIterator(index)
-
-    override fun subList(fromIndex: Int, toIndex: Int) = sequenceList.subList(fromIndex, toIndex)
-
-    override val size: Int
-        get() = sequenceList.size
-
-    override fun get(index: Int): SequenceStep {
-        return sequenceList[index]
+        return when (currentSegment) {
+            is TrajectorySegment -> currentSegment.trajectory.acceleration(segmentTime)
+            is TurnSegment -> Pose2d(0.0, 0.0, currentSegment.motionProfile[segmentTime].a)
+            is WaitSegment -> Pose2d()
+            null -> Pose2d()
+        }
     }
+
+    private fun getCurrentState(time: Double): Pair<SequenceSegment?, Double> {
+        var currentTime = 0.0
+
+        sequenceSegments.forEach {
+            if (currentTime + it.duration > time) {
+                val segmentTime = time - currentTime
+
+                return Pair(it, segmentTime)
+            } else {
+                currentTime += it.duration
+            }
+        }
+
+        return Pair(null, 0.0)
+    }
+
+    fun start() = get(0.0)
+
+    fun end() = get(duration)
 }

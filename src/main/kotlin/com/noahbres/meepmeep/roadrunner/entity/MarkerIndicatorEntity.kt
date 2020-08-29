@@ -11,7 +11,7 @@ import com.noahbres.meepmeep.core.scaleInToPixel
 import com.noahbres.meepmeep.core.toRadians
 import com.noahbres.meepmeep.core.toScreenCoord
 import com.noahbres.meepmeep.core.util.FieldUtil
-import com.noahbres.meepmeep.roadrunner.trajectorysequence.TrajectoryStep
+import com.noahbres.meepmeep.roadrunner.trajectorysequence.TrajectorySegment
 import java.awt.BasicStroke
 import java.awt.Graphics2D
 import kotlin.math.cos
@@ -22,7 +22,6 @@ class MarkerIndicatorEntity(
         private var colorScheme: ColorScheme,
         private val pos: Pose2d,
         val time: Double,
-        val trajectoryStep: TrajectoryStep
 ) : ThemedEntity {
     private var canvasWidth = FieldUtil.CANVAS_WIDTH
     private var canvasHeight = FieldUtil.CANVAS_HEIGHT
