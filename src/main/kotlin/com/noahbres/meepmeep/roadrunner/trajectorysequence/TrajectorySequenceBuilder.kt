@@ -17,24 +17,24 @@ import kotlin.math.hypot
 class TrajectorySequenceBuilder(
         startPose: Pose2d,
         startTangent: Double,
-        private val baseConstraints: DriveConstraints,
+        private var constraints: DriveConstraints,
         private val resolution: Double = 0.25
 ) {
 
     @JvmOverloads
     constructor(
             startPose: Pose2d,
-            baseConstraints: DriveConstraints,
+            constraints: DriveConstraints,
             resolution: Double = 0.25
-    ) : this(startPose, startPose.heading, baseConstraints, resolution)
+    ) : this(startPose, startPose.heading, constraints, resolution)
 
     @JvmOverloads
     constructor(
             startPose: Pose2d,
             reversed: Boolean,
-            baseConstraints: DriveConstraints,
+            constraints: DriveConstraints,
             resolution: Double = 0.25
-    ) : this(startPose, Angle.norm(startPose.heading + if (reversed) PI else 0.0), baseConstraints, resolution)
+    ) : this(startPose, Angle.norm(startPose.heading + if (reversed) PI else 0.0), constraints, resolution)
 
     private val sequenceSegments = mutableListOf<SequenceSegment>()
 
@@ -52,70 +52,68 @@ class TrajectorySequenceBuilder(
     private var currentDuration = 0.0
     private var currentDisplacement = 0.0
 
-    private var currentConstraints = baseConstraints
-
     @JvmOverloads
-    fun lineTo(endPosition: Vector2d, constraintsOverride: TrajectoryConstraints = currentConstraints) = addPath {
+    fun lineTo(endPosition: Vector2d, constraintsOverride: TrajectoryConstraints = constraints) = addPath {
         currentTrajectoryBuilder!!.lineTo(endPosition, constraintsOverride)
     }
 
     @JvmOverloads
-    fun lineToConstantHeading(endPosition: Vector2d, constraintsOverride: TrajectoryConstraints = currentConstraints) = addPath {
+    fun lineToConstantHeading(endPosition: Vector2d, constraintsOverride: TrajectoryConstraints = constraints) = addPath {
         currentTrajectoryBuilder!!.lineToConstantHeading(endPosition, constraintsOverride)
     }
 
     @JvmOverloads
-    fun lineToLinearHeading(endPose: Pose2d, constraintsOverride: TrajectoryConstraints = currentConstraints) = addPath {
+    fun lineToLinearHeading(endPose: Pose2d, constraintsOverride: TrajectoryConstraints = constraints) = addPath {
         currentTrajectoryBuilder!!.lineToLinearHeading(endPose, constraintsOverride)
     }
 
     @JvmOverloads
-    fun lineToSplineHeading(endPose: Pose2d, constraintsOverride: TrajectoryConstraints = currentConstraints) = addPath {
+    fun lineToSplineHeading(endPose: Pose2d, constraintsOverride: TrajectoryConstraints = constraints) = addPath {
         currentTrajectoryBuilder!!.lineToSplineHeading(endPose, constraintsOverride)
     }
 
     @JvmOverloads
-    fun strafeTo(endPosition: Vector2d, constraintsOverride: TrajectoryConstraints = currentConstraints) = addPath {
+    fun strafeTo(endPosition: Vector2d, constraintsOverride: TrajectoryConstraints = constraints) = addPath {
         currentTrajectoryBuilder!!.strafeTo(endPosition, constraintsOverride)
     }
 
     @JvmOverloads
-    fun forward(distance: Double, constraintsOverride: TrajectoryConstraints = currentConstraints) = addPath {
+    fun forward(distance: Double, constraintsOverride: TrajectoryConstraints = constraints) = addPath {
         currentTrajectoryBuilder!!.forward(distance, constraintsOverride)
     }
 
     @JvmOverloads
-    fun back(distance: Double, constraintsOverride: TrajectoryConstraints = currentConstraints) = addPath {
+    fun back(distance: Double, constraintsOverride: TrajectoryConstraints = constraints) = addPath {
         currentTrajectoryBuilder!!.back(distance, constraintsOverride)
     }
 
     @JvmOverloads
-    fun strafeLeft(distance: Double, constraintsOverride: TrajectoryConstraints = currentConstraints) = addPath {
+    fun strafeLeft(distance: Double, constraintsOverride: TrajectoryConstraints = constraints) = addPath {
         currentTrajectoryBuilder!!.strafeLeft(distance, constraintsOverride)
     }
 
     @JvmOverloads
-    fun strafeRight(distance: Double, constraintsOverride: TrajectoryConstraints = currentConstraints) = addPath {
+    fun strafeRight(distance: Double, constraintsOverride: TrajectoryConstraints = constraints) = addPath {
         currentTrajectoryBuilder!!.strafeRight(distance, constraintsOverride)
     }
 
     @JvmOverloads
-    fun splineTo(endPosition: Vector2d, endHeading: Double, constraintsOverride: TrajectoryConstraints = currentConstraints) = addPath {
+    fun splineTo(endPosition: Vector2d, endHeading: Double, constraintsOverride: TrajectoryConstraints = constraints) = addPath {
         currentTrajectoryBuilder!!.splineTo(endPosition, endHeading, constraintsOverride)
     }
 
     @JvmOverloads
-    fun splineToConstantHeading(endPosition: Vector2d, endHeading: Double, constraintsOverride: TrajectoryConstraints = currentConstraints) = addPath {
+    fun splineToConstantHeading(endPosition: Vector2d, endHeading: Double, constraintsOverride: TrajectoryConstraints = constraints) = addPath {
         currentTrajectoryBuilder!!.splineToConstantHeading(endPosition, endHeading, constraintsOverride)
     }
 
     @JvmOverloads
-    fun splineToLinearHeading(endPose: Pose2d, endHeading: Double, constraintsOverride: TrajectoryConstraints = currentConstraints) = addPath {
+    fun splineToLinearHeading(endPose: Pose2d, endHeading: Double, constraintsOverride: TrajectoryConstraints = constraints) = addPath {
         currentTrajectoryBuilder!!.splineToLinearHeading(endPose, endHeading, constraintsOverride)
     }
 
     @JvmOverloads
-    fun splineToSplineHeading(endPose: Pose2d, endHeading: Double, constraintsOverride: TrajectoryConstraints = currentConstraints) = addPath {
+    fun splineToSplineHeading(endPose: Pose2d, endHeading: Double, constraintsOverride: TrajectoryConstraints = constraints) = addPath {
         currentTrajectoryBuilder!!.splineToSplineHeading(endPose, endHeading, constraintsOverride)
     }
 
@@ -151,13 +149,7 @@ class TrajectorySequenceBuilder(
     }
 
     fun setConstraints(constraints: DriveConstraints): TrajectorySequenceBuilder {
-        currentConstraints = constraints
-
-        return this
-    }
-
-    fun resetConstraints(constraints: DriveConstraints): TrajectorySequenceBuilder {
-        currentConstraints = baseConstraints
+        this.constraints = constraints
 
         return this
     }
@@ -195,9 +187,9 @@ class TrajectorySequenceBuilder(
         val turnProfile = MotionProfileGenerator.generateSimpleMotionProfile(
                 MotionState(lastPose.heading, 0.0, 0.0, 0.0),
                 MotionState(lastPose.heading + angle, 0.0, 0.0, 0.0),
-                currentConstraints.maxAngVel,
-                currentConstraints.maxAngAccel,
-                currentConstraints.maxAngJerk
+                constraints.maxAngVel,
+                constraints.maxAngAccel,
+                constraints.maxAngJerk
         )
 
         sequenceSegments.add(TurnSegment(lastPose, angle, turnProfile, turnProfile.duration()))
@@ -231,7 +223,7 @@ class TrajectorySequenceBuilder(
         if (currentTrajectoryBuilder != null)
             pushPath()
 
-        currentTrajectoryBuilder = TrajectoryBuilder(lastPose, Angle.norm(lastPose.heading + tangentOffset), currentConstraints)
+        currentTrajectoryBuilder = TrajectoryBuilder(lastPose, Angle.norm(lastPose.heading + tangentOffset), constraints)
     }
 
     fun build(): TrajectorySequence {
