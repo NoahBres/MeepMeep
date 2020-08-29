@@ -113,50 +113,11 @@ class TrajectorySequenceEntity(
             }
         }
 
-//        trajectorySequence.forEach { step ->
-//            when (step) {
-//                is TrajectorySegment -> {
-//                    // Draw trajectory
-//                    val traj = step.trajectory
-//
-//                    val displacementSamples = (traj.path.length() / SAMPLE_RESOLUTION).roundToInt()
-//
-//                    val displacements = (0..displacementSamples).map {
-//                        it / displacementSamples.toDouble() * traj.path.length()
-//                    }
-//
-//                    val poses = displacements.map { traj.path[it] }
-//
-//                    for (pose in poses.drop(1)) {
-//                        val coord = pose.vec().toScreenCoord()
-//                        trajectoryDrawnPath.lineTo(coord.x, coord.y)
-//                    }
-//
-//                    currentEndPose = step.trajectory.end()
-//
-//                    // Get markers
-//                    if (traj.markers.isNotEmpty()) {
-//                        traj.markers.forEach {
-//                            val markerEntity = MarkerIndicatorEntity(
-//                                    meepMeep, colorScheme, traj[it.time], it.time, step
-//                            )
-//                            markerEntityList.add(markerEntity)
-//                            meepMeep.requestToAddEntity(markerEntity)
-//                        }
-//                    }
-//                }
-//                is TurnSegment -> {
-//                    val turnEntity = TurnIndicatorEntity(
-//                            meepMeep, colorScheme, currentEndPose.vec(), currentEndPose.heading,
-//                            currentEndPose.heading + step.angle
-//                    )
-//                    turnEntityList.add(turnEntity)
-//                    meepMeep.requestToAddEntity(turnEntity)
-//                }
-//                is WaitStep,
-//                is WaitConditionalStep -> {}
-//            }
-//        }
+        trajectorySequence.markers.forEach {
+            val markerEntity = MarkerIndicatorEntity(meepMeep, colorScheme, trajectorySequence[it.time], it.time)
+            markerEntityList.add(markerEntity)
+            meepMeep.requestToAddEntity(markerEntity)
+        }
 
         gfx.stroke = outerStroke
         gfx.color = Color(
@@ -188,6 +149,4 @@ class TrajectorySequenceEntity(
             redrawPath()
         }
     }
-
-    data class TurnIndicator(val pos: Vector2d, val startAngle: Double, val endAngle: Double)
 }

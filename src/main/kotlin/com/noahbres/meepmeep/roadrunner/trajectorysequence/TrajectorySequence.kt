@@ -11,13 +11,9 @@ class TrajectorySequence(
     operator fun get(time: Double): Pose2d {
         val (currentSegment, segmentTime) = getCurrentState(time)
 
-        return when(currentSegment) {
+        return when (currentSegment) {
             is TrajectorySegment -> currentSegment.trajectory[segmentTime]
-            is TurnSegment -> {
-                val turnAngle = currentSegment.motionProfile[segmentTime].x
-
-                currentSegment.startPose.copy(heading = currentSegment.startPose.heading + turnAngle)
-            }
+            is TurnSegment -> currentSegment.startPose.copy(heading = currentSegment.motionProfile[segmentTime].x)
             is WaitSegment -> currentSegment.pose
             null -> Pose2d()
         }
@@ -26,7 +22,7 @@ class TrajectorySequence(
     fun velocity(time: Double): Pose2d {
         val (currentSegment, segmentTime) = getCurrentState(time)
 
-        return when(currentSegment) {
+        return when (currentSegment) {
             is TrajectorySegment -> currentSegment.trajectory.velocity(segmentTime)
             is TurnSegment -> Pose2d(0.0, 0.0, currentSegment.motionProfile[segmentTime].v)
             is WaitSegment -> Pose2d()
@@ -37,7 +33,7 @@ class TrajectorySequence(
     fun acceleration(time: Double): Pose2d {
         val (currentSegment, segmentTime) = getCurrentState(time)
 
-        return when(currentSegment) {
+        return when (currentSegment) {
             is TrajectorySegment -> currentSegment.trajectory.acceleration(segmentTime)
             is TurnSegment -> Pose2d(0.0, 0.0, currentSegment.motionProfile[segmentTime].a)
             is WaitSegment -> Pose2d()
@@ -49,7 +45,7 @@ class TrajectorySequence(
         var currentTime = 0.0
 
         sequenceSegments.forEach {
-            if(currentTime + it.duration > time) {
+            if (currentTime + it.duration > time) {
                 val segmentTime = time - currentTime
 
                 return Pair(it, segmentTime)

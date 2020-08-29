@@ -49,6 +49,7 @@ class TrajectorySequenceBuilder(
     private var currentTrajectoryBuilder: TrajectoryBuilder? = null
 
     private var currentDuration = 0.0
+    private var currentDisplacement = 0.0
 
     private var currentConstraints = baseConstraints
 
@@ -127,7 +128,11 @@ class TrajectorySequenceBuilder(
             f()
         }
 
-        lastPose = currentTrajectoryBuilder!!.build().end()
+        val builtTraj = currentTrajectoryBuilder!!.build()
+
+        lastPose = builtTraj.end()
+        currentDuration += builtTraj.duration()
+        currentDisplacement += builtTraj.path.length()
 
         return this
     }
@@ -156,8 +161,6 @@ class TrajectorySequenceBuilder(
         return this
     }
 
-    fun addTemporalMarker(callback: MarkerCallback) = addTemporalMarker(currentDuration, callback)
-
     fun addTemporalMarker(time: Double, callback: MarkerCallback) = addTemporalMarker(0.0, time, callback)
 
     fun addTemporalMarker(scale: Double, offset: Double, callback: MarkerCallback) = addTemporalMarker({ scale * it + offset }, callback)
@@ -174,7 +177,7 @@ class TrajectorySequenceBuilder(
         return this
     }
 
-    fun addDisplacementMarker(callback: MarkerCallback): TrajectorySequenceBuilder = addDisplacementMarker(sequenceTotalDisplacement(sequenceSegments), callback)
+    fun addDisplacementMarker(callback: MarkerCallback): TrajectorySequenceBuilder = addDisplacementMarker(currentDisplacement, callback)
 
     fun addDisplacementMarker(displacement: Double, callback: MarkerCallback) = addDisplacementMarker(0.0, displacement, callback)
 
@@ -218,8 +221,6 @@ class TrajectorySequenceBuilder(
             sequenceSegments.add(
                     TrajectorySegment(builtTraj, builtTraj.duration())
             )
-
-            currentDuration += builtTraj.duration()
         }
 
         currentTrajectoryBuilder = null
@@ -291,6 +292,7 @@ class TrajectorySequenceBuilder(
         sequenceSegments.forEach {
             if (it is TrajectorySegment) {
                 val segmentLength = it.trajectory.path.length()
+
                 if (currentDisplacement + segmentLength > s) {
                     val target = s - currentDisplacement
                     val timeInSegment = motionProfileDisplacementToTime(it.trajectory.profile, target)
@@ -298,6 +300,7 @@ class TrajectorySequenceBuilder(
                     return currentTime + timeInSegment
                 } else {
                     currentDisplacement += segmentLength
+                    currentTime += it.trajectory.duration()
                 }
             } else {
                 currentTime += it.duration

@@ -22,7 +22,6 @@ class MarkerIndicatorEntity(
         private var colorScheme: ColorScheme,
         private val pos: Pose2d,
         val time: Double,
-        val trajectoryStep: TrajectorySegment
 ) : ThemedEntity {
     private var canvasWidth = FieldUtil.CANVAS_WIDTH
     private var canvasHeight = FieldUtil.CANVAS_HEIGHT

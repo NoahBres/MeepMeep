@@ -63,17 +63,17 @@ class RoadRunnerBotEntity(
     }
 
     override fun update(deltaTime: Long) {
-//        if (!running) return
-//
-//        if (skippedLoops++ < SKIP_LOOPS) return
-//
-//        if (followMode == FollowMode.TRAJECTORY_LIST) {
-//
-//        } else if (followMode == FollowMode.TRAJECTORY_SEQUENCE && currentTrajectorySequence != null) {
-//            if (!trajectoryPaused) trajectorySequenceElapsedTime += deltaTime / 1000.0
-//
-//            when {
-//                trajectorySequenceElapsedTime <= currentTrajectorySequence!!.duration -> {
+        if (!running) return
+
+        if (skippedLoops++ < SKIP_LOOPS) return
+
+        if (followMode == FollowMode.TRAJECTORY_LIST) {
+
+        } else if (followMode == FollowMode.TRAJECTORY_SEQUENCE && currentTrajectorySequence != null) {
+            if (!trajectoryPaused) trajectorySequenceElapsedTime += deltaTime / 1000.0
+
+            when {
+                trajectorySequenceElapsedTime <= currentTrajectorySequence!!.duration -> {
 //                    val (currentStateStep, currentStateOffset) = currentTrajectorySequence!!.getCurrentState(
 //                            trajectorySequenceElapsedTime
 //                    )
@@ -97,23 +97,27 @@ class RoadRunnerBotEntity(
 //                        is WaitStep,
 //                        is WaitConditionalStep -> {}
 //                    }.exhaustive
-//
-//                    progressSlider.progress = (trajectorySequenceElapsedTime / currentTrajectorySequence!!.duration)
-//                }
-//
-//                looping -> {
-//                    trajectorySequenceEntity!!.markerEntityList.forEach {
-//                        it.reset()
-//                    }
-//                    trajectorySequenceElapsedTime = 0.0
-//                }
-//
-//                else -> {
-//                    trajectorySequenceElapsedTime = 0.0
-//                    currentTrajectorySequence = null
-//                }
-//            }.exhaustive
-//        }
+
+                    pose = currentTrajectorySequence!![trajectorySequenceElapsedTime]
+
+                    trajectorySequenceEntity!!.markerEntityList.forEach { if (trajectorySequenceElapsedTime >= it.time) it.passed() }
+
+                    progressSlider.progress = (trajectorySequenceElapsedTime / currentTrajectorySequence!!.duration)
+                }
+
+                looping -> {
+                    trajectorySequenceEntity!!.markerEntityList.forEach {
+                        it.reset()
+                    }
+                    trajectorySequenceElapsedTime = 0.0
+                }
+
+                else -> {
+                    trajectorySequenceElapsedTime = 0.0
+                    currentTrajectorySequence = null
+                }
+            }.exhaustive
+        }
     }
 
     fun start() {
