@@ -4,7 +4,9 @@ import com.noahbres.meepmeep.MeepMeep
 import java.awt.Graphics2D
 
 interface Entity {
-    val zIndex: Int
+    val tag: String
+
+    var zIndex: Int
 
     val meepMeep: MeepMeep
 

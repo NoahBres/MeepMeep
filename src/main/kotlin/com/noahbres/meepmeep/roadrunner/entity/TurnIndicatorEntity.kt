@@ -22,7 +22,9 @@ class TurnIndicatorEntity(
     private var canvasWidth = FieldUtil.CANVAS_WIDTH
     private var canvasHeight = FieldUtil.CANVAS_HEIGHT
 
-    override val zIndex: Int = 4
+    override val tag = "TURN_INDICATOR_ENTITY"
+
+    override var zIndex: Int = 0
 
     private val TURN_CIRCLE_RADIUS = 1.0
     private val TURN_ARC_RADIUS = 7.5

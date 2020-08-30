@@ -22,7 +22,9 @@ class AxesEntity
         private var font: Font? = null,
         private var fontSize: Float = 20f
 ) : ThemedEntity, MouseMotionListener {
-    override val zIndex = 1
+    override val tag = "AXES_ENTITY"
+
+    override var zIndex = 0
 
     private var canvasWidth = FieldUtil.CANVAS_WIDTH
     private var canvasHeight = FieldUtil.CANVAS_HEIGHT

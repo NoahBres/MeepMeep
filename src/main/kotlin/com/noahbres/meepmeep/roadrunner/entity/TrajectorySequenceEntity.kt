@@ -21,7 +21,9 @@ class TrajectorySequenceEntity(
     private var canvasWidth = FieldUtil.CANVAS_WIDTH
     private var canvasHeight = FieldUtil.CANVAS_HEIGHT
 
-    override val zIndex: Int = 2
+    override val tag = "TRAJECTORY_SEQUENCE_ENTITY"
+
+    override var zIndex: Int = 0
 
     private val turnEntityList = mutableListOf<TurnIndicatorEntity>()
     val markerEntityList = mutableListOf<MarkerIndicatorEntity>()

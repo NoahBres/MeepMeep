@@ -19,7 +19,9 @@ open class BotEntity(
         private var colorScheme: ColorScheme,
         private val opacity: Double
 ) : ThemedEntity {
-    override val zIndex = 2
+    override val tag = "DEFAULT_BOT_ENTITY"
+
+    override var zIndex = 0
 
     private var canvasWidth = FieldUtil.CANVAS_WIDTH
     private var canvasHeight = FieldUtil.CANVAS_HEIGHT

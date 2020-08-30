@@ -60,6 +60,8 @@ open class MeepMeep(private val windowSize: Int) {
     private val requestedAddEntityList = mutableListOf<Entity>()
     private val requestedClearEntityList = mutableListOf<Entity>()
 
+    private val zIndexManager = ZIndexManager();
+
     // TODO: Make custom dirty list that auto sorts
     // Returns true if entity list needs to be sorted
     private var entityListDirty = false
@@ -151,10 +153,6 @@ open class MeepMeep(private val windowSize: Int) {
                 this, colorManager.theme, 30.0, 30.0, Vector2d(-54.0, 54.0)
         )
 
-//        addEntity(DEFAULT_BOT_ENTITY)
-        addEntity(DEFAULT_AXES_ENTITY)
-        addEntity(DEFAULT_COMPASS_ENTITY)
-
         // Road Runner Init
         // Handle UI
         sliderPanel.layout = BoxLayout(sliderPanel, BoxLayout.Y_AXIS)
@@ -188,6 +186,22 @@ open class MeepMeep(private val windowSize: Int) {
                 18.0, 18.0,
                 15.0,
                 Pose2d(), colorManager.theme, 0.8)
+
+        // Entities
+
+        zIndexManager.setTagHierarchy(
+                "DEFAULT_BOT_ENTITY",
+                "RR_BOT_ENTITY",
+                "TURN_INDICATOR_ENTITY",
+                "MARKER_INDICATOR_ENTITY",
+                "TRAJECTORY_SEQUENCE_ENTITY",
+                "COMPASS_ENTITY",
+                "AXES_ENTITY",
+        )
+
+        //        addEntity(DEFAULT_BOT_ENTITY)
+        addEntity(DEFAULT_AXES_ENTITY)
+        addEntity(DEFAULT_COMPASS_ENTITY)
 
         addEntity(DEFAULT_ROADRUNNER_BOT_ENTITY)
     }
@@ -328,6 +342,8 @@ open class MeepMeep(private val windowSize: Int) {
 
     //-------------Entity-------------//
     fun addEntity(entity: Entity): MeepMeep {
+        zIndexManager.addEntity(entity)
+
         entityList.add(entity)
         entityListDirty = true
 

@@ -22,7 +22,9 @@ class RoadRunnerBotEntity(
         private val colorScheme: ColorScheme,
         opacity: Double
 ) : BotEntity(meepMeep, width, height, pose, colorScheme, opacity) {
-    override val zIndex: Int = 6
+    override val tag = "RR_BOT_ENTITY"
+
+    override var zIndex: Int = 0
 
     private var driveTrainType = DriveTrainType.MECANUM
     var drive = DriveShim(driveTrainType, constraints, trackWidth)

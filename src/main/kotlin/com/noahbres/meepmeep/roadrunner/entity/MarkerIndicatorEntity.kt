@@ -26,7 +26,9 @@ class MarkerIndicatorEntity(
     private var canvasWidth = FieldUtil.CANVAS_WIDTH
     private var canvasHeight = FieldUtil.CANVAS_HEIGHT
 
-    override val zIndex: Int = 3
+    override val tag = "MARKER_INDICATOR_ENTITY"
+
+    override var zIndex: Int = 0
 
     private val MARKER_X_RADIUS = 0.15
     private val MARKER_X_STROKE_WIDTH = 0.3

@@ -22,8 +22,9 @@ class CompassEntity(
         private val width: Double, private val height: Double,
         val pos: Vector2d
 ) : ThemedEntity, MouseMotionListener {
+    override val tag = "COMPASS_ENTITY"
 
-    override val zIndex: Int = 2
+    override var zIndex: Int = 0
 
     private var canvasWidth = FieldUtil.CANVAS_WIDTH
     private var canvasHeight = FieldUtil.CANVAS_HEIGHT
