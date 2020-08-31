@@ -249,9 +249,7 @@ class TrajectorySequenceBuilder(
     private fun sequenceTotalDisplacement(sequenceSegments: List<SequenceSegment>): Double {
         return sequenceSegments
                 .filterIsInstance<TrajectorySegment>()
-                .fold(0.0) { displacementTotal, segment ->
-                    displacementTotal + segment.trajectory.path.length()
-                }
+                .sumByDouble { it.trajectory.path.length() }
     }
 
     private fun displacementToTime(sequenceSegments: List<SequenceSegment>, s: Double): Double {
@@ -296,22 +294,22 @@ class TrajectorySequenceBuilder(
     }
 
     private fun pointToTime(sequenceSegments: List<SequenceSegment>, point: Vector2d): Double {
+        data class ComparingPoints(val distanceToPoint: Double, val totalDisplacement: Double, val thisPathDisplacement: Double)
+
         val justTrajectories = sequenceSegments.filterIsInstance<TrajectorySegment>()
 
-        val projectedPoints = justTrajectories.fold(listOf<Triple<Double, Double, Double>>()) { segmentList, it ->
+        val projectedPoints = justTrajectories.fold(listOf<ComparingPoints>()) { segmentList, it ->
             val displacement = it.trajectory.path.project(point)
             val projectedPoint = it.trajectory.path[displacement].vec()
-            val distanceToPoint = hypot((point - projectedPoint).x, (point - projectedPoint).y)
+            val distanceToPoint = (point - projectedPoint).norm()
 
-            val totalDisplacement = segmentList.fold(0.0) { acc, segment ->
-                acc + segment.second
-            } + displacement
+            val totalDisplacement = segmentList.sumByDouble { it.totalDisplacement } + displacement
 
-            segmentList + Triple(distanceToPoint, displacement, totalDisplacement)
+            segmentList + ComparingPoints(distanceToPoint, displacement, totalDisplacement)
         }
 
-        val closestPoint = projectedPoints.minByOrNull { it.first }
+        val closestPoint = projectedPoints.minByOrNull { it.distanceToPoint }
 
-        return displacementToTime(sequenceSegments, closestPoint!!.third)
+        return displacementToTime(sequenceSegments, closestPoint!!.thisPathDisplacement)
     }
 }
