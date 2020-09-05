@@ -27,7 +27,7 @@ class TrajectorySequenceBuilder(
             constraints: DriveConstraints,
             resolution: Double = 0.25
     ) : this(startPose, startPose.heading, constraints, resolution)
-    
+
     private val sequenceSegments = mutableListOf<SequenceSegment>()
 
     private val temporalMarkers = mutableListOf<TemporalMarker>()
@@ -43,6 +43,9 @@ class TrajectorySequenceBuilder(
 
     private var currentDuration = 0.0
     private var currentDisplacement = 0.0
+
+    private var lastDurationTraj = 0.0
+    private var lastDisplacementTraj = 0.0
 
     @JvmOverloads
     fun lineTo(endPosition: Vector2d, constraintsOverride: TrajectoryConstraints = constraints) = addPath {
@@ -121,9 +124,15 @@ class TrajectorySequenceBuilder(
 
         val builtTraj = currentTrajectoryBuilder!!.build()
 
+        val durationDifference = builtTraj.duration() - lastDurationTraj
+        val displacementDifference = builtTraj.path.length() - lastDisplacementTraj
+
         lastPose = builtTraj.end()
-        currentDuration += builtTraj.duration()
-        currentDisplacement += builtTraj.path.length()
+        currentDuration += durationDifference
+        currentDisplacement += displacementDifference
+
+        lastDurationTraj = builtTraj.duration()
+        lastDisplacementTraj = builtTraj.path.length()
 
         return this
     }
@@ -215,13 +224,14 @@ class TrajectorySequenceBuilder(
         if (currentTrajectoryBuilder != null)
             pushPath()
 
+        lastDurationTraj = 0.0
+        lastDisplacementTraj = 0.0
+
         currentTrajectoryBuilder = TrajectoryBuilder(lastPose, Angle.norm(lastPose.heading + tangentOffset), constraints)
     }
 
     fun build(): TrajectorySequence {
         pushPath()
-
-        // TODO: CONVERT MARKERS TO GLOBAL
 
         return TrajectorySequence(
                 sequenceSegments, currentDuration,
