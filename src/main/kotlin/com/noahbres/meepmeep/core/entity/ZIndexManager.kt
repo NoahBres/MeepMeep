@@ -31,8 +31,6 @@ class ZIndexManager {
         }
 
         entityList.forEachIndexed { index, entity ->
-            println(entity)
-            println(index)
             entity.zIndex = index
         }
     }
