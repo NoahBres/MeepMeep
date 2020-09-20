@@ -45,7 +45,7 @@ dependencies {
     // Use the Kotlin JUnit integration.
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 
-    api("com.acmerobotics.roadrunner:core:0.5.1")
+    api("com.acmerobotics.roadrunner:core:0.5.2")
 }
 
 // Create sources Jar from main kotlin sources
