@@ -11,6 +11,7 @@ import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryConstraints
 import com.acmerobotics.roadrunner.util.Angle
 import com.acmerobotics.roadrunner.util.epsilonEquals
+import kotlin.math.min
 
 class TrajectorySequenceBuilder(
         startPose: Pose2d,
@@ -166,6 +167,8 @@ class TrajectorySequenceBuilder(
         return this
     }
 
+    fun addTemporalMarker(callback: MarkerCallback) = addTemporalMarker(currentDuration, callback)
+
     fun addTemporalMarker(time: Double, callback: MarkerCallback) = addTemporalMarker(0.0, time, callback)
 
     fun addTemporalMarker(scale: Double, offset: Double, callback: MarkerCallback) = addTemporalMarker({ scale * it + offset }, callback)
@@ -247,20 +250,12 @@ class TrajectorySequenceBuilder(
                 temporalMarkers, displacementMarkers, spatialMarkers
         )
 
-        return sequenceSegments
-
-//        return TrajectorySequence(
-//                sequenceSegments, currentDuration,
-//                convertMarkersGlobal(
-//                        sequenceSegments,
-//                        temporalMarkers, displacementMarkers, spatialMarkers
-//                )
-//        )
+        return projectGlobalMarkersToLocalSegments(globalMarkers, sequenceSegments)
     }
 
     // Marker conversion
     private fun convertMarkersGlobal(
-            sequenceSegments: List<SequenceSegment>,
+            sequenceSegments: TrajectorySequence,
             temporalMarkers: List<TemporalMarker>,
             displacementMarkers: List<DisplacementMarker>,
             spatialMarkers: List<SpatialMarker>
@@ -272,13 +267,68 @@ class TrajectorySequenceBuilder(
         } + spatialMarkers.map { (point, callback) -> TrajectoryMarker(pointToTime(sequenceSegments, point), callback) }
     }
 
-    private fun sequenceTotalDisplacement(sequenceSegments: List<SequenceSegment>): Double {
+    private fun projectGlobalMarkersToLocalSegments(markers: List<TrajectoryMarker>, sequenceSegments: TrajectorySequence): TrajectorySequence {
+        val newSegmentList = sequenceSegments.toMutableList()
+
+        if(sequenceSegments.isEmpty()) return emptyList()
+
+        markers.forEach {
+            var segment: SequenceSegment? = null
+            var segmentIndex = 0
+            var segmentOffsetTime = 0.0
+
+            var currentTime = 0.0
+            for (index in sequenceSegments.indices) {
+                val seg = sequenceSegments[index]
+
+                val markerTime = min(it.time, sequenceSegments.duration())
+
+                if (currentTime + seg.duration >= markerTime) {
+                    segment = seg
+                    segmentIndex = index
+                    segmentOffsetTime = markerTime - currentTime
+
+                    break
+                } else {
+                    currentTime += seg.duration
+                }
+            }
+
+            val newSegment = when (segment) {
+                is WaitSegment -> {
+                    val newMarkers = segment.markers.toMutableList()
+                    newMarkers.add(TrajectoryMarker(segmentOffsetTime, it.callback))
+
+                    segment.copy(markers = newMarkers)
+                }
+                is TurnSegment -> {
+                    val newMarkers = segment.markers.toMutableList()
+                    newMarkers.add(TrajectoryMarker(segmentOffsetTime, it.callback))
+
+                    segment.copy(markers = newMarkers)
+                }
+                is TrajectorySegment -> {
+                    val newMarkers = (newSegmentList[segmentIndex] as TrajectorySegment).trajectory.markers.toMutableList()
+                    newMarkers.add(TrajectoryMarker(segmentOffsetTime, it.callback))
+
+                    TrajectorySegment(Trajectory(segment.trajectory.path, segment.trajectory.profile, newMarkers))
+                }
+                else -> WaitSegment(Pose2d(), 0.0, emptyList())
+            }
+
+            newSegmentList[segmentIndex] = newSegment
+        }
+
+        return newSegmentList
+    }
+
+    private fun sequenceTotalDisplacement(sequenceSegments: TrajectorySequence): Double {
         return sequenceSegments
                 .filterIsInstance<TrajectorySegment>()
                 .sumByDouble { it.trajectory.path.length() }
     }
 
-    private fun displacementToTime(sequenceSegments: List<SequenceSegment>, s: Double): Double {
+    private fun displacementToTime(sequenceSegments: TrajectorySequence, s: Double): Double {
         // Taken from Road Runner's TrajectoryGenerator.displacementToTime() since it's private
         // note: this assumes that the profile position is monotonic increasing
         fun motionProfileDisplacementToTime(profile: MotionProfile, s: Double): Double {
@@ -319,7 +369,7 @@ class TrajectorySequenceBuilder(
         return 0.0
     }
 
-    private fun pointToTime(sequenceSegments: List<SequenceSegment>, point: Vector2d): Double {
+    private fun pointToTime(sequenceSegments: TrajectorySequence, point: Vector2d): Double {
         data class ComparingPoints(val distanceToPoint: Double, val totalDisplacement: Double, val thisPathDisplacement: Double)
 
         val justTrajectories = sequenceSegments.filterIsInstance<TrajectorySegment>()

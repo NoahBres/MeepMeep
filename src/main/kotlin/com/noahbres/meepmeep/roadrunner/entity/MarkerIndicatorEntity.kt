@@ -2,6 +2,7 @@ package com.noahbres.meepmeep.roadrunner.entity
 
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.geometry.Vector2d
+import com.acmerobotics.roadrunner.trajectory.MarkerCallback
 import com.noahbres.meepmeep.MeepMeep
 import com.noahbres.meepmeep.core.anim.AnimationController
 import com.noahbres.meepmeep.core.anim.Ease
@@ -21,6 +22,7 @@ class MarkerIndicatorEntity(
         override val meepMeep: MeepMeep,
         private var colorScheme: ColorScheme,
         private val pos: Pose2d,
+        private val callback: MarkerCallback,
         val time: Double,
 ) : ThemedEntity {
     private var canvasWidth = FieldUtil.CANVAS_WIDTH
@@ -88,6 +90,7 @@ class MarkerIndicatorEntity(
         if (!passed) {
             passed = true
             animationController.anim(0.0, 200.0, Ease.EASE_IN_OUT_CUBIC)
+            callback.onMarkerReached()
         }
     }
 

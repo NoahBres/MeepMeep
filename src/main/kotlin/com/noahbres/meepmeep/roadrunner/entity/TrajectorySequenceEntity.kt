@@ -1,5 +1,6 @@
 package com.noahbres.meepmeep.roadrunner.entity
 
+import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.geometry.Vector2d
 import com.noahbres.meepmeep.MeepMeep
 import com.noahbres.meepmeep.core.colorscheme.ColorScheme
@@ -95,7 +96,7 @@ class TrajectorySequenceEntity(
 
                     val poses = displacements.map { traj.path[it] }
 
-                    for(pose in poses.drop(1)) {
+                    for (pose in poses.drop(1)) {
                         val coord = pose.vec().toScreenCoord()
                         trajectoryDrawnPath.lineTo(coord.x, coord.y)
                     }
@@ -111,15 +112,37 @@ class TrajectorySequenceEntity(
                     turnEntityList.add(turnEntity)
                     meepMeep.requestToAddEntity(turnEntity)
                 }
-                is WaitSegment -> {}
+                is WaitSegment -> {
+                }
             }
         }
 
-//        trajectorySequence.markers.forEach {
-//            val markerEntity = MarkerIndicatorEntity(meepMeep, colorScheme, trajectorySequence[it.time], it.time)
-//            markerEntityList.add(markerEntity)
-//            meepMeep.requestToAddEntity(markerEntity)
-//        }
+        var currentTime = 0.0
+        trajectorySequence.forEach { segment ->
+            if (segment is WaitSegment || segment is TurnSegment) {
+                segment.markers.forEach { marker ->
+                    val pose = when (segment) {
+                        is WaitSegment -> segment.startPose
+                        is TurnSegment -> segment.startPose.copy(heading = segment.motionProfile[marker.time].x)
+                        else -> Pose2d()
+                    }
+
+                    val markerEntity = MarkerIndicatorEntity(meepMeep, colorScheme, pose, marker.callback, currentTime + marker.time)
+                    markerEntityList.add(markerEntity)
+                    meepMeep.requestToAddEntity(markerEntity)
+                }
+            } else if (segment is TrajectorySegment) {
+                segment.trajectory.markers.forEach { marker ->
+                    val pose = segment.trajectory[marker.time]
+
+                    val markerEntity = MarkerIndicatorEntity(meepMeep, colorScheme, pose, marker.callback, currentTime + marker.time)
+                    markerEntityList.add(markerEntity)
+                    meepMeep.requestToAddEntity(markerEntity)
+                }
+            }
+
+            currentTime += segment.duration
+        }
 
         gfx.stroke = outerStroke
         gfx.color = Color(
