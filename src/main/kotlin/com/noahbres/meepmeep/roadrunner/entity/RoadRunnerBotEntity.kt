@@ -29,9 +29,6 @@ class RoadRunnerBotEntity(
     private var driveTrainType = DriveTrainType.MECANUM
     var drive = DriveShim(driveTrainType, constraints, trackWidth)
 
-    private var followMode = FollowMode.TRAJECTORY_LIST
-
-    private var currentTrajectoryList = emptyList<Trajectory>()
     var currentTrajectorySequence: TrajectorySequence? = null
 
     private var trajectorySequenceEntity: TrajectorySequenceEntity? = null
@@ -69,33 +66,51 @@ class RoadRunnerBotEntity(
 
         if (skippedLoops++ < SKIP_LOOPS) return
 
-        if (followMode == FollowMode.TRAJECTORY_LIST) {
+        if (!trajectoryPaused) trajectorySequenceElapsedTime += deltaTime / 1000.0
 
-        } else if (followMode == FollowMode.TRAJECTORY_SEQUENCE && currentTrajectorySequence != null) {
-            if (!trajectoryPaused) trajectorySequenceElapsedTime += deltaTime / 1000.0
+        when {
+            trajectorySequenceElapsedTime <= currentTrajectorySequence!!.duration() -> {
+                var segment: SequenceSegment? = null
+                var segmentOffsetTime = 0.0
 
-            when {
-                trajectorySequenceElapsedTime <= currentTrajectorySequence!!.duration -> {
-                    pose = currentTrajectorySequence!![trajectorySequenceElapsedTime]
+                var currentTime = 0.0
+                for(index in currentTrajectorySequence!!.indices) {
+                    val seg = currentTrajectorySequence!![index]
 
-                    trajectorySequenceEntity!!.markerEntityList.forEach { if (trajectorySequenceElapsedTime >= it.time) it.passed() }
+                    if(currentTime + seg.duration > trajectorySequenceElapsedTime) {
+                        segmentOffsetTime = trajectorySequenceElapsedTime - currentTime
+                        segment = seg
 
-                    progressSlider.progress = (trajectorySequenceElapsedTime / currentTrajectorySequence!!.duration)
-                }
-
-                looping -> {
-                    trajectorySequenceEntity!!.markerEntityList.forEach {
-                        it.reset()
+                        break
+                    } else {
+                        currentTime += seg.duration
                     }
-                    trajectorySequenceElapsedTime = 0.0
                 }
 
-                else -> {
-                    trajectorySequenceElapsedTime = 0.0
-                    currentTrajectorySequence = null
+                pose = when(segment) {
+                    is WaitSegment -> segment.startPose
+                    is TurnSegment -> segment.startPose.copy(heading = segment.motionProfile[segmentOffsetTime].x)
+                    is TrajectorySegment -> segment.trajectory[segmentOffsetTime]
+                    else -> Pose2d()
                 }
-            }.exhaustive
-        }
+
+                trajectorySequenceEntity!!.markerEntityList.forEach { if (trajectorySequenceElapsedTime >= it.time) it.passed() }
+
+                progressSlider.progress = (trajectorySequenceElapsedTime / currentTrajectorySequence!!.duration())
+            }
+
+            looping -> {
+                trajectorySequenceEntity!!.markerEntityList.forEach {
+                    it.reset()
+                }
+                trajectorySequenceElapsedTime = 0.0
+            }
+
+            else -> {
+                trajectorySequenceElapsedTime = 0.0
+                currentTrajectorySequence = null
+            }
+        }.exhaustive
     }
 
     fun start() {
@@ -117,22 +132,14 @@ class RoadRunnerBotEntity(
 
     fun setTrajectoryProgress(progress: Double) {
         if (currentTrajectorySequence != null)
-            trajectorySequenceElapsedTime = progress * currentTrajectorySequence!!.duration
+            trajectorySequenceElapsedTime = progress * currentTrajectorySequence!!.duration()
     }
 
     fun followTrajectorySequence(sequence: TrajectorySequence) {
-        followMode = FollowMode.TRAJECTORY_SEQUENCE
-
         currentTrajectorySequence = sequence
 
         trajectorySequenceEntity = TrajectorySequenceEntity(meepMeep, sequence, colorScheme)
         meepMeep.addEntity(trajectorySequenceEntity!!)
-    }
-
-    fun followTrajectoryList(trajectoryList: List<Trajectory>) {
-        followMode = FollowMode.TRAJECTORY_LIST
-
-        currentTrajectoryList = trajectoryList
     }
 
     fun setTrackWidth(trackWidth: Double) {
@@ -159,10 +166,5 @@ class RoadRunnerBotEntity(
         this.progressSlider.fg = scheme.TRAJECTORY_SLIDER_FG
         this.progressSlider.bg = scheme.TRAJECTORY_SLIDER_BG
         this.progressSlider.textColor = scheme.TRAJECTORY_TEXT_COLOR
-    }
-
-    enum class FollowMode {
-        TRAJECTORY_LIST,
-        TRAJECTORY_SEQUENCE
     }
 }

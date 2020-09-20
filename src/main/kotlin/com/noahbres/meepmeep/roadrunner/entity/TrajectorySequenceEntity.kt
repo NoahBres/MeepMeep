@@ -82,7 +82,7 @@ class TrajectorySequenceEntity(
         val firstVec = trajectorySequence.start().vec().toScreenCoord()
         trajectoryDrawnPath.moveTo(firstVec.x, firstVec.y)
 
-        trajectorySequence.sequenceSegments.forEach { step ->
+        trajectorySequence.forEach { step ->
             when (step) {
                 is TrajectorySegment -> {
                     val traj = step.trajectory
@@ -115,11 +115,11 @@ class TrajectorySequenceEntity(
             }
         }
 
-        trajectorySequence.markers.forEach {
-            val markerEntity = MarkerIndicatorEntity(meepMeep, colorScheme, trajectorySequence[it.time], it.time)
-            markerEntityList.add(markerEntity)
-            meepMeep.requestToAddEntity(markerEntity)
-        }
+//        trajectorySequence.markers.forEach {
+//            val markerEntity = MarkerIndicatorEntity(meepMeep, colorScheme, trajectorySequence[it.time], it.time)
+//            markerEntityList.add(markerEntity)
+//            meepMeep.requestToAddEntity(markerEntity)
+//        }
 
         gfx.stroke = outerStroke
         gfx.color = Color(

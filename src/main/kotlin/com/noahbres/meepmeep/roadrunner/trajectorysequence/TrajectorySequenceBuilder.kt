@@ -11,12 +11,10 @@ import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryConstraints
 import com.acmerobotics.roadrunner.util.Angle
 import com.acmerobotics.roadrunner.util.epsilonEquals
-import kotlin.math.PI
-import kotlin.math.hypot
 
 class TrajectorySequenceBuilder(
         startPose: Pose2d,
-        startTangent: Double,
+        startTangent: Double?,
         private var constraints: DriveConstraints,
         private val resolution: Double = 0.25
 ) {
@@ -26,7 +24,7 @@ class TrajectorySequenceBuilder(
             startPose: Pose2d,
             constraints: DriveConstraints,
             resolution: Double = 0.25
-    ) : this(startPose, startPose.heading, constraints, resolution)
+    ) : this(startPose, null, constraints, resolution)
 
     private val sequenceSegments = mutableListOf<SequenceSegment>()
 
@@ -35,9 +33,11 @@ class TrajectorySequenceBuilder(
     private val spatialMarkers = mutableListOf<SpatialMarker>()
 
     private var lastPose = startPose
-    private var lastTangent = startTangent
 
     private var tangentOffset = 0.0
+
+    private var setAbsoluteTangent = startTangent != null
+    private var absoluteTangent = startTangent ?: 0.0
 
     private var currentTrajectoryBuilder: TrajectoryBuilder? = null
 
@@ -137,7 +137,18 @@ class TrajectorySequenceBuilder(
         return this
     }
 
+    fun setTangent(tangent: Double): TrajectorySequenceBuilder {
+        setAbsoluteTangent = true
+        absoluteTangent = tangent
+
+        pushPath()
+
+        return this
+    }
+
     fun setTangentOffset(offset: Double): TrajectorySequenceBuilder {
+        setAbsoluteTangent = false
+
         this.tangentOffset = offset
 
         pushPath()
@@ -193,7 +204,7 @@ class TrajectorySequenceBuilder(
                 constraints.maxAngJerk
         )
 
-        sequenceSegments.add(TurnSegment(lastPose, angle, turnProfile, turnProfile.duration()))
+        sequenceSegments.add(TurnSegment(lastPose, angle, turnProfile, emptyList()))
 
         lastPose = lastPose.copy(heading = lastPose.heading + angle)
 
@@ -203,19 +214,15 @@ class TrajectorySequenceBuilder(
 
     fun waitSeconds(seconds: Double): TrajectorySequenceBuilder {
         pushPath()
-        sequenceSegments.add(WaitSegment(lastPose, seconds))
+        sequenceSegments.add(WaitSegment(lastPose, seconds, emptyList()))
 
         currentDuration += seconds
         return this
     }
 
     private fun pushPath() {
-        if (currentTrajectoryBuilder != null) {
-            val builtTraj = currentTrajectoryBuilder!!.build()
-            sequenceSegments.add(
-                    TrajectorySegment(builtTraj, builtTraj.duration())
-            )
-        }
+        if (currentTrajectoryBuilder != null)
+            sequenceSegments.add(TrajectorySegment(currentTrajectoryBuilder!!.build()))
 
         currentTrajectoryBuilder = null
     }
@@ -227,23 +234,32 @@ class TrajectorySequenceBuilder(
         lastDurationTraj = 0.0
         lastDisplacementTraj = 0.0
 
-        currentTrajectoryBuilder = TrajectoryBuilder(lastPose, Angle.norm(lastPose.heading + tangentOffset), constraints)
+        val tangent = if (setAbsoluteTangent) absoluteTangent else Angle.norm(lastPose.heading + tangentOffset)
+
+        currentTrajectoryBuilder = TrajectoryBuilder(lastPose, tangent, constraints, resolution)
     }
 
     fun build(): TrajectorySequence {
         pushPath()
 
-        return TrajectorySequence(
-                sequenceSegments, currentDuration,
-                convertMarkers(
-                        sequenceSegments,
-                        temporalMarkers, displacementMarkers, spatialMarkers
-                )
+        val globalMarkers = convertMarkersGlobal(
+                sequenceSegments,
+                temporalMarkers, displacementMarkers, spatialMarkers
         )
+
+        return sequenceSegments
+
+//        return TrajectorySequence(
+//                sequenceSegments, currentDuration,
+//                convertMarkersGlobal(
+//                        sequenceSegments,
+//                        temporalMarkers, displacementMarkers, spatialMarkers
+//                )
+//        )
     }
 
     // Marker conversion
-    private fun convertMarkers(
+    private fun convertMarkersGlobal(
             sequenceSegments: List<SequenceSegment>,
             temporalMarkers: List<TemporalMarker>,
             displacementMarkers: List<DisplacementMarker>,
