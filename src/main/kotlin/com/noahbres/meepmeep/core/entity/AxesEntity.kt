@@ -127,7 +127,7 @@ class AxesEntity
             )
 
             // Draw number
-            var xOffsetIn = 0.0
+            var xOffsetIn: Double
             var xOffsetPx = 0.0
             if (i > 0) {
                 xOffsetIn = X_TEXT_POSITIVE_X_OFFSET

@@ -2,16 +2,14 @@ package com.noahbres.meepmeep
 
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.geometry.Vector2d
-import com.acmerobotics.roadrunner.trajectory.Trajectory
-import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints
 import com.noahbres.meepmeep.core.colorscheme.ColorManager
 import com.noahbres.meepmeep.core.colorscheme.ColorScheme
 import com.noahbres.meepmeep.core.entity.*
 import com.noahbres.meepmeep.core.ui.WindowFrame
 import com.noahbres.meepmeep.core.util.FieldUtil
 import com.noahbres.meepmeep.core.util.LoopManager
-import com.noahbres.meepmeep.roadrunner.AddTrajectoryCallback
 import com.noahbres.meepmeep.roadrunner.AddTrajectorySequenceCallback
+import com.noahbres.meepmeep.roadrunner.Constraints
 import com.noahbres.meepmeep.roadrunner.DriveTrainType
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity
 import com.noahbres.meepmeep.roadrunner.trajectorysequence.TrajectorySequence
@@ -75,7 +73,7 @@ open class MeepMeep(private val windowSize: Int) {
 
         // render
         if (bg != null) {
-            if(bgAlpha < 1.0f) {
+            if (bgAlpha < 1.0f) {
                 val resetComposite = g.composite
                 val alphaComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, bgAlpha)
                 g.composite = alphaComposite
@@ -139,7 +137,7 @@ open class MeepMeep(private val windowSize: Int) {
         val classLoader = Thread.currentThread().contextClassLoader
 
         FONT_CMU_BOLD_LIGHT = Font.createFont(
-                Font.TRUETYPE_FONT, classLoader.getResourceAsStream("font/cmunbi.ttf")
+            Font.TRUETYPE_FONT, classLoader.getResourceAsStream("font/cmunbi.ttf")
         ).deriveFont(20f)
         FONT_CMU = Font.createFont(Font.TRUETYPE_FONT, classLoader.getResourceAsStream("font/cmunrm.ttf"))
         FONT_CMU_BOLD = Font.createFont(Font.TRUETYPE_FONT, classLoader.getResourceAsStream("font/cmunbx.ttf"))
@@ -150,7 +148,7 @@ open class MeepMeep(private val windowSize: Int) {
         DEFAULT_BOT_ENTITY = BotEntity(this, 18.0, 18.0, Pose2d(), colorManager.theme, 0.8)
         DEFAULT_AXES_ENTITY = AxesEntity(this, 0.8, colorManager.theme, FONT_CMU_BOLD_LIGHT, 20f)
         DEFAULT_COMPASS_ENTITY = CompassEntity(
-                this, colorManager.theme, 30.0, 30.0, Vector2d(-54.0, 54.0)
+            this, colorManager.theme, 30.0, 30.0, Vector2d(-54.0, 54.0)
         )
 
         // Road Runner Init
@@ -178,25 +176,24 @@ open class MeepMeep(private val windowSize: Int) {
 
         // Handle entities
         DEFAULT_ROADRUNNER_BOT_ENTITY = RoadRunnerBotEntity(
-                this,
-                DriveConstraints(
-                        30.0, 30.0, 0.0,
-                        Math.toRadians(180.0), Math.toRadians(180.0), 0.0
-                ),
-                18.0, 18.0,
-                15.0,
-                Pose2d(), colorManager.theme, 0.8)
+            this,
+            Constraints(
+                30.0, 30.0, Math.toRadians(60.0), Math.toRadians(60.0), 15.0
+            ),
+            18.0, 18.0,
+            Pose2d(), colorManager.theme, 0.8
+        )
 
         // Entities
 
         zIndexManager.setTagHierarchy(
-                "DEFAULT_BOT_ENTITY",
-                "RR_BOT_ENTITY",
-                "TURN_INDICATOR_ENTITY",
-                "MARKER_INDICATOR_ENTITY",
-                "TRAJECTORY_SEQUENCE_ENTITY",
-                "COMPASS_ENTITY",
-                "AXES_ENTITY",
+            "DEFAULT_BOT_ENTITY",
+            "RR_BOT_ENTITY",
+            "TURN_INDICATOR_ENTITY",
+            "MARKER_INDICATOR_ENTITY",
+            "TRAJECTORY_SEQUENCE_ENTITY",
+            "COMPASS_ENTITY",
+            "AXES_ENTITY",
         )
 
         //        addEntity(DEFAULT_BOT_ENTITY)
@@ -208,7 +205,7 @@ open class MeepMeep(private val windowSize: Int) {
 
     open fun start(): MeepMeep {
         // Core Start
-        if(bg == null) setBackground(Background.GRID_BLUE)
+        if (bg == null) setBackground(Background.GRID_BLUE)
         windowFrame.isVisible = true
 
         // Default added entities are initialized before color schemes are set
@@ -396,22 +393,29 @@ open class MeepMeep(private val windowSize: Int) {
         return this
     }
 
-    fun setConstraints(constraints: DriveConstraints): MeepMeep {
+    fun setConstraints(
+        maxVel: Double,
+        maxAccel: Double,
+        maxAngVel: Double,
+        maxAngAccel: Double,
+        trackWidth: Double
+    ): MeepMeep {
         if (DEFAULT_ROADRUNNER_BOT_ENTITY in entityList)
-            DEFAULT_ROADRUNNER_BOT_ENTITY.setConstraints(constraints)
-
-        return this
-    }
-
-    fun setTrackWidth(trackWidth: Double): MeepMeep {
-        if(DEFAULT_ROADRUNNER_BOT_ENTITY in entityList)
-            DEFAULT_ROADRUNNER_BOT_ENTITY.setTrackWidth(trackWidth)
+            DEFAULT_ROADRUNNER_BOT_ENTITY.setConstraints(
+                Constraints(
+                    maxVel,
+                    maxAccel,
+                    maxAngVel,
+                    maxAngAccel,
+                    trackWidth
+                )
+            )
 
         return this
     }
 
     fun setDriveTrainType(driveTrainType: DriveTrainType): MeepMeep {
-        if(DEFAULT_ROADRUNNER_BOT_ENTITY in entityList)
+        if (DEFAULT_ROADRUNNER_BOT_ENTITY in entityList)
             DEFAULT_ROADRUNNER_BOT_ENTITY.setDriveTrainType(driveTrainType)
 
         return this
@@ -420,7 +424,7 @@ open class MeepMeep(private val windowSize: Int) {
     fun followTrajectorySequence(callback: AddTrajectorySequenceCallback): MeepMeep {
         if (DEFAULT_ROADRUNNER_BOT_ENTITY in entityList)
             DEFAULT_ROADRUNNER_BOT_ENTITY.followTrajectorySequence(
-                    callback.buildTrajectorySequence(DEFAULT_ROADRUNNER_BOT_ENTITY.drive)
+                callback.buildTrajectorySequence(DEFAULT_ROADRUNNER_BOT_ENTITY.drive)
             )
 
         return this

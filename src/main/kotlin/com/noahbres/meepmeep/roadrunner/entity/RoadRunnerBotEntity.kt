@@ -1,33 +1,38 @@
 package com.noahbres.meepmeep.roadrunner.entity
 
 import com.acmerobotics.roadrunner.geometry.Pose2d
-import com.acmerobotics.roadrunner.trajectory.Trajectory
-import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints
 import com.noahbres.meepmeep.MeepMeep
 import com.noahbres.meepmeep.core.colorscheme.ColorScheme
 import com.noahbres.meepmeep.core.entity.BotEntity
 import com.noahbres.meepmeep.core.exhaustive
 import com.noahbres.meepmeep.core.util.FieldUtil
+import com.noahbres.meepmeep.roadrunner.Constraints
 import com.noahbres.meepmeep.roadrunner.DriveShim
 import com.noahbres.meepmeep.roadrunner.DriveTrainType
 import com.noahbres.meepmeep.roadrunner.trajectorysequence.*
 import com.noahbres.meepmeep.roadrunner.ui.TrajectoryProgressSlider
 
 class RoadRunnerBotEntity(
-        meepMeep: MeepMeep,
-        private var constraints: DriveConstraints,
-        width: Double, height: Double,
-        private var trackWidth: Double,
-        pose: Pose2d,
-        private val colorScheme: ColorScheme,
-        opacity: Double
+    meepMeep: MeepMeep,
+    private var constraints: Constraints,
+
+    width: Double, height: Double,
+    pose: Pose2d,
+
+    private val colorScheme: ColorScheme,
+    opacity: Double
 ) : BotEntity(meepMeep, width, height, pose, colorScheme, opacity) {
+    companion object {
+        const val SKIP_LOOPS = 2
+        const val PROGRESS_SLIDER_HEIGHT = 20
+    }
+
     override val tag = "RR_BOT_ENTITY"
 
     override var zIndex: Int = 0
 
     private var driveTrainType = DriveTrainType.MECANUM
-    var drive = DriveShim(driveTrainType, constraints, trackWidth)
+    var drive = DriveShim(driveTrainType, constraints)
 
     var currentTrajectorySequence: TrajectorySequence? = null
 
@@ -39,10 +44,8 @@ class RoadRunnerBotEntity(
     private var trajectorySequenceElapsedTime = 0.0
     var trajectoryPaused = false
 
-    private val SKIP_LOOPS = 2
     private var skippedLoops = 0
 
-    private val PROGRESS_SLIDER_HEIGHT = 20
     private val progressSlider = TrajectoryProgressSlider(
             this,
             FieldUtil.CANVAS_WIDTH.toInt(),
@@ -91,7 +94,7 @@ class RoadRunnerBotEntity(
                     is WaitSegment -> segment.startPose
                     is TurnSegment -> segment.startPose.copy(heading = segment.motionProfile[segmentOffsetTime].x)
                     is TrajectorySegment -> segment.trajectory[segmentOffsetTime]
-                    else -> Pose2d()
+                    else -> currentTrajectorySequence!!.end()
                 }
 
                 trajectorySequenceEntity!!.markerEntityList.forEach { if (trajectorySequenceElapsedTime >= it.time) it.passed() }
@@ -142,22 +145,16 @@ class RoadRunnerBotEntity(
         meepMeep.addEntity(trajectorySequenceEntity!!)
     }
 
-    fun setTrackWidth(trackWidth: Double) {
-        this.trackWidth = trackWidth
-
-        drive = DriveShim(driveTrainType, constraints, trackWidth)
-    }
-
-    fun setConstraints(constraints: DriveConstraints) {
+    fun setConstraints(constraints: Constraints) {
         this.constraints = constraints
 
-        drive = DriveShim(driveTrainType, constraints, trackWidth)
+        drive = DriveShim(driveTrainType, constraints)
     }
 
     fun setDriveTrainType(driveTrainType: DriveTrainType) {
         this.driveTrainType = driveTrainType
 
-        drive = DriveShim(driveTrainType, constraints, trackWidth)
+        drive = DriveShim(driveTrainType, constraints)
     }
 
     override fun switchScheme(scheme: ColorScheme) {

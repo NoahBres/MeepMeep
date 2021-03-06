@@ -74,7 +74,7 @@ class TrajectoryProgressSlider(
                     progress * entity.currentTrajectorySequence!!.duration()
             )
             g.drawString(
-                    "${progressText}s${if(entity.trajectoryPaused) " (paused)" else ""}", width / 2 - (g.fontMetrics.stringWidth(
+                    "${progressText}s${if (entity.trajectoryPaused) " (paused)" else ""}", width / 2 - (g.fontMetrics.stringWidth(
                     progressText
             ).toDouble() / 2.0).toInt(), height / 2 + g.fontMetrics.height / 4
             )

@@ -8,6 +8,6 @@ fun TrajectorySequence.start(): Pose2d =
     if(this.isNotEmpty()) this[0].startPose else Pose2d()
 
 fun TrajectorySequence.end(): Pose2d =
-        if(this.isNotEmpty()) this.last().startPose else Pose2d()
+        if(this.isNotEmpty()) this.last().endPose else Pose2d()
 
 fun TrajectorySequence.duration(): Double = this.sumByDouble { sequenceSegment -> sequenceSegment.duration }

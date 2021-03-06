@@ -1,6 +1,6 @@
 plugins {
     // Apply the Kotlin JVM plugin to add support for Kotlin.
-    id("org.jetbrains.kotlin.jvm") version "1.4.0"
+    id("org.jetbrains.kotlin.jvm") version "1.4.31"
 
     // Apply the java-library plugin for API and implementation separation.
     java
@@ -45,7 +45,7 @@ dependencies {
     // Use the Kotlin JUnit integration.
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 
-    api("com.acmerobotics.roadrunner:core:0.5.2")
+    api("com.acmerobotics.roadrunner:core:0.5.3")
 }
 
 // Create sources Jar from main kotlin sources
