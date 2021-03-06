@@ -42,18 +42,23 @@ class RoadRunnerBotEntity(
     private var running = false
 
     private var trajectorySequenceElapsedTime = 0.0
+        set(value) {
+            trajectorySequenceEntity?.trajectoryProgress = value
+            field = value
+        }
+
     var trajectoryPaused = false
 
     private var skippedLoops = 0
 
     private val progressSlider = TrajectoryProgressSlider(
-            this,
-            FieldUtil.CANVAS_WIDTH.toInt(),
-            PROGRESS_SLIDER_HEIGHT,
-            colorScheme.TRAJECTORY_SLIDER_FG,
-            colorScheme.TRAJECTORY_SLIDER_BG,
-            colorScheme.TRAJECTORY_TEXT_COLOR,
-            MeepMeep.FONT_CMU_BOLD
+        this,
+        FieldUtil.CANVAS_WIDTH.toInt(),
+        PROGRESS_SLIDER_HEIGHT,
+        colorScheme.TRAJECTORY_SLIDER_FG,
+        colorScheme.TRAJECTORY_SLIDER_BG,
+        colorScheme.TRAJECTORY_TEXT_COLOR,
+        MeepMeep.FONT_CMU_BOLD
     )
 
     init {
@@ -77,10 +82,10 @@ class RoadRunnerBotEntity(
                 var segmentOffsetTime = 0.0
 
                 var currentTime = 0.0
-                for(index in currentTrajectorySequence!!.indices) {
+                for (index in currentTrajectorySequence!!.indices) {
                     val seg = currentTrajectorySequence!![index]
 
-                    if(currentTime + seg.duration > trajectorySequenceElapsedTime) {
+                    if (currentTime + seg.duration > trajectorySequenceElapsedTime) {
                         segmentOffsetTime = trajectorySequenceElapsedTime - currentTime
                         segment = seg
 
@@ -90,7 +95,7 @@ class RoadRunnerBotEntity(
                     }
                 }
 
-                pose = when(segment) {
+                pose = when (segment) {
                     is WaitSegment -> segment.startPose
                     is TurnSegment -> segment.startPose.copy(heading = segment.motionProfile[segmentOffsetTime].x)
                     is TrajectorySegment -> segment.trajectory[segmentOffsetTime]

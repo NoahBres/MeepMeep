@@ -15,10 +15,21 @@ import java.awt.image.BufferedImage
 import kotlin.math.roundToInt
 
 class TrajectorySequenceEntity(
-        override val meepMeep: MeepMeep,
-        private val trajectorySequence: TrajectorySequence,
-        private var colorScheme: ColorScheme
+    override val meepMeep: MeepMeep,
+    private val trajectorySequence: TrajectorySequence,
+    private var colorScheme: ColorScheme
 ) : ThemedEntity {
+    companion object {
+        const val PATH_INNER_STROKE_WIDTH = 0.5
+        const val PATH_OUTER_STROKE_WIDTH = 2.0
+
+        const val PATH_OUTER_OPACITY = 0.4
+
+        const val PATH_UNFOCUSED_OPACTIY = 0.3
+
+        const val SAMPLE_RESOLUTION = 1.2
+    }
+
     private var canvasWidth = FieldUtil.CANVAS_WIDTH
     private var canvasHeight = FieldUtil.CANVAS_HEIGHT
 
@@ -29,14 +40,14 @@ class TrajectorySequenceEntity(
     private val turnEntityList = mutableListOf<TurnIndicatorEntity>()
     val markerEntityList = mutableListOf<MarkerIndicatorEntity>()
 
-    private val PATH_INNER_STROKE_WIDTH = 0.5
-    private val PATH_OUTER_STROKE_WIDTH = 2.0
-
-    private val PATH_OUTER_OPACITY = 0.4
-
-    private val SAMPLE_RESOLUTION = 1.2
-
     private lateinit var baseBufferedImage: BufferedImage
+
+    private var currentSegmentImage: BufferedImage? = null
+
+    private var lastSegment: TrajectorySegment? = null
+    private var currentSegment: TrajectorySegment? = null
+
+    var trajectoryProgress: Double? = null
 
     init {
         redrawPath()
@@ -60,7 +71,7 @@ class TrajectorySequenceEntity(
         val config = device.defaultConfiguration
 
         baseBufferedImage = config.createCompatibleImage(
-                canvasWidth.toInt(), canvasHeight.toInt(), Transparency.TRANSLUCENT
+            canvasWidth.toInt(), canvasHeight.toInt(), Transparency.TRANSLUCENT
         )
         val gfx = baseBufferedImage.createGraphics()
 
@@ -70,12 +81,12 @@ class TrajectorySequenceEntity(
         val trajectoryDrawnPath = Path2D.Double()
 
         val innerStroke = BasicStroke(
-                FieldUtil.scaleInchesToPixel(PATH_INNER_STROKE_WIDTH).toFloat(),
-                BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND
+            FieldUtil.scaleInchesToPixel(PATH_INNER_STROKE_WIDTH).toFloat(),
+            BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND
         )
         val outerStroke = BasicStroke(
-                FieldUtil.scaleInchesToPixel(PATH_OUTER_STROKE_WIDTH).toFloat(),
-                BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND
+            FieldUtil.scaleInchesToPixel(PATH_OUTER_STROKE_WIDTH).toFloat(),
+            BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND
         )
 
         var currentEndPose = trajectorySequence.start()
@@ -106,8 +117,8 @@ class TrajectorySequenceEntity(
 
                 is TurnSegment -> {
                     val turnEntity = TurnIndicatorEntity(
-                            meepMeep, colorScheme, currentEndPose.vec(), currentEndPose.heading,
-                            currentEndPose.heading + step.totalRotation
+                        meepMeep, colorScheme, currentEndPose.vec(), currentEndPose.heading,
+                        currentEndPose.heading + step.totalRotation
                     )
                     turnEntityList.add(turnEntity)
                     meepMeep.requestToAddEntity(turnEntity)
@@ -127,7 +138,8 @@ class TrajectorySequenceEntity(
                         else -> Pose2d()
                     }
 
-                    val markerEntity = MarkerIndicatorEntity(meepMeep, colorScheme, pose, marker.callback, currentTime + marker.time)
+                    val markerEntity =
+                        MarkerIndicatorEntity(meepMeep, colorScheme, pose, marker.callback, currentTime + marker.time)
                     markerEntityList.add(markerEntity)
                     meepMeep.requestToAddEntity(markerEntity)
                 }
@@ -135,7 +147,8 @@ class TrajectorySequenceEntity(
                 segment.trajectory.markers.forEach { marker ->
                     val pose = segment.trajectory[marker.time]
 
-                    val markerEntity = MarkerIndicatorEntity(meepMeep, colorScheme, pose, marker.callback, currentTime + marker.time)
+                    val markerEntity =
+                        MarkerIndicatorEntity(meepMeep, colorScheme, pose, marker.callback, currentTime + marker.time)
                     markerEntityList.add(markerEntity)
                     meepMeep.requestToAddEntity(markerEntity)
                 }
@@ -144,10 +157,74 @@ class TrajectorySequenceEntity(
             currentTime += segment.duration
         }
 
+//        gfx.stroke = outerStroke
+//        gfx.color = Color(
+//                colorScheme.TRAJCETORY_PATH_COLOR.red, colorScheme.TRAJCETORY_PATH_COLOR.green,
+//                colorScheme.TRAJCETORY_PATH_COLOR.blue, (PATH_OUTER_OPACITY * 255).toInt()
+//        )
+//        gfx.draw(trajectoryDrawnPath)
+
+        gfx.stroke = innerStroke
+        gfx.color = colorScheme.TRAJCETORY_PATH_COLOR
+        gfx.color = Color(
+            colorScheme.TRAJCETORY_PATH_COLOR.red, colorScheme.TRAJCETORY_PATH_COLOR.green,
+            colorScheme.TRAJCETORY_PATH_COLOR.blue, (PATH_UNFOCUSED_OPACTIY * 255).toInt()
+
+        )
+        gfx.draw(trajectoryDrawnPath)
+    }
+
+    private fun redrawCurrentSegment() {
+        if (currentSegment == null) {
+            currentSegmentImage = null
+            return
+        }
+
+        val environment = GraphicsEnvironment.getLocalGraphicsEnvironment()
+        val device = environment.defaultScreenDevice
+        val config = device.defaultConfiguration
+
+        currentSegmentImage = config.createCompatibleImage(
+            canvasWidth.toInt(), canvasHeight.toInt(), Transparency.TRANSLUCENT
+        )
+        val gfx = currentSegmentImage!!.createGraphics()
+
+        gfx.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
+        gfx.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY)
+
+        val trajectoryDrawnPath = Path2D.Double()
+
+        val outerStroke = BasicStroke(
+            FieldUtil.scaleInchesToPixel(PATH_OUTER_STROKE_WIDTH).toFloat(),
+            BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND
+        )
+        val innerStroke = BasicStroke(
+            FieldUtil.scaleInchesToPixel(PATH_INNER_STROKE_WIDTH).toFloat(),
+            BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND
+        )
+
+        val traj = currentSegment!!.trajectory
+
+        val firstVec = currentSegment!!.startPose.vec().toScreenCoord()
+        trajectoryDrawnPath.moveTo(firstVec.x, firstVec.y)
+
+        val displacementSamples = (traj.path.length() / SAMPLE_RESOLUTION).roundToInt()
+
+        val displacements = (0..displacementSamples).map {
+            it / displacementSamples.toDouble() * traj.path.length()
+        }
+
+        val poses = displacements.map { traj.path[it] }
+
+        for (pose in poses.drop(1)) {
+            val coord = pose.vec().toScreenCoord()
+            trajectoryDrawnPath.lineTo(coord.x, coord.y)
+        }
+
         gfx.stroke = outerStroke
         gfx.color = Color(
-                colorScheme.TRAJCETORY_PATH_COLOR.red, colorScheme.TRAJCETORY_PATH_COLOR.green,
-                colorScheme.TRAJCETORY_PATH_COLOR.blue, (PATH_OUTER_OPACITY * 255).toInt()
+            colorScheme.TRAJCETORY_PATH_COLOR.red, colorScheme.TRAJCETORY_PATH_COLOR.green,
+            colorScheme.TRAJCETORY_PATH_COLOR.blue, (PATH_OUTER_OPACITY * 255).toInt()
         )
         gfx.draw(trajectoryDrawnPath)
 
@@ -156,10 +233,35 @@ class TrajectorySequenceEntity(
         gfx.draw(trajectoryDrawnPath)
     }
 
-    override fun update(deltaTime: Long) {}
+    override fun update(deltaTime: Long) {
+        if (trajectoryProgress == null) {
+            currentSegment = null
+        } else {
+            var currentTime = 0.0
+            for (index in trajectorySequence.indices) {
+                val seg = trajectorySequence[index]
+
+                if (currentTime + seg.duration > trajectoryProgress!!) {
+                    if (seg is TrajectorySegment) currentSegment = seg
+
+                    break
+                } else {
+                    currentTime += seg.duration
+                }
+            }
+        }
+
+        if (lastSegment != currentSegment) {
+            redrawCurrentSegment()
+        }
+
+        lastSegment = currentSegment
+    }
 
     override fun render(gfx: Graphics2D, canvasWidth: Int, canvasHeight: Int) {
         gfx.drawImage(baseBufferedImage, null, 0, 0)
+
+        if (currentSegmentImage != null) gfx.drawImage(currentSegmentImage, null, 0, 0)
     }
 
     override fun setCanvasDimensions(canvasWidth: Double, canvasHeight: Double) {
