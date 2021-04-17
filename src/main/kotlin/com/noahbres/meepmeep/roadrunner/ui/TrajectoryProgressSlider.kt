@@ -1,7 +1,6 @@
 package com.noahbres.meepmeep.roadrunner.ui
 
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity
-import com.noahbres.meepmeep.roadrunner.trajectorysequence.duration
 import java.awt.*
 import java.awt.event.ActionEvent
 import java.awt.event.MouseEvent
@@ -71,7 +70,7 @@ class TrajectoryProgressSlider(
         g.color = textColor
         if (entity.currentTrajectorySequence != null) {
             val progressText = DecimalFormat("0.00").format(
-                    progress * entity.currentTrajectorySequence!!.duration()
+                    progress * entity.currentTrajectorySequence!!.duration
             )
             g.drawString(
                     "${progressText}s${if (entity.trajectoryPaused) " (paused)" else ""}", width / 2 - (g.fontMetrics.stringWidth(

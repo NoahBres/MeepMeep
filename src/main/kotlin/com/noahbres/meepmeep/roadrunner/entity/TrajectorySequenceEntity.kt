@@ -84,17 +84,17 @@ class TrajectorySequenceEntity(
             FieldUtil.scaleInchesToPixel(PATH_INNER_STROKE_WIDTH).toFloat(),
             BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND
         )
-        val outerStroke = BasicStroke(
-            FieldUtil.scaleInchesToPixel(PATH_OUTER_STROKE_WIDTH).toFloat(),
-            BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND
-        )
+//        val outerStroke = BasicStroke(
+//            FieldUtil.scaleInchesToPixel(PATH_OUTER_STROKE_WIDTH).toFloat(),
+//            BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND
+//        )
 
-        var currentEndPose = trajectorySequence.start()
+        var currentEndPose = trajectorySequence.start
 
-        val firstVec = trajectorySequence.start().vec().toScreenCoord()
+        val firstVec = trajectorySequence.start.vec().toScreenCoord()
         trajectoryDrawnPath.moveTo(firstVec.x, firstVec.y)
 
-        trajectorySequence.forEach { step ->
+        trajectorySequence.list.forEach { step ->
             when (step) {
                 is TrajectorySegment -> {
                     val traj = step.trajectory
@@ -129,7 +129,7 @@ class TrajectorySequenceEntity(
         }
 
         var currentTime = 0.0
-        trajectorySequence.forEach { segment ->
+        trajectorySequence.list.forEach { segment ->
             if (segment is WaitSegment || segment is TurnSegment) {
                 segment.markers.forEach { marker ->
                     val pose = when (segment) {
@@ -238,9 +238,7 @@ class TrajectorySequenceEntity(
             currentSegment = null
         } else {
             var currentTime = 0.0
-            for (index in trajectorySequence.indices) {
-                val seg = trajectorySequence[index]
-
+            for (seg in trajectorySequence.list) {
                 if (currentTime + seg.duration > trajectoryProgress!!) {
                     if (seg is TrajectorySegment) currentSegment = seg
 

@@ -2,12 +2,27 @@ package com.noahbres.meepmeep.roadrunner.trajectorysequence
 
 import com.acmerobotics.roadrunner.geometry.Pose2d
 
-typealias TrajectorySequence = List<SequenceSegment>
+class TrajectorySequence(private val sequenceList: List<SequenceSegment>) {
+    val size: Int
+        get() = sequenceList.size
 
-fun TrajectorySequence.start(): Pose2d =
-    if(this.isNotEmpty()) this[0].startPose else Pose2d()
+    val duration: Double
+        get() = sequenceList.sumByDouble { it.duration }
 
-fun TrajectorySequence.end(): Pose2d =
-        if(this.isNotEmpty()) this.last().endPose else Pose2d()
+    val start: Pose2d
+        get() = sequenceList.first().startPose
 
-fun TrajectorySequence.duration(): Double = this.sumByDouble { sequenceSegment -> sequenceSegment.duration }
+    val end: Pose2d
+        get() = sequenceList.last().endPose
+
+    val list: List<SequenceSegment>
+        get() = sequenceList
+
+    init {
+        if (sequenceList.isEmpty()) throw EmptySequenceException()
+    }
+
+    operator fun get(i: Int): SequenceSegment {
+        return sequenceList[i]
+    }
+}

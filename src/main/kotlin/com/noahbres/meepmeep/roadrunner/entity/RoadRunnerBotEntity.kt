@@ -77,14 +77,13 @@ class RoadRunnerBotEntity(
         if (!trajectoryPaused) trajectorySequenceElapsedTime += deltaTime / 1000.0
 
         when {
-            trajectorySequenceElapsedTime <= currentTrajectorySequence!!.duration() -> {
+            trajectorySequenceElapsedTime <= currentTrajectorySequence!!.duration -> {
                 var segment: SequenceSegment? = null
                 var segmentOffsetTime = 0.0
 
                 var currentTime = 0.0
-                for (index in currentTrajectorySequence!!.indices) {
-                    val seg = currentTrajectorySequence!![index]
 
+                for (seg in currentTrajectorySequence!!.list) {
                     if (currentTime + seg.duration > trajectorySequenceElapsedTime) {
                         segmentOffsetTime = trajectorySequenceElapsedTime - currentTime
                         segment = seg
@@ -99,12 +98,12 @@ class RoadRunnerBotEntity(
                     is WaitSegment -> segment.startPose
                     is TurnSegment -> segment.startPose.copy(heading = segment.motionProfile[segmentOffsetTime].x)
                     is TrajectorySegment -> segment.trajectory[segmentOffsetTime]
-                    else -> currentTrajectorySequence!!.end()
+                    else -> currentTrajectorySequence!!.end
                 }
 
                 trajectorySequenceEntity!!.markerEntityList.forEach { if (trajectorySequenceElapsedTime >= it.time) it.passed() }
 
-                progressSlider.progress = (trajectorySequenceElapsedTime / currentTrajectorySequence!!.duration())
+                progressSlider.progress = (trajectorySequenceElapsedTime / currentTrajectorySequence!!.duration)
             }
 
             looping -> {
@@ -140,7 +139,7 @@ class RoadRunnerBotEntity(
 
     fun setTrajectoryProgress(progress: Double) {
         if (currentTrajectorySequence != null)
-            trajectorySequenceElapsedTime = progress * currentTrajectorySequence!!.duration()
+            trajectorySequenceElapsedTime = progress * currentTrajectorySequence!!.duration
     }
 
     fun followTrajectorySequence(sequence: TrajectorySequence) {

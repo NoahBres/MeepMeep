@@ -25,15 +25,12 @@ class DriveShim(driveTrainType: DriveTrainType, private val constraints: Constra
     private val accelConstraint = ProfileAccelerationConstraint(constraints.maxAccel)
 
     fun trajectorySequenceBuilder(startPose: Pose2d): TrajectorySequenceBuilder {
-        return TrajectorySequenceBuilder(startPose, velConstraint, accelConstraint, constraints)
-    }
-
-    @JvmOverloads
-    fun trajectoryBuilder(startPose: Pose2d, startHeading: Double = startPose.heading): TrajectoryBuilder {
-        return TrajectoryBuilder(startPose, startHeading, velConstraint, accelConstraint)
-    }
-
-    fun trajectoryBuilder(startPose: Pose2d, reversed: Boolean): TrajectoryBuilder {
-        return TrajectoryBuilder(startPose, reversed, velConstraint, accelConstraint)
+        return TrajectorySequenceBuilder(
+            startPose,
+            velConstraint,
+            accelConstraint,
+            constraints.maxAngVel,
+            constraints.maxAngVel,
+        )
     }
 }
