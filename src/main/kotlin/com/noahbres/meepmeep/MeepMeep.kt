@@ -262,6 +262,11 @@ open class MeepMeep(private val windowSize: Int) {
                 colorManager.isDarkMode = true
                 ImageIO.read(classLoader.getResourceAsStream("background/field-skystone-starwars.png"))
             }
+            Background.FIELD_ULTIMATE_GOAL_DARK -> {
+                colorManager.isDarkMode = true
+                ImageIO.read(classLoader.getResourceAsStream("background/field-ug-dark-fix.jpg"))
+            }
+
         }.getScaledInstance(windowSize, windowSize, Image.SCALE_SMOOTH)
 
         refreshTheme()
@@ -461,6 +466,7 @@ open class MeepMeep(private val windowSize: Int) {
         FIELD_SKYSTONE_GF,
         FIELD_SKYSTONE_LIGHT,
         FIELD_SKYSTONE_DARK,
-        FIELD_SKYSTONE_STARWARS
+        FIELD_SKYSTONE_STARWARS,
+        FIELD_ULTIMATE_GOAL_DARK
     }
 }
