@@ -1,12 +1,11 @@
 # MeepMeep
-[![Release](https://jitpack.io/v/NoahBres/MeepMeep.svg)]
-(https://jitpack.io/#NoahBres/MeepMeep)
+[![Release](https://jitpack.io/v/NoahBres/MeepMeep.svg)](https://jitpack.io/#NoahBres/MeepMeep)
 
 Path creation/visualization tool for Road Runner
 
 # 🔨 Installing 
 
-### Gradle Snippet:
+## Gradle Snippet:
 ```groovy
 repositories {
     ...
@@ -18,6 +17,6 @@ dependencies {
 }
 ```
 
-### Installation Video:
+## Installation Video
 
 [![YouTube Installation Video](/images/readme/thumbnail-half.jpg?raw=true)](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
