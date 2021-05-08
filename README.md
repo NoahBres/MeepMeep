@@ -18,7 +18,7 @@ dependencies {
 
 ## Installation Video
 
-[![YouTube Installation Video](/images/readme/thumbnail-half.jpg?raw=true)](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
+[![YouTube Installation Video](/images/readme/thumbnail-half.jpg?raw=true)](https://youtu.be/vdn1v404go8)
 
 ## Run Sample
 ```java
@@ -30,10 +30,16 @@ import com.noahbres.meepmeep.core.colorscheme.scheme.ColorSchemeRedDark;
 
 public class MeepMeepTesting {
     public static void main(String[] args) {
+        // Declare a MeepMeep instance
+        // With a field size of 800 pixels
         MeepMeep mm = new MeepMeep(800)
+                // Set field image
                 .setBackground(MeepMeep.Background.FIELD_ULTIMATE_GOAL_DARK)
+                // Set theme
                 .setTheme(new ColorSchemeRedDark())
+                // Background opacity from 0-1
                 .setBackgroundAlpha(1f)
+                // Set constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(0, 0, 0))
