@@ -3,6 +3,8 @@
 
 Path creation/visualization tool for Road Runner
 
+![MeepMeep Sample Recording](/images/readme/screen-recording.gif?raw=true)
+
 # 🔨 Installing 
 
 ## Gradle Snippet:
