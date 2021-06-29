@@ -32,7 +32,7 @@ class RoadRunnerBotEntity(
     override var zIndex: Int = 0
 
     private var driveTrainType = DriveTrainType.MECANUM
-    var drive = DriveShim(driveTrainType, constraints)
+    var drive = DriveShim(driveTrainType, constraints, pose)
 
     var currentTrajectorySequence: TrajectorySequence? = null
 
@@ -101,6 +101,8 @@ class RoadRunnerBotEntity(
                     else -> currentTrajectorySequence!!.end
                 }
 
+                drive.poseEstimate = pose;
+
                 trajectorySequenceEntity!!.markerEntityList.forEach { if (trajectorySequenceElapsedTime >= it.time) it.passed() }
 
                 progressSlider.progress = (trajectorySequenceElapsedTime / currentTrajectorySequence!!.duration)
@@ -152,13 +154,13 @@ class RoadRunnerBotEntity(
     fun setConstraints(constraints: Constraints) {
         this.constraints = constraints
 
-        drive = DriveShim(driveTrainType, constraints)
+        drive = DriveShim(driveTrainType, constraints, pose)
     }
 
     fun setDriveTrainType(driveTrainType: DriveTrainType) {
         this.driveTrainType = driveTrainType
 
-        drive = DriveShim(driveTrainType, constraints)
+        drive = DriveShim(driveTrainType, constraints, pose)
     }
 
     override fun switchScheme(scheme: ColorScheme) {

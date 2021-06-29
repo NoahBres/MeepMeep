@@ -6,7 +6,7 @@ import com.acmerobotics.roadrunner.trajectory.constraints.*
 import com.noahbres.meepmeep.roadrunner.trajectorysequence.TrajectorySequenceBuilder
 import java.util.*
 
-class DriveShim(driveTrainType: DriveTrainType, private val constraints: Constraints) {
+class DriveShim(driveTrainType: DriveTrainType, private val constraints: Constraints, var poseEstimate: Pose2d) {
     private val velConstraint = when (driveTrainType) {
         DriveTrainType.MECANUM -> MinVelocityConstraint(
             listOf(
