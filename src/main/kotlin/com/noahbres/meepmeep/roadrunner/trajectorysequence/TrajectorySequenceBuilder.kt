@@ -455,12 +455,16 @@ class TrajectorySequenceBuilder(
             val newSegment = when (segment) {
                 is WaitSegment -> {
                     val newMarkers = segment.markers.toMutableList()
+
+                    newMarkers.addAll(newSegmentList[segmentIndex].markers)
                     newMarkers.add(TrajectoryMarker(segmentOffsetTime, it.callback))
 
                     segment.copy(markers = newMarkers)
                 }
                 is TurnSegment -> {
                     val newMarkers = segment.markers.toMutableList()
+
+                    newMarkers.addAll(newSegmentList[segmentIndex].markers)
                     newMarkers.add(TrajectoryMarker(segmentOffsetTime, it.callback))
 
                     segment.copy(markers = newMarkers)
