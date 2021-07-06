@@ -32,6 +32,9 @@ import com.noahbres.meepmeep.core.colorscheme.scheme.ColorSchemeRedDark;
 
 public class MeepMeepTesting {
     public static void main(String[] args) {
+        // TODO: If you experience poor performance, enable this flag
+        // System.setProperty("sun.java2d.opengl", "true");
+
         // Declare a MeepMeep instance
         // With a field size of 800 pixels
         MeepMeep mm = new MeepMeep(800)
@@ -59,3 +62,6 @@ public class MeepMeepTesting {
     }
 }
 ```
+
+## Poor Performance?
+On some systems hardware acceleration may not be enabled by default where it could be used. To enable hardware acceleration use the cli flag: `-Dsun.java2d.opengl=true` or enable it _before_ initializing your `MeepMeep` instance with `System.setProperty("sun.java2d.opengl", "true");`.
