@@ -20,7 +20,7 @@ import javax.imageio.ImageIO
 import javax.swing.*
 import javax.swing.border.EtchedBorder
 
-open class MeepMeep(private val windowSize: Int) {
+open class MeepMeep(private val windowSize: Int, fps: Int = 60) {
     companion object {
         // Default entities
         @JvmStatic
@@ -90,7 +90,7 @@ open class MeepMeep(private val windowSize: Int) {
         val fpsFont = Font("Sans", Font.BOLD, 20)
         g.font = fpsFont
         g.color = ColorManager.COLOR_PALETTE.GREEN_600
-        g.drawString("${loopManager.fps} FPS", 10, 20)
+        g.drawString(String.format("%.1f FPS", loopManager.fps), 10, 20)
 
         g.dispose()
         canvas.bufferStrat.show()
@@ -117,7 +117,7 @@ open class MeepMeep(private val windowSize: Int) {
         }
     }
 
-    private val loopManager = LoopManager(120, update, render)
+    private val loopManager = LoopManager(fps, update, render)
 
     // Road Runner UI Elements
     val sliderPanel = JPanel()
@@ -217,7 +217,7 @@ open class MeepMeep(private val windowSize: Int) {
 
         onCanvasResize()
 
-        Thread(loopManager).start()
+        loopManager.start()
 
         // Road Runner Start
 //        removeEntity(DEFAULT_BOT_ENTITY)

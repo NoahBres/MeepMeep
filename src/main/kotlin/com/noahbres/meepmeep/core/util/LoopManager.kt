@@ -1,47 +1,41 @@
 package com.noahbres.meepmeep.core.util
 
-class LoopManager(targetFPS: Long, val updateFunction: (deltaTime: Long) -> Unit, val renderFunction: () -> Unit): Runnable {
-    private val targetDeltaLoop = (1000 * 1000 * 1000) / targetFPS // Nanoseconds / fps
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
-    private var running = true
+class LoopManager(targetFPS: Int, val updateFunction: (deltaTime: Long) -> Unit, val renderFunction: () -> Unit) {
+    private val targetDeltaLoopTime = (1000L * 1000 * 1000) / targetFPS // Nanoseconds / fps
 
     var fps = 0.0
-    private var fpsCounter = 0
-    private var fpsCounterTime = 1000
-    override fun run() {
-        var beginLoopTime: Long
-        var endLoopTime: Long
-        var currentUpdateTime = System.nanoTime()
-        var lastUpdateTime: Long
-        var deltaLoop: Long
+        private set
+    private var fpsCount = 0
+    private var fpsCounterInterval = 500L * 1000 * 1000
+    private var fpsCounterStartTime = System.currentTimeMillis()
 
-        var startFpsTime = System.currentTimeMillis()
+    private var beginLoopTime: Long = System.nanoTime()
+    private var lastBeginTime: Long = System.nanoTime()
 
-        while(running) {
-            beginLoopTime = System.nanoTime()
+    private val service = Executors.newSingleThreadScheduledExecutor()
 
-            lastUpdateTime = currentUpdateTime
-            currentUpdateTime = System.nanoTime()
-            update((currentUpdateTime - lastUpdateTime) / (1000 * 1000))
+    fun start() {
+        service.scheduleAtFixedRate(::loop, 0L, targetDeltaLoopTime, TimeUnit.NANOSECONDS)
+    }
 
-            endLoopTime = System.nanoTime()
-            deltaLoop = endLoopTime - beginLoopTime
+    private fun loop() {
+        beginLoopTime = System.nanoTime()
 
-            if(deltaLoop > targetDeltaLoop) {
-
-            } else {
-                Thread.sleep((targetDeltaLoop - deltaLoop) / (1000 * 1000))
-            }
-
-            render()
-
-            fpsCounter++
-            if(System.currentTimeMillis() - startFpsTime > fpsCounterTime) {
-                fps = (fpsCounter.toDouble() / ((System.currentTimeMillis() - startFpsTime) / 1000))
-                fpsCounter = 0
-                startFpsTime = System.currentTimeMillis()
-            }
+        if (beginLoopTime - fpsCounterStartTime > fpsCounterInterval) {
+            fps = fpsCount.toDouble() / ((beginLoopTime - fpsCounterStartTime).toDouble() / (1000 * 1000 * 1000))
+            fpsCount = 0
+            fpsCounterStartTime = beginLoopTime
         }
+
+        fpsCount++
+
+        update(beginLoopTime - lastBeginTime)
+        render()
+
+        lastBeginTime = beginLoopTime
     }
 
     private fun render() {
