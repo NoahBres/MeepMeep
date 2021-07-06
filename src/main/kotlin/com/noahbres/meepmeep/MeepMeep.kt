@@ -94,6 +94,7 @@ open class MeepMeep(private val windowSize: Int) {
 
         g.dispose()
         canvas.bufferStrat.show()
+        Toolkit.getDefaultToolkit().sync()
     }
 
     private val update: (deltaTime: Long) -> Unit = { deltaTime ->
