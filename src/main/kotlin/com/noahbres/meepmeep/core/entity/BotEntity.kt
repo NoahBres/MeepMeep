@@ -44,7 +44,7 @@ open class BotEntity(
     }
 
     override fun update(deltaTime: Long) {
-        pose = Pose2d(pose.x, pose.y, pose.heading + Math.toRadians(0.1 * deltaTime / 1000.0 / 1000.0))
+        pose = Pose2d(pose.x, pose.y, pose.heading)
     }
 
     override fun render(gfx: Graphics2D, canvasWidth: Int, canvasHeight: Int) {
