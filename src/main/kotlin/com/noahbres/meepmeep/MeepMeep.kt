@@ -14,11 +14,12 @@ import com.noahbres.meepmeep.roadrunner.DriveTrainType
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity
 import com.noahbres.meepmeep.roadrunner.trajectorysequence.TrajectorySequence
 import java.awt.*
-import java.awt.event.MouseListener
-import java.awt.event.MouseMotionListener
+import java.awt.datatransfer.StringSelection
+import java.awt.event.*
 import javax.imageio.ImageIO
 import javax.swing.*
 import javax.swing.border.EtchedBorder
+
 
 open class MeepMeep(private val windowSize: Int, fps: Int = 60) {
     companion object {
@@ -87,14 +88,29 @@ open class MeepMeep(private val windowSize: Int, fps: Int = 60) {
         entityList.forEach { it.render(g, canvas.width, canvas.height) }
 
         // Draw fps
-        val fpsFont = Font("Sans", Font.BOLD, 20)
-        g.font = fpsFont
+        g.font = Font("Sans", Font.BOLD, 20)
         g.color = ColorManager.COLOR_PALETTE.GREEN_600
-        g.drawString(String.format("%.1f FPS", loopManager.fps), 10, 20)
+        g.drawString("%.1f FPS".format(loopManager.fps), 10, 20)
+
+        // Draw mouse coords
+        val mouseToFieldCoords = FieldUtil.screenCoordsToFieldCoords(
+            Vector2d(
+                canvasMouseX.toDouble(),
+                canvasMouseY.toDouble()
+            )
+        )
+
+        g.font = Font("Sans", Font.BOLD, 14)
+        g.color = ColorManager.COLOR_PALETTE.GRAY_100
+        g.drawString(
+            "(%.1f, %.1f)".format(
+                mouseToFieldCoords.x,
+                mouseToFieldCoords.y,
+            ), 10, canvas.height - 8
+        )
 
         g.dispose()
         canvas.bufferStrat.show()
-        Toolkit.getDefaultToolkit().sync()
     }
 
     private val update: (deltaTime: Long) -> Unit = { deltaTime ->
@@ -129,6 +145,9 @@ open class MeepMeep(private val windowSize: Int, fps: Int = 60) {
     private val pathSelectionButton = JButton("test 2")
 
     private val middleButtonList = mutableListOf(standardCursorButton, pathSelectionButton)
+
+    private var canvasMouseX = 0
+    private var canvasMouseY = 0
 
     init {
         // Core init
@@ -176,6 +195,42 @@ open class MeepMeep(private val windowSize: Int, fps: Int = 60) {
 //        windowFrame.contentPane.add(middleButtonPanel)
 
         windowFrame.pack()
+
+        canvas.addMouseMotionListener(object : MouseMotionListener {
+            override fun mouseDragged(p0: MouseEvent?) {}
+
+            override fun mouseMoved(e: MouseEvent) {
+                canvasMouseX = e.x
+                canvasMouseY = e.y
+            }
+        })
+
+        canvas.addKeyListener(object : KeyListener {
+            override fun keyTyped(p0: KeyEvent?) {}
+
+            override fun keyPressed(e: KeyEvent) {
+                if (e.keyCode == KeyEvent.VK_C) {
+                    // Draw mouse coords
+                    val mouseToFieldCoords = FieldUtil.screenCoordsToFieldCoords(
+                        Vector2d(
+                            canvasMouseX.toDouble(),
+                            canvasMouseY.toDouble()
+                        )
+                    )
+
+                    val stringSelection = StringSelection(
+                        "%.1f, %.1f".format(
+                            mouseToFieldCoords.x,
+                            mouseToFieldCoords.y,
+                        )
+                    )
+                    val clipboard = Toolkit.getDefaultToolkit().systemClipboard
+                    clipboard.setContents(stringSelection, null)
+                }
+            }
+
+            override fun keyReleased(p0: KeyEvent?) {}
+        })
 
         // Handle entities
         DEFAULT_ROADRUNNER_BOT_ENTITY = RoadRunnerBotEntity(
