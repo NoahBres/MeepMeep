@@ -20,7 +20,7 @@ class FieldUtil {
         @JvmStatic
         @JvmOverloads
         fun screenCoordsToFieldCoords(vector2d: Vector2d, canvasWidth: Double = CANVAS_WIDTH, canvasHeight: Double = CANVAS_HEIGHT): Vector2d {
-            return mirrorY(vector2d) - Vector2d(FIELD_WIDTH / 2.0, FIELD_HEIGHT / 2.0) / max(canvasWidth, canvasHeight) / FIELD_WIDTH.toDouble()
+            return mirrorY(vector2d) / max(canvasWidth, canvasHeight) * FIELD_WIDTH.toDouble() + Vector2d(-FIELD_WIDTH / 2.0, FIELD_HEIGHT / 2.0)
         }
 
         @JvmStatic
