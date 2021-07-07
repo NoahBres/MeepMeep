@@ -74,7 +74,7 @@ class RoadRunnerBotEntity(
 
         if (skippedLoops++ < SKIP_LOOPS) return
 
-        if (!trajectoryPaused) trajectorySequenceElapsedTime += deltaTime / 1000.0 / 1000.0 / 1000.0
+        if (!trajectoryPaused) trajectorySequenceElapsedTime += deltaTime / 1e9
 
         when {
             trajectorySequenceElapsedTime <= currentTrajectorySequence!!.duration -> {
