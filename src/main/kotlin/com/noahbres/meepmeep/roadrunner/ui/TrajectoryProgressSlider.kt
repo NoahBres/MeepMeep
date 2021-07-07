@@ -31,6 +31,8 @@ class TrajectoryProgressSlider(
 
     private var image = BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)
 
+    private var botPausedBeforeMouseDown = false
+
     init {
         preferredSize = Dimension(width, height)
         maximumSize = Dimension(width, height)
@@ -84,11 +86,13 @@ class TrajectoryProgressSlider(
     }
 
     override fun mouseReleased(me: MouseEvent?) {
-        entity.unPause()
+        if(!botPausedBeforeMouseDown) entity.unPause()
+
         redraw()
     }
 
     override fun mousePressed(me: MouseEvent?) {
+        botPausedBeforeMouseDown = entity.trajectoryPaused
         entity.pause()
 
         val clipped = min(max(me!!.x.toDouble() / width.toDouble(), 0.0), 1.0)
