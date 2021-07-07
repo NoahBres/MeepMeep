@@ -102,10 +102,12 @@ open class MeepMeep(private val windowSize: Int, fps: Int = 60) {
             requestedClearEntityList.forEach {
                 removeEntity(it)
             }
+            requestedClearEntityList.clear();
 
             requestedAddEntityList.forEach {
                 addEntity(it)
             }
+            requestedAddEntityList.clear();
 
             entityList.sortBy { it.zIndex }
             entityListDirty = false
