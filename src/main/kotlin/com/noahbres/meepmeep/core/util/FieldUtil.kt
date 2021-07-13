@@ -8,10 +8,10 @@ import kotlin.math.min
 class FieldUtil {
     companion object {
         @JvmStatic
-        var FIELD_WIDTH = 144
+        var FIELD_WIDTH = 141
 
         @JvmStatic
-        var FIELD_HEIGHT = 144
+        var FIELD_HEIGHT = 141
 
         @JvmStatic
         var CANVAS_WIDTH = 0.0
