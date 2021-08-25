@@ -21,7 +21,7 @@ import javax.swing.*
 import javax.swing.border.EtchedBorder
 
 
-open class MeepMeep(private val windowSize: Int, fps: Int = 60) {
+open class MeepMeep @JvmOverloads constructor(private val windowSize: Int, fps: Int = 60) {
     companion object {
         // Default entities
         @JvmStatic
