@@ -324,6 +324,11 @@ open class MeepMeep @JvmOverloads constructor(private val windowSize: Int, fps: 
                 colorManager.isDarkMode = true
                 ImageIO.read(classLoader.getResourceAsStream("background/field-ug-dark-fix.jpg"))
             }
+            Background.FIELD_FREIGHT_FRENZY_DARK->{
+                colorManager.isDarkMode=true
+                ImageIO.read(classLoader.getResourceAsStream("background/field-ff-dark.png"))
+
+            }
 
         }.getScaledInstance(windowSize, windowSize, Image.SCALE_SMOOTH)
 
@@ -525,6 +530,7 @@ open class MeepMeep @JvmOverloads constructor(private val windowSize: Int, fps: 
         FIELD_SKYSTONE_LIGHT,
         FIELD_SKYSTONE_DARK,
         FIELD_SKYSTONE_STARWARS,
-        FIELD_ULTIMATE_GOAL_DARK
+        FIELD_ULTIMATE_GOAL_DARK,
+        FIELD_FREIGHT_FRENZY_DARK
     }
 }
