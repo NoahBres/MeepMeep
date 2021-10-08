@@ -65,3 +65,7 @@ public class MeepMeepTesting {
 
 ## Poor Performance?
 On some systems hardware acceleration may not be enabled by default where it could be used. To enable hardware acceleration use the cli flag: `-Dsun.java2d.opengl=true` or enable it _before_ initializing your `MeepMeep` instance with `System.setProperty("sun.java2d.opengl", "true");`.
+
+## Notes:
+Default Bot Constraints
+  - 

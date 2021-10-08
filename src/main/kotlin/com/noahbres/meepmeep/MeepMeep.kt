@@ -21,12 +21,8 @@ import javax.swing.*
 import javax.swing.border.EtchedBorder
 
 
-open class MeepMeep @JvmOverloads constructor(private val windowSize: Int, fps: Int = 60) {
+class MeepMeep @JvmOverloads constructor(private val windowSize: Int, fps: Int = 60) {
     companion object {
-        // Default entities
-        @JvmStatic
-        lateinit var DEFAULT_BOT_ENTITY: BotEntity
-
         @JvmStatic
         lateinit var DEFAULT_AXES_ENTITY: AxesEntity
 
@@ -42,18 +38,14 @@ open class MeepMeep @JvmOverloads constructor(private val windowSize: Int, fps: 
 
         @JvmStatic
         lateinit var FONT_CMU_BOLD: Font
-
-        // Road Runner Entities
-        @JvmStatic
-        lateinit var DEFAULT_ROADRUNNER_BOT_ENTITY: RoadRunnerBotEntity
     }
 
     val windowFrame = WindowFrame("Meep Meep", windowSize)
     val canvas = windowFrame.canvas
 
-    private var bg: Image? = null
+    val colorManager = ColorManager()
 
-    private val colorManager = ColorManager()
+    private var bg: Image? = null
 
     private val entityList = mutableListOf<Entity>()
     private val requestedAddEntityList = mutableListOf<Entity>()
@@ -167,7 +159,6 @@ open class MeepMeep @JvmOverloads constructor(private val windowSize: Int, fps: 
         FieldUtil.CANVAS_WIDTH = windowSize.toDouble()
         FieldUtil.CANVAS_HEIGHT = windowSize.toDouble()
 
-        DEFAULT_BOT_ENTITY = BotEntity(this, 18.0, 18.0, Pose2d(), colorManager.theme, 0.8)
         DEFAULT_AXES_ENTITY = AxesEntity(this, 0.8, colorManager.theme, FONT_CMU_BOLD_LIGHT, 20f)
         DEFAULT_COMPASS_ENTITY = CompassEntity(
             this, colorManager.theme, 30.0, 30.0, Vector2d(-54.0, 54.0)
@@ -232,20 +223,8 @@ open class MeepMeep @JvmOverloads constructor(private val windowSize: Int, fps: 
             override fun keyReleased(p0: KeyEvent?) {}
         })
 
-        // Handle entities
-        DEFAULT_ROADRUNNER_BOT_ENTITY = RoadRunnerBotEntity(
-            this,
-            Constraints(
-                30.0, 30.0, Math.toRadians(60.0), Math.toRadians(60.0), 15.0
-            ),
-            18.0, 18.0,
-            Pose2d(), colorManager.theme, 0.8
-        )
-
         // Entities
-
         zIndexManager.setTagHierarchy(
-            "DEFAULT_BOT_ENTITY",
             "RR_BOT_ENTITY",
             "TURN_INDICATOR_ENTITY",
             "MARKER_INDICATOR_ENTITY",
@@ -254,11 +233,8 @@ open class MeepMeep @JvmOverloads constructor(private val windowSize: Int, fps: 
             "AXES_ENTITY",
         )
 
-        //        addEntity(DEFAULT_BOT_ENTITY)
         addEntity(DEFAULT_AXES_ENTITY)
         addEntity(DEFAULT_COMPASS_ENTITY)
-
-        addEntity(DEFAULT_ROADRUNNER_BOT_ENTITY)
     }
 
     open fun start(): MeepMeep {
@@ -275,10 +251,6 @@ open class MeepMeep @JvmOverloads constructor(private val windowSize: Int, fps: 
         onCanvasResize()
 
         loopManager.start()
-
-        // Road Runner Start
-//        removeEntity(DEFAULT_BOT_ENTITY)
-        if (DEFAULT_ROADRUNNER_BOT_ENTITY in entityList) DEFAULT_ROADRUNNER_BOT_ENTITY.start()
 
         return this
     }
@@ -324,8 +296,8 @@ open class MeepMeep @JvmOverloads constructor(private val windowSize: Int, fps: 
                 colorManager.isDarkMode = true
                 ImageIO.read(classLoader.getResourceAsStream("background/field-ug-dark-fix.jpg"))
             }
-            Background.FIELD_FREIGHT_FRENZY->{
-                colorManager.isDarkMode=false
+            Background.FIELD_FREIGHT_FRENZY -> {
+                colorManager.isDarkMode = false
                 ImageIO.read(classLoader.getResourceAsStream("background/field-ff.png"))
 
             }
@@ -384,20 +356,6 @@ open class MeepMeep @JvmOverloads constructor(private val windowSize: Int, fps: 
         }
     }
 
-    //-------------Robot Settings-------------//
-    open fun setBotDimensions(width: Double, height: Double): MeepMeep {
-        // Core
-        if (DEFAULT_BOT_ENTITY in entityList) {
-            DEFAULT_BOT_ENTITY.setDimensions(width, height)
-        }
-
-        // Road Runner
-        if (DEFAULT_ROADRUNNER_BOT_ENTITY in entityList)
-            DEFAULT_ROADRUNNER_BOT_ENTITY.setDimensions(width, height)
-
-        return this
-    }
-
     //-------------Axes Settings-------------//
     fun setAxesInterval(interval: Int): MeepMeep {
         if (DEFAULT_AXES_ENTITY in entityList) DEFAULT_AXES_ENTITY.setInterval(interval)
@@ -453,73 +411,6 @@ open class MeepMeep @JvmOverloads constructor(private val windowSize: Int, fps: 
 
         return this
     }
-
-    //-------------Road Runner Settings-------------//
-    fun setStartPose(pose: Pose2d): MeepMeep {
-        if (DEFAULT_ROADRUNNER_BOT_ENTITY in entityList) DEFAULT_ROADRUNNER_BOT_ENTITY.pose = pose
-
-        return this
-    }
-
-    fun setConstraints(
-        maxVel: Double,
-        maxAccel: Double,
-        maxAngVel: Double,
-        maxAngAccel: Double,
-        trackWidth: Double
-    ): MeepMeep {
-        if (DEFAULT_ROADRUNNER_BOT_ENTITY in entityList)
-            DEFAULT_ROADRUNNER_BOT_ENTITY.setConstraints(
-                Constraints(
-                    maxVel,
-                    maxAccel,
-                    maxAngVel,
-                    maxAngAccel,
-                    trackWidth
-                )
-            )
-
-        return this
-    }
-
-    fun setDriveTrainType(driveTrainType: DriveTrainType): MeepMeep {
-        if (DEFAULT_ROADRUNNER_BOT_ENTITY in entityList)
-            DEFAULT_ROADRUNNER_BOT_ENTITY.setDriveTrainType(driveTrainType)
-
-        return this
-    }
-
-    fun followTrajectorySequence(callback: AddTrajectorySequenceCallback): MeepMeep {
-        if (DEFAULT_ROADRUNNER_BOT_ENTITY in entityList)
-            DEFAULT_ROADRUNNER_BOT_ENTITY.followTrajectorySequence(
-                callback.buildTrajectorySequence(DEFAULT_ROADRUNNER_BOT_ENTITY.drive)
-            )
-
-        return this
-    }
-
-    fun followTrajectorySequence(trajectorySequence: TrajectorySequence): MeepMeep {
-        if (DEFAULT_ROADRUNNER_BOT_ENTITY in entityList)
-            DEFAULT_ROADRUNNER_BOT_ENTITY.followTrajectorySequence(trajectorySequence)
-
-        return this
-    }
-
-//    fun followTrajectory(callback: AddTrajectoryCallback): MeepMeep {
-//        if (DEFAULT_ROADRUNNER_BOT_ENTITY in entityList)
-//            DEFAULT_ROADRUNNER_BOT_ENTITY.followTrajectoryList(
-//                    callback.buildTrajectory(DEFAULT_ROADRUNNER_BOT_ENTITY.drive)
-//            )
-//
-//        return this
-//    }
-
-//    fun followTrajectory(trajectory: List<Trajectory>): MeepMeep {
-//        if (DEFAULT_ROADRUNNER_BOT_ENTITY in entityList)
-//            DEFAULT_ROADRUNNER_BOT_ENTITY.followTrajectoryList(trajectory)
-//
-//        return this
-//    }
 
     enum class Background {
         GRID_BLUE,

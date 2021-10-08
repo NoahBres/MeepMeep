@@ -20,7 +20,9 @@ class RoadRunnerBotEntity(
     pose: Pose2d,
 
     private val colorScheme: ColorScheme,
-    opacity: Double
+    opacity: Double,
+
+    private var driveTrainType: DriveTrainType = DriveTrainType.MECANUM
 ) : BotEntity(meepMeep, width, height, pose, colorScheme, opacity) {
     companion object {
         const val SKIP_LOOPS = 2
@@ -31,7 +33,6 @@ class RoadRunnerBotEntity(
 
     override var zIndex: Int = 0
 
-    private var driveTrainType = DriveTrainType.MECANUM
     var drive = DriveShim(driveTrainType, constraints, pose)
 
     var currentTrajectorySequence: TrajectorySequence? = null
