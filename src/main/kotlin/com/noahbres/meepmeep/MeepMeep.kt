@@ -1,6 +1,5 @@
 package com.noahbres.meepmeep
 
-import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.geometry.Vector2d
 import com.noahbres.meepmeep.core.colorscheme.ColorManager
 import com.noahbres.meepmeep.core.colorscheme.ColorScheme
@@ -8,11 +7,6 @@ import com.noahbres.meepmeep.core.entity.*
 import com.noahbres.meepmeep.core.ui.WindowFrame
 import com.noahbres.meepmeep.core.util.FieldUtil
 import com.noahbres.meepmeep.core.util.LoopManager
-import com.noahbres.meepmeep.roadrunner.AddTrajectorySequenceCallback
-import com.noahbres.meepmeep.roadrunner.Constraints
-import com.noahbres.meepmeep.roadrunner.DriveTrainType
-import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity
-import com.noahbres.meepmeep.roadrunner.trajectorysequence.TrajectorySequence
 import java.awt.*
 import java.awt.datatransfer.StringSelection
 import java.awt.event.*
@@ -264,44 +258,47 @@ class MeepMeep @JvmOverloads constructor(private val windowSize: Int, fps: Int =
         bg = when (background) {
             Background.GRID_BLUE -> {
                 colorManager.isDarkMode = false
-                ImageIO.read(classLoader.getResourceAsStream("background/grid-blue.jpg"))
+                ImageIO.read(classLoader.getResourceAsStream("background/misc/field-grid-blue.jpg"))
             }
             Background.GRID_GREEN -> {
                 colorManager.isDarkMode = false
-                ImageIO.read(classLoader.getResourceAsStream("background/grid-green.jpg"))
+                ImageIO.read(classLoader.getResourceAsStream("background/misc/field-grid-green.jpg"))
             }
             Background.GRID_GRAY -> {
                 colorManager.isDarkMode = false
-                ImageIO.read(classLoader.getResourceAsStream("background/grid-gray.jpg"))
+                ImageIO.read(classLoader.getResourceAsStream("background/misc/field-grid-gray.jpg"))
             }
-            Background.FIELD_SKYSTONE -> {
+            Background.FIELD_SKYSTONE_OFFICIAL -> {
                 colorManager.isDarkMode = false
-                ImageIO.read(classLoader.getResourceAsStream("background/field-skystone.png"))
+                ImageIO.read(classLoader.getResourceAsStream("background/season-2019-skystone/field-2019-skystone-official.png"))
             }
-            Background.FIELD_SKYSTONE_GF -> {
+            Background.FIELD_SKYSTONE_GF_DARK -> {
                 colorManager.isDarkMode = true
-                ImageIO.read(classLoader.getResourceAsStream("background/field-skystone-gf.png"))
+                ImageIO.read(classLoader.getResourceAsStream("background/season-2019-skystone/field-2019-skystone-gf-dark.png"))
             }
-            Background.FIELD_SKYSTONE_LIGHT -> {
+            Background.FIELD_SKYSTONE_INNOV8RZ_LIGHT -> {
                 colorManager.isDarkMode = false
-                ImageIO.read(classLoader.getResourceAsStream("background/field-skystone-light-fix.jpg"))
+                ImageIO.read(classLoader.getResourceAsStream("background/season-2019-skystone/field-2019-skystone-innov8rz-light.jpg"))
             }
-            Background.FIELD_SKYSTONE_DARK -> {
+            Background.FIELD_SKYSTONE_INNOV8RZ_DARK -> {
                 colorManager.isDarkMode = true
-                ImageIO.read(classLoader.getResourceAsStream("background/field-skystone-dark-fix.jpg"))
+                ImageIO.read(classLoader.getResourceAsStream("background/season-2019-skystone/field-2019-skystone-innov8rz-dark.jpg"))
             }
-            Background.FIELD_SKYSTONE_STARWARS -> {
+            Background.FIELD_SKYSTONE_STARWARS_DARK -> {
                 colorManager.isDarkMode = true
-                ImageIO.read(classLoader.getResourceAsStream("background/field-skystone-starwars.png"))
+                ImageIO.read(classLoader.getResourceAsStream("background/season-2019-skystone/field-2019-skystone-starwars.png"))
             }
-            Background.FIELD_ULTIMATE_GOAL_DARK -> {
+            Background.FIELD_ULTIMATEGOAL_INNOV8RZ_DARK -> {
                 colorManager.isDarkMode = true
-                ImageIO.read(classLoader.getResourceAsStream("background/field-ug-dark-fix.jpg"))
+                ImageIO.read(classLoader.getResourceAsStream("background/season-2020-ultimategoal/field-2020-innov8rz-dark.jpg"))
             }
-            Background.FIELD_FREIGHT_FRENZY -> {
+            Background.FIELD_FREIGHTFRENZY_OFFICIAL -> {
                 colorManager.isDarkMode = false
-                ImageIO.read(classLoader.getResourceAsStream("background/field-ff.png"))
-
+                ImageIO.read(classLoader.getResourceAsStream("background/season-2021-freightfrenzy/field-2021-official.png"))
+            }
+            Background.FIELD_FREIGHTFRENZY_ADI_DARK -> {
+                colorManager.isDarkMode = true
+                ImageIO.read(classLoader.getResourceAsStream("background/season-2021-freightfrenzy/field-2021-adi-dark.png"))
             }
 
         }.getScaledInstance(windowSize, windowSize, Image.SCALE_SMOOTH)
@@ -418,12 +415,13 @@ class MeepMeep @JvmOverloads constructor(private val windowSize: Int, fps: Int =
         GRID_BLUE,
         GRID_GREEN,
         GRID_GRAY,
-        FIELD_SKYSTONE,
-        FIELD_SKYSTONE_GF,
-        FIELD_SKYSTONE_LIGHT,
-        FIELD_SKYSTONE_DARK,
-        FIELD_SKYSTONE_STARWARS,
-        FIELD_ULTIMATE_GOAL_DARK,
-        FIELD_FREIGHT_FRENZY
+        FIELD_SKYSTONE_OFFICIAL,
+        FIELD_SKYSTONE_GF_DARK,
+        FIELD_SKYSTONE_INNOV8RZ_LIGHT,
+        FIELD_SKYSTONE_INNOV8RZ_DARK,
+        FIELD_SKYSTONE_STARWARS_DARK,
+        FIELD_ULTIMATEGOAL_INNOV8RZ_DARK,
+        FIELD_FREIGHTFRENZY_OFFICIAL,
+        FIELD_FREIGHTFRENZY_ADI_DARK
     }
 }
