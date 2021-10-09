@@ -93,7 +93,9 @@ class MeepMeep @JvmOverloads constructor(private val windowSize: Int, fps: Int =
         )
 
         g.font = Font("Sans", Font.BOLD, 14)
-        g.color = ColorManager.COLOR_PALETTE.GRAY_100
+        g.color =
+            if (colorManager.isDarkMode) ColorManager.COLOR_PALETTE.GRAY_100 else ColorManager.COLOR_PALETTE.GRAY_800
+
         g.drawString(
             "(%.1f, %.1f)".format(
                 mouseToFieldCoords.x,
