@@ -1,11 +1,9 @@
 package com.noahbres.meepmeep.roadrunner.entity
 
 import com.acmerobotics.roadrunner.geometry.Pose2d
-import com.acmerobotics.roadrunner.geometry.Vector2d
 import com.noahbres.meepmeep.MeepMeep
 import com.noahbres.meepmeep.core.colorscheme.ColorScheme
 import com.noahbres.meepmeep.core.entity.ThemedEntity
-import com.noahbres.meepmeep.core.exhaustive
 import com.noahbres.meepmeep.core.toScreenCoord
 import com.noahbres.meepmeep.core.util.FieldUtil
 import com.noahbres.meepmeep.roadrunner.trajectorysequence.*
@@ -56,13 +54,13 @@ class TrajectorySequenceEntity(
     private fun redrawPath() {
         // Request to clear previous turn indicator entities
         turnEntityList.forEach {
-            meepMeep.requestToClearEntity(it)
+            meepMeep.requestToRemoveEntity(it)
         }
         turnEntityList.clear()
 
         // Request to clear previous marker indicator entities
         markerEntityList.forEach {
-            meepMeep.requestToClearEntity(it)
+            meepMeep.requestToRemoveEntity(it)
         }
         markerEntityList.clear()
 

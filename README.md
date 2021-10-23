@@ -5,16 +5,16 @@ Path creation/visualization tool for Road Runner
 
 ![MeepMeep Sample Recording](/images/readme/screen-recording.gif?raw=true)
 
-# 🔨 Installing 
+# 🔨 Installing
 
 ## Gradle Snippet:
 ```groovy
 repositories {
-    maven { url 'https://jitpack.io' }
+  maven { url 'https://jitpack.io' }
 }
 
 dependencies {
-    implementation 'com.github.NoahBres:MeepMeep:1.0.6'
+  implementation 'com.github.NoahBres:MeepMeep:1.0.6'
 }
 ```
 
@@ -67,5 +67,15 @@ public class MeepMeepTesting {
 On some systems hardware acceleration may not be enabled by default where it could be used. To enable hardware acceleration use the cli flag: `-Dsun.java2d.opengl=true` or enable it _before_ initializing your `MeepMeep` instance with `System.setProperty("sun.java2d.opengl", "true");`.
 
 ## Notes:
-Default Bot Constraints
-  - 
+Default Bot Settings:
+- Constraints
+- Max Vel: 30in/s
+- Max Accel: 30in/s/s
+- Max Ang Vel: 60deg/s
+- Max Ang Accel: 60deg/s/s
+- Track Width: 15in
+- Bot Width: 18in
+- Bot Width: 18in
+- Start Pose: (x: 0in, y: 0in, heading: 0rad)
+- Color Scheme: Inherited from MeepMeep.colorManager unless overriden
+- Drive Train Type: Mecanum

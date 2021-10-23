@@ -4,13 +4,14 @@ import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.noahbres.meepmeep.MeepMeep
 import com.noahbres.meepmeep.core.colorscheme.ColorScheme
 import com.noahbres.meepmeep.core.entity.BotEntity
+import com.noahbres.meepmeep.core.entity.EntityEventListener
 import com.noahbres.meepmeep.core.exhaustive
-import com.noahbres.meepmeep.core.util.FieldUtil
 import com.noahbres.meepmeep.roadrunner.Constraints
 import com.noahbres.meepmeep.roadrunner.DriveShim
 import com.noahbres.meepmeep.roadrunner.DriveTrainType
 import com.noahbres.meepmeep.roadrunner.trajectorysequence.*
-import com.noahbres.meepmeep.roadrunner.ui.TrajectoryProgressSlider
+import com.noahbres.meepmeep.roadrunner.ui.TrajectoryProgressSliderMaster
+import kotlin.math.min
 
 class RoadRunnerBotEntity(
     meepMeep: MeepMeep,
@@ -19,14 +20,15 @@ class RoadRunnerBotEntity(
     width: Double, height: Double,
     pose: Pose2d,
 
-    private val colorScheme: ColorScheme,
+    val colorScheme: ColorScheme,
     opacity: Double,
 
-    private var driveTrainType: DriveTrainType = DriveTrainType.MECANUM
-) : BotEntity(meepMeep, width, height, pose, colorScheme, opacity) {
+    private var driveTrainType: DriveTrainType = DriveTrainType.MECANUM,
+
+    var listenToSwitchThemeRequest: Boolean = false
+) : BotEntity(meepMeep, width, height, pose, colorScheme, opacity), EntityEventListener {
     companion object {
         const val SKIP_LOOPS = 2
-        const val PROGRESS_SLIDER_HEIGHT = 20
     }
 
     override val tag = "RR_BOT_ENTITY"
@@ -39,7 +41,7 @@ class RoadRunnerBotEntity(
 
     private var trajectorySequenceEntity: TrajectorySequenceEntity? = null
 
-    private var looping = true
+    var looping = true
     private var running = false
 
     private var trajectorySequenceElapsedTime = 0.0
@@ -52,23 +54,8 @@ class RoadRunnerBotEntity(
 
     private var skippedLoops = 0
 
-    private val progressSlider = TrajectoryProgressSlider(
-        this,
-        FieldUtil.CANVAS_WIDTH.toInt(),
-        PROGRESS_SLIDER_HEIGHT,
-        colorScheme.TRAJECTORY_SLIDER_FG,
-        colorScheme.TRAJECTORY_SLIDER_BG,
-        colorScheme.TRAJECTORY_TEXT_COLOR,
-        MeepMeep.FONT_CMU_BOLD
-    )
-
-    init {
-        progressSlider.progress = 0.0
-        meepMeep.sliderPanel.add(progressSlider)
-        meepMeep.windowFrame.pack()
-
-        meepMeep.windowFrame
-    }
+    private var sliderMaster: TrajectoryProgressSliderMaster? = null
+    private var sliderMasterIndex: Int? = null
 
     override fun update(deltaTime: Long) {
         if (!running) return
@@ -106,7 +93,9 @@ class RoadRunnerBotEntity(
 
                 trajectorySequenceEntity!!.markerEntityList.forEach { if (trajectorySequenceElapsedTime >= it.time) it.passed() }
 
-                progressSlider.progress = (trajectorySequenceElapsedTime / currentTrajectorySequence!!.duration)
+                sliderMaster?.reportProgress(sliderMasterIndex ?: -1, trajectorySequenceElapsedTime)
+
+                Unit
             }
 
             looping -> {
@@ -114,11 +103,16 @@ class RoadRunnerBotEntity(
                     it.reset()
                 }
                 trajectorySequenceElapsedTime = 0.0
+
+                sliderMaster?.reportDone(sliderMasterIndex ?: -1)
             }
 
             else -> {
                 trajectorySequenceElapsedTime = 0.0
-                currentTrajectorySequence = null
+                running = false
+//                currentTrajectorySequence = null
+
+                sliderMaster?.reportDone(sliderMasterIndex ?: -1)
             }
         }.exhaustive
     }
@@ -128,28 +122,27 @@ class RoadRunnerBotEntity(
         trajectorySequenceElapsedTime = 0.0
     }
 
+    fun resume() {
+        running = true
+    }
+
     fun pause() {
         trajectoryPaused = true
     }
 
-    fun unPause() {
+    fun unpause() {
         trajectoryPaused = false
     }
 
-    fun togglePause() {
-        trajectoryPaused = !trajectoryPaused
-    }
-
-    fun setTrajectoryProgress(progress: Double) {
+    fun setTrajectoryProgressSeconds(seconds: Double) {
         if (currentTrajectorySequence != null)
-            trajectorySequenceElapsedTime = progress * currentTrajectorySequence!!.duration
+            trajectorySequenceElapsedTime = min(seconds, currentTrajectorySequence!!.duration)
     }
 
     fun followTrajectorySequence(sequence: TrajectorySequence) {
         currentTrajectorySequence = sequence
 
         trajectorySequenceEntity = TrajectorySequenceEntity(meepMeep, sequence, colorScheme)
-        meepMeep.addEntity(trajectorySequenceEntity!!)
     }
 
     fun setConstraints(constraints: Constraints) {
@@ -165,10 +158,22 @@ class RoadRunnerBotEntity(
     }
 
     override fun switchScheme(scheme: ColorScheme) {
-        super.switchScheme(scheme)
+        if (listenToSwitchThemeRequest)
+            super.switchScheme(scheme)
+    }
 
-        this.progressSlider.fg = scheme.TRAJECTORY_SLIDER_FG
-        this.progressSlider.bg = scheme.TRAJECTORY_SLIDER_BG
-        this.progressSlider.textColor = scheme.TRAJECTORY_TEXT_COLOR
+    fun setTrajectoryProgressSliderMaster(master: TrajectoryProgressSliderMaster, index: Int) {
+        sliderMaster = master
+        sliderMasterIndex = index
+    }
+
+    override fun onAddToEntityList() {
+        if (trajectorySequenceEntity != null)
+            meepMeep.requestToAddEntity(trajectorySequenceEntity!!)
+    }
+
+    override fun onRemoveFromEntityList() {
+        if (trajectorySequenceEntity != null)
+            meepMeep.requestToRemoveEntity(trajectorySequenceEntity!!)
     }
 }

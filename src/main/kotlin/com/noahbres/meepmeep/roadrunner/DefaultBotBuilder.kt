@@ -58,19 +58,25 @@ class DefaultBotBuilder(private val meepMeep: MeepMeep) {
         return this
     }
 
+    fun setColorScheme(scheme: ColorScheme): DefaultBotBuilder {
+        this.colorScheme = scheme
+
+        return this
+    }
+
     fun build(): RoadRunnerBotEntity {
         return RoadRunnerBotEntity(
             meepMeep,
             constraints,
             width, height,
-            startPose, colorScheme ?: meepMeep.colorManager.theme, opacity
+            startPose, colorScheme ?: meepMeep.colorManager.theme, opacity,
+            driveTrainType, false
         )
     }
 
     fun followTrajectorySequence(trajectorySequence: TrajectorySequence): RoadRunnerBotEntity {
         val bot = this.build()
         bot.followTrajectorySequence(trajectorySequence)
-        bot.start()
 
         return bot
     }

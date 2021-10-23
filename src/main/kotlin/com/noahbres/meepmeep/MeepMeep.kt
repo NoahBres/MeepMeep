@@ -7,6 +7,8 @@ import com.noahbres.meepmeep.core.entity.*
 import com.noahbres.meepmeep.core.ui.WindowFrame
 import com.noahbres.meepmeep.core.util.FieldUtil
 import com.noahbres.meepmeep.core.util.LoopManager
+import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity
+import com.noahbres.meepmeep.roadrunner.ui.TrajectoryProgressSliderMaster
 import java.awt.*
 import java.awt.datatransfer.StringSelection
 import java.awt.event.*
@@ -43,7 +45,7 @@ class MeepMeep @JvmOverloads constructor(private val windowSize: Int, fps: Int =
 
     private val entityList = mutableListOf<Entity>()
     private val requestedAddEntityList = mutableListOf<Entity>()
-    private val requestedClearEntityList = mutableListOf<Entity>()
+    private val requestedRemoveEntityList = mutableListOf<Entity>()
 
     private val zIndexManager = ZIndexManager();
 
@@ -103,10 +105,10 @@ class MeepMeep @JvmOverloads constructor(private val windowSize: Int, fps: Int =
 
     private val update: (deltaTime: Long) -> Unit = { deltaTime ->
         if (entityListDirty) {
-            requestedClearEntityList.forEach {
+            requestedRemoveEntityList.forEach {
                 removeEntity(it)
             }
-            requestedClearEntityList.clear();
+            requestedRemoveEntityList.clear();
 
             requestedAddEntityList.forEach {
                 addEntity(it)
@@ -126,7 +128,16 @@ class MeepMeep @JvmOverloads constructor(private val windowSize: Int, fps: Int =
     private val loopManager = LoopManager(fps, update, render)
 
     // Road Runner UI Elements
-    val sliderPanel = JPanel()
+
+    // Handles progress slider elements
+    private val progressSliderMasterPanel: TrajectoryProgressSliderMaster by lazy {
+        TrajectoryProgressSliderMaster(
+            this,
+            FieldUtil.CANVAS_WIDTH.toInt(),
+            20
+        )
+    }
+
     var middleButtonPanel = JPanel()
 
     private val standardCursorButton = JButton("test")
@@ -160,9 +171,7 @@ class MeepMeep @JvmOverloads constructor(private val windowSize: Int, fps: Int =
             this, colorManager.theme, 30.0, 30.0, Vector2d(-54.0, 54.0)
         )
 
-        // Road Runner Init
         // Handle UI
-        sliderPanel.layout = BoxLayout(sliderPanel, BoxLayout.Y_AXIS)
 
         middleButtonList.forEach {
             it.alignmentX = 0.5f
@@ -178,7 +187,7 @@ class MeepMeep @JvmOverloads constructor(private val windowSize: Int, fps: Int =
         middleButtonPanel.add(pathSelectionButton)
         middleButtonPanel.add(Box.createVerticalGlue())
 
-        windowFrame.canvasPanel.add(sliderPanel)
+        windowFrame.canvasPanel.add(progressSliderMasterPanel)
 //        windowFrame.contentPane.add(middleButtonPanel)
 
         windowFrame.pack()
@@ -233,8 +242,7 @@ class MeepMeep @JvmOverloads constructor(private val windowSize: Int, fps: Int =
         addEntity(DEFAULT_COMPASS_ENTITY)
     }
 
-    open fun start(): MeepMeep {
-        // Core Start
+    fun start(): MeepMeep {
         if (bg == null) setBackground(Background.GRID_BLUE)
         windowFrame.isVisible = true
 
@@ -242,6 +250,7 @@ class MeepMeep @JvmOverloads constructor(private val windowSize: Int, fps: Int =
         // Thus make sure to reset them
         entityList.forEach {
             if (it is ThemedEntity) it.switchScheme(colorManager.theme)
+            if (it is RoadRunnerBotEntity) it.start()
         }
 
         onCanvasResize()
@@ -373,6 +382,12 @@ class MeepMeep @JvmOverloads constructor(private val windowSize: Int, fps: Int =
 
         if (entity is MouseMotionListener) canvas.addMouseMotionListener(entity)
 
+        if (entity is RoadRunnerBotEntity)
+            progressSliderMasterPanel.addRoadRunnerBot(entity)
+
+        if (entity is EntityEventListener)
+            entity.onAddToEntityList()
+
         return this
     }
 
@@ -381,10 +396,15 @@ class MeepMeep @JvmOverloads constructor(private val windowSize: Int, fps: Int =
         requestedAddEntityList.remove(entity)
         entityListDirty = true
 
-
         if (entity is MouseListener) canvas.removeMouseListener(entity)
 
         if (entity is MouseMotionListener) canvas.removeMouseMotionListener(entity)
+
+        if (entity is RoadRunnerBotEntity)
+            progressSliderMasterPanel.removeRoadRunnerBot(entity)
+
+        if (entity is EntityEventListener)
+            entity.onRemoveFromEntityList()
 
         return this
     }
@@ -397,8 +417,8 @@ class MeepMeep @JvmOverloads constructor(private val windowSize: Int, fps: Int =
     }
 
 
-    fun requestToClearEntity(entity: Entity): MeepMeep {
-        requestedClearEntityList.add(entity)
+    fun requestToRemoveEntity(entity: Entity): MeepMeep {
+        requestedRemoveEntityList.add(entity)
         entityListDirty = true
 
         return this
