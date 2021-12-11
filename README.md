@@ -14,11 +14,13 @@ repositories {
 }
 
 dependencies {
-  implementation 'com.github.NoahBres:MeepMeep:1.0.6'
+  implementation 'com.github.NoahBres:MeepMeep:2.0.0'
 }
 ```
 
 ## Installation Video
+
+**🚨 The code snippet and explanation within the video is currently not up-to-date with the latest MeepMeep 2.0.x API  🚨**
 
 [![YouTube Installation Video](/images/readme/thumbnail-half.jpg?raw=true)](https://youtu.be/vdn1v404go8)
 
@@ -28,23 +30,15 @@ package com.example.meepmeeptesting;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.noahbres.meepmeep.MeepMeep;
-import com.noahbres.meepmeep.core.colorscheme.scheme.ColorSchemeRedDark;
+import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
+import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
 public class MeepMeepTesting {
     public static void main(String[] args) {
-        // TODO: If you experience poor performance, enable this flag
-        // System.setProperty("sun.java2d.opengl", "true");
+        MeepMeep meepMeep = new MeepMeep(800);
 
-        // Declare a MeepMeep instance
-        // With a field size of 800 pixels
-        MeepMeep mm = new MeepMeep(800)
-                // Set field image
-                .setBackground(MeepMeep.Background.FIELD_ULTIMATE_GOAL_DARK)
-                // Set theme
-                .setTheme(new ColorSchemeRedDark())
-                // Background opacity from 0-1
-                .setBackgroundAlpha(1f)
-                // Set constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
+        RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
+                // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(0, 0, 0))
@@ -57,14 +51,84 @@ public class MeepMeepTesting {
                                 .forward(30)
                                 .turn(Math.toRadians(90))
                                 .build()
-                )
+                );
+
+        meepMeep.setBackground(MeepMeep.Background.FIELD_FREIGHTFRENZY_ADI_DARK)
+                .setDarkMode(true)
+                .setBackgroundAlpha(0.95f)
+                .addEntity(myBot)
+                .start();
+    }
+}
+```
+
+### Adding a second bot:
+
+MeepMeep version 2.x introduces a new API and updated entity handling, allowing one to run and coordinate multiple trajectories.
+Declare a new `RoadRunnerBotEntity` and add it via `MeepMeep#addEntity(Entity)`.
+
+```java
+package com.example.meepmeeptesting;
+
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.noahbres.meepmeep.MeepMeep;
+import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
+import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
+
+public class MeepMeepTesting {
+    public static void main(String[] args) {
+        MeepMeep meepMeep = new MeepMeep(800);
+
+        RoadRunnerBotEntity myFirstBot = new DefaultBotBuilder(meepMeep)
+                // We set this bot to be blue
+                .setColorScheme(new ColorSchemeBlueDark())
+                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
+                .followTrajectorySequence(drive ->
+                        drive.trajectorySequenceBuilder(new Pose2d(0, 0, 0))
+                                .forward(30)
+                                .turn(Math.toRadians(90))
+                                .forward(30)
+                                .turn(Math.toRadians(90))
+                                .forward(30)
+                                .turn(Math.toRadians(90))
+                                .forward(30)
+                                .turn(Math.toRadians(90))
+                                .build()
+                );
+
+        RoadRunnerBotEntity mySecondBot = new DefaultBotBuilder(meepMeep)
+                // We set this bot to be red
+                .setColorScheme(new ColorSchemeRedDark())
+                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
+                .followTrajectorySequence(drive ->
+                        drive.trajectorySequenceBuilder(new Pose2d(0, 0, 0))
+                                .forward(30)
+                                .turn(Math.toRadians(90))
+                                .forward(30)
+                                .turn(Math.toRadians(90))
+                                .forward(30)
+                                .turn(Math.toRadians(90))
+                                .forward(30)
+                                .turn(Math.toRadians(90))
+                                .build()
+                );
+
+        meepMeep.setBackground(MeepMeep.Background.FIELD_FREIGHTFRENZY_ADI_DARK)
+                .setDarkMode(true)
+                .setBackgroundAlpha(0.95f)
+                .addEntity(myFirstBot)
+                .addEntity(mySecondBot)
                 .start();
     }
 }
 ```
 
 ## Poor Performance?
-On some systems hardware acceleration may not be enabled by default where it could be used. To enable hardware acceleration use the cli flag: `-Dsun.java2d.opengl=true` or enable it _before_ initializing your `MeepMeep` instance with `System.setProperty("sun.java2d.opengl", "true");`.
+On some systems, hardware acceleration may not be enabled by default.
+To enable hardware acceleration use the cli flag: `-Dsun.java2d.opengl=true`.
+
+Or, enable it _before_ initializing your `MeepMeep` instance with the following snippet:
+`System.setProperty("sun.java2d.opengl", "true");`
 
 ## Notes:
 Default Bot Settings:
