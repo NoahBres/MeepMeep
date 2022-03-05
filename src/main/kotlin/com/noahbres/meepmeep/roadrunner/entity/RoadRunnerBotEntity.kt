@@ -10,6 +10,10 @@ import com.noahbres.meepmeep.roadrunner.Constraints
 import com.noahbres.meepmeep.roadrunner.DriveShim
 import com.noahbres.meepmeep.roadrunner.DriveTrainType
 import com.noahbres.meepmeep.roadrunner.trajectorysequence.*
+import com.noahbres.meepmeep.roadrunner.trajectorysequence.sequencesegment.SequenceSegment
+import com.noahbres.meepmeep.roadrunner.trajectorysequence.sequencesegment.TrajectorySegment
+import com.noahbres.meepmeep.roadrunner.trajectorysequence.sequencesegment.TurnSegment
+import com.noahbres.meepmeep.roadrunner.trajectorysequence.sequencesegment.WaitSegment
 import com.noahbres.meepmeep.roadrunner.ui.TrajectoryProgressSliderMaster
 import kotlin.math.min
 
@@ -65,13 +69,15 @@ class RoadRunnerBotEntity(
         if (!trajectoryPaused) trajectorySequenceElapsedTime += deltaTime / 1e9
 
         when {
-            trajectorySequenceElapsedTime <= currentTrajectorySequence!!.duration -> {
+            trajectorySequenceElapsedTime <= currentTrajectorySequence!!.duration() -> {
                 var segment: SequenceSegment? = null
                 var segmentOffsetTime = 0.0
 
                 var currentTime = 0.0
 
-                for (seg in currentTrajectorySequence!!.list) {
+                for(i in 0 until currentTrajectorySequence!!.size()) {
+                    val seg = currentTrajectorySequence!!.get(i)
+
                     if (currentTime + seg.duration > trajectorySequenceElapsedTime) {
                         segmentOffsetTime = trajectorySequenceElapsedTime - currentTime
                         segment = seg
@@ -86,7 +92,7 @@ class RoadRunnerBotEntity(
                     is WaitSegment -> segment.startPose
                     is TurnSegment -> segment.startPose.copy(heading = segment.motionProfile[segmentOffsetTime].x)
                     is TrajectorySegment -> segment.trajectory[segmentOffsetTime]
-                    else -> currentTrajectorySequence!!.end
+                    else -> currentTrajectorySequence!!.end()
                 }
 
                 drive.poseEstimate = pose;
@@ -136,7 +142,7 @@ class RoadRunnerBotEntity(
 
     fun setTrajectoryProgressSeconds(seconds: Double) {
         if (currentTrajectorySequence != null)
-            trajectorySequenceElapsedTime = min(seconds, currentTrajectorySequence!!.duration)
+            trajectorySequenceElapsedTime = min(seconds, currentTrajectorySequence!!.duration())
     }
 
     fun followTrajectorySequence(sequence: TrajectorySequence) {

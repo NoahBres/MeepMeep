@@ -51,13 +51,13 @@ class TrajectoryProgressSliderMaster(
     fun addRoadRunnerBot(bot: RoadRunnerBotEntity) {
         if (botList.indexOfFirst { it.first == bot } != -1) throw Exception("RoadRunnerBotEntity instance has already been added")
 
-        val currSeqDuration = bot.currentTrajectorySequence?.duration ?: 0.0
+        val currSeqDuration = bot.currentTrajectorySequence?.duration() ?: 0.0
         if (currSeqDuration >= maxTrajectoryDuration) {
             maxTrajectoryDuration = currSeqDuration
             maxTrajectoryIndex = botList.size
         }
 
-        maxTrajectoryDuration = max(bot.currentTrajectorySequence?.duration ?: 0.0, maxTrajectoryDuration)
+        maxTrajectoryDuration = max(bot.currentTrajectorySequence?.duration() ?: 0.0, maxTrajectoryDuration)
         for ((_, slider) in botList) {
             slider.maxTrajectoryDuration = maxTrajectoryDuration
         }
@@ -134,7 +134,7 @@ class TrajectoryProgressSliderMaster(
         for ((bot, slider) in botList) {
             bot.pause()
 
-            bot.setTrajectoryProgressSeconds(min(clippedInputTime, bot.currentTrajectorySequence?.duration ?: 0.0))
+            bot.setTrajectoryProgressSeconds(min(clippedInputTime, bot.currentTrajectorySequence?.duration() ?: 0.0))
 
             slider.redraw()
         }
@@ -145,7 +145,7 @@ class TrajectoryProgressSliderMaster(
         val clippedInputTime = clippedInputPercentage * maxTrajectoryDuration
 
         for ((bot, slider) in botList) {
-            bot.setTrajectoryProgressSeconds(min(clippedInputTime, bot.currentTrajectorySequence?.duration ?: 0.0))
+            bot.setTrajectoryProgressSeconds(min(clippedInputTime, bot.currentTrajectorySequence?.duration() ?: 0.0))
 
             slider.redraw()
         }

@@ -17,7 +17,7 @@ import javax.swing.*
 import javax.swing.border.EtchedBorder
 
 
-class MeepMeep @JvmOverloads constructor(private val windowSize: Int, fps: Int = 60) {
+open class MeepMeep @JvmOverloads constructor(private val windowSize: Int, fps: Int = 60) {
     companion object {
         @JvmStatic
         lateinit var DEFAULT_AXES_ENTITY: AxesEntity

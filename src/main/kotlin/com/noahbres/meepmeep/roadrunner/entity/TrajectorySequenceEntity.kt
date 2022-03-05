@@ -7,6 +7,9 @@ import com.noahbres.meepmeep.core.entity.ThemedEntity
 import com.noahbres.meepmeep.core.toScreenCoord
 import com.noahbres.meepmeep.core.util.FieldUtil
 import com.noahbres.meepmeep.roadrunner.trajectorysequence.*
+import com.noahbres.meepmeep.roadrunner.trajectorysequence.sequencesegment.TrajectorySegment
+import com.noahbres.meepmeep.roadrunner.trajectorysequence.sequencesegment.TurnSegment
+import com.noahbres.meepmeep.roadrunner.trajectorysequence.sequencesegment.WaitSegment
 import java.awt.*
 import java.awt.geom.Path2D
 import java.awt.image.BufferedImage
@@ -87,13 +90,13 @@ class TrajectorySequenceEntity(
 //            BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND
 //        )
 
-        var currentEndPose = trajectorySequence.start
+        var currentEndPose = trajectorySequence.start()
 
-        val firstVec = trajectorySequence.start.vec().toScreenCoord()
+        val firstVec = trajectorySequence.start().vec().toScreenCoord()
         trajectoryDrawnPath.moveTo(firstVec.x, firstVec.y)
 
-        trajectorySequence.list.forEach { step ->
-            when (step) {
+        for (i in 0 until trajectorySequence.size()) {
+            when (val step = trajectorySequence.get(i)) {
                 is TrajectorySegment -> {
                     val traj = step.trajectory
 
@@ -127,7 +130,9 @@ class TrajectorySequenceEntity(
         }
 
         var currentTime = 0.0
-        trajectorySequence.list.forEach { segment ->
+
+        for (i in 0 until trajectorySequence.size()) {
+            val segment = trajectorySequence.get(i)
             if (segment is WaitSegment || segment is TurnSegment) {
                 segment.markers.forEach { marker ->
                     val pose = when (segment) {
@@ -236,7 +241,9 @@ class TrajectorySequenceEntity(
             currentSegment = null
         } else {
             var currentTime = 0.0
-            for (seg in trajectorySequence.list) {
+            for (i in 0 until trajectorySequence.size()) {
+                val seg = trajectorySequence.get(i)
+
                 if (currentTime + seg.duration > trajectoryProgress!!) {
                     if (seg is TrajectorySegment) currentSegment = seg
 
