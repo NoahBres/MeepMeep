@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/MeepMeep.iml" filepath="$PROJECT_DIR$/.idea/MeepMeep.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/MeepMeep.main.iml" filepath="$PROJECT_DIR$/.idea/modules/MeepMeep.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/MeepMeep.test.iml" filepath="$PROJECT_DIR$/.idea/modules/MeepMeep.test.iml" />
     </modules>
   </component>
 </project>

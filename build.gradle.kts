@@ -1,13 +1,11 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    // Apply the Kotlin JVM plugin to add support for Kotlin.
-    id("org.jetbrains.kotlin.jvm") version "1.4.32"
-
     // Apply the java-library plugin for API and implementation separation.
     java
     `java-library`
     `maven-publish`
+    kotlin("jvm") version "1.6.20-RC"
 }
 
 val meepMeepVersion = "1.0-SNAPSHOT"
@@ -25,8 +23,9 @@ val githubReadme = "README.md"
 
 repositories {
     // Use jcenter for resolving dependencies.
-    // You can declare any Maven/Ivy/file repository here.
-    jcenter()
+    // You can declare any Maven/Ivy/file repository here
+    maven(url = "https://maven.brott.dev/")
+    mavenCentral()
 }
 
 java {
@@ -44,10 +43,11 @@ dependencies {
     // Use the Kotlin test library.
     testImplementation("org.jetbrains.kotlin:kotlin-test")
 
-    // Use the Kotlin JUnit integration.
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+    api("com.acmerobotics.roadrunner:core:0.5.5")
+}
 
-    api("com.acmerobotics.roadrunner:core:0.5.3")
+sourceSets["main"].java {
+    srcDir("src/main/kotlin")
 }
 
 // Create sources Jar from main kotlin sources

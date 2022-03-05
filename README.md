@@ -10,11 +10,12 @@ Path creation/visualization tool for Road Runner
 ## Gradle Snippet:
 ```groovy
 repositories {
-  maven { url 'https://jitpack.io' }
+    maven { url 'https://jitpack.io' }
+    maven { url = 'https://maven.brott.dev/' }
 }
 
 dependencies {
-  implementation 'com.github.NoahBres:MeepMeep:2.0.0'
+    implementation 'com.github.NoahBres:MeepMeep:2.0.0'
 }
 ```
 
