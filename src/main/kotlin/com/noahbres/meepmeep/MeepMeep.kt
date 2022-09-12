@@ -309,6 +309,10 @@ open class MeepMeep @JvmOverloads constructor(private val windowSize: Int, fps: 
                 colorManager.isDarkMode = true
                 ImageIO.read(classLoader.getResourceAsStream("background/season-2021-freightfrenzy/field-2021-adi-dark.png"))
             }
+            Background.FIELD_POWERPLAY_OFFICIAL -> {
+                colorManager.isDarkMode = false
+                ImageIO.read(classLoader.getResourceAsStream("background/season-2022-powerplay/field-2022-official.png"))
+            }
 
         }.getScaledInstance(windowSize, windowSize, Image.SCALE_SMOOTH)
 
@@ -442,6 +446,7 @@ open class MeepMeep @JvmOverloads constructor(private val windowSize: Int, fps: 
         FIELD_SKYSTONE_STARWARS_DARK,
         FIELD_ULTIMATEGOAL_INNOV8RZ_DARK,
         FIELD_FREIGHTFRENZY_OFFICIAL,
-        FIELD_FREIGHTFRENZY_ADI_DARK
+        FIELD_FREIGHTFRENZY_ADI_DARK,
+        FIELD_POWERPLAY_OFFICIAL
     }
 }
