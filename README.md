@@ -28,7 +28,7 @@ Path creation/visualization tool for Road Runner
     }
 
     dependencies {
-        implementation 'com.github.NoahBres:MeepMeep:2.0.1'
+        implementation 'com.github.NoahBres:MeepMeep:2.0.2'
     }
     ```
 NOTE: If the `repositories {...}` or `dependencies {...}` section already exists, feel free to add the contents of the above snippet to them, just for some cleaner code :)
