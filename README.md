@@ -6,15 +6,18 @@ Path creation/visualization tool for Road Runner
 <img src="/images/readme/screen-recording.gif" width="500" height="500"/>
 
 # 🔨 Installing (Android Studio)
+**You can also find a Video version of Similar instructions here (https://youtu.be/vdn1v404go8), However please do note that it may be outdated**
 1. In android studio, first click on the "FtcRobotController" Module, then right click on the Project Window and click New > Module
     
 2. On the left part of this window, instead of having "Phone & Tablet" Selected, select "Java or Kotlin Library" (See below image)
+        <img src="/images/readme/installationStep2.png" width="544" height="381.818181818"/>
 
 3. From here, remove the ":ftcrobotcontroller:lib" in the "Library Name" section, and rename it whatever you want (ex. MeepMeepTesting). At this point you should also change the "class name" section to whatever you want too (ex. MeepMeepTesting).
 
 4. Hit "Finish" at the bottom right of the Module Create window.
 
 5. Open up the "build.gradle" file for the MeepMeepTesting module (or whatever you called it above). In this file you should change `JavaVersion.VERSION_1_7` to `JavaVersion.VERSION_1_8` in both instances.
+        <img src="/images/readme/installationStep5.png" width="565.714285714 " height="274.285714286"/>
 
 6. At the bottom of the file add the following gradle snippet:
    
@@ -31,6 +34,7 @@ Path creation/visualization tool for Road Runner
 NOTE: If the `repositories {...}` or `dependencies {...}` section already exists, feel free to add the contents of the above snippet to them, just for some cleaner code :)
 
 7. When android studio prompts you to make a gradle sync, click "Sync Now".
+        <img src="/images/readme/installationStep7.png" width="643.636363636" height="20.3636363636"/>
 
 8. From here, you can go into the whatever you called the main class of the MeepMeep module, and either use the run sample here:
 
@@ -83,7 +87,7 @@ public class MeepMeepTesting {
     8. From here, in the bottom right of the window, press "Apply" then "Ok".
     9. It will now automatically switch to that Run/Debug Configuration profile.
     
-10. Your now done! If at any point you would like to build code onto your Control Hub or Phone, then click the Run/Debug configuration profile at the top to open the dropdown menu and select TeamCode, or ViceVersa to go back to a MeepMeepRun. Extra documentation can be found below, and if you run into any problems you can reach out to me @FurthestDrop517#9625 on discord, or ask the Utah FTC Discord. (I only wrote this documentation, not the entire library, thank NoahBres for that!)
+10. Your now done! If at any point you would like to build code onto your Control Hub or Phone, then click the Run/Debug configuration profile at the top to open the dropdown menu and select TeamCode, or viceversa to go back to a MeepMeepRun. Extra documentation can be found below, and if you run into any problems you can reach out on the Utah FTC Discord. I'm sure people would be happy to help :)
 
 ### Adding a second bot:
 
@@ -177,4 +181,4 @@ Default Bot Settings:
 - Drive Train Type: Mecanum
 
 
-[![YouTube Installation Video](/images/readme/thumbnail-half.jpg?raw=true)](https://youtu.be/vdn1v404go8)
+<!-- [![YouTube Installation Video](/images/readme/thumbnail-half.jpg?raw=true)](https://youtu.be/vdn1v404go8) -->
