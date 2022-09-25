@@ -5,6 +5,17 @@ Path creation/visualization tool for Road Runner
 
 <img src="/images/readme/screen-recording.gif" width="500" height="500"/>
 
+# Table of Contents
+- [MeepMeep](#meepmeep)
+- [Contents](#contents)
+- [🔨 Installing (Android Studio)](#-installing-android-studio)
+- [Extra Documentation](#extra-documentation)
+  * [Poor Performance?](#poor-performance)
+  * [Adding a second bot](#adding-a-second-bot)
+  * [Pulling Specific Jitpack Commits](
+  * [Extra Notes](#extra-notes)
+
+
 # 🔨 Installing (Android Studio)
 **You can also find a Video version of Similar instructions here (https://youtu.be/vdn1v404go8), However please do note that it may be outdated**
 1. In android studio, first click on the "FtcRobotController" Module so that it is highlighted, then right click on the FtcRobotController folder and click New > Module
@@ -90,13 +101,23 @@ public class MeepMeepTesting {
     
 10. Your now done! If at any point you would like to build code onto your Control Hub or Phone, then click the Run/Debug configuration profile at the top to open the dropdown menu and select TeamCode, or viceversa to go back to a MeepMeepRun. Extra documentation can be found below, and if you run into any problems you can reach out on the Utah FTC Discord. I'm sure people would be happy to help :)
 
+        
+# Extra Documentation
+Below is some extra documentation on how to use an configure MeepMeep
+        
+### Poor Performance?
+On some systems, hardware acceleration may not be enabled by default.
+To enable hardware acceleration use the cli flag: `-Dsun.java2d.opengl=true`.
+
+Or, enable it _before_ initializing your `MeepMeep` instance with the following snippet:
+`System.setProperty("sun.java2d.opengl", "true");`
+        
 ### Adding a second bot:
 
 MeepMeep version 2.x introduces a new API and updated entity handling, allowing one to run and coordinate multiple trajectories.
 Declare a new `RoadRunnerBotEntity` and add it via `MeepMeep#addEntity(Entity)`.
 
-![Two bot demo](/images/readme/two-bot-demo.gif?raw=true)
-
+<img src="/images/readme/two-bot-demo.gif" width="500" height="500"/>
 
 ```java
 package com.example.meepmeeptesting;
@@ -159,15 +180,24 @@ public class MeepMeepTesting {
     }
 }
 ```
+        
+### Pulling Specific Jitpack Commits
+You are now able to pull dependencies with specific commits from jitpack. In your build.gradle file for the MeepMeepTesting (or other name) module, change `implementation 'com.github.NoahBres:MeepMeep:2.0.2'` to any of the below, depending on what you want. If you are confused on where/which build.gradle file, checkout [🔨 Installing (Android Studio)](#-installing-android-studio), specifically step 5.
+        
+```
+// Pull from Specific Version (Same as install instructions)
+implementation 'com.github.NoahBres:MeepMeep:2.0.2' 
+        // 2.0.2 can be replaced with what ever version you want from the releases page
 
-## Poor Performance?
-On some systems, hardware acceleration may not be enabled by default.
-To enable hardware acceleration use the cli flag: `-Dsun.java2d.opengl=true`.
+// Pull from whatever the latest commit is
+implementation 'com.github.NoahBres:MeepMeep:-SNAPSHOT'
 
-Or, enable it _before_ initializing your `MeepMeep` instance with the following snippet:
-`System.setProperty("sun.java2d.opengl", "true");`
+// Pull from specific commit
+implementation 'com.github.NoahBres:MeepMeep:<commit version ID>' 
+        // <commit ID> replaced with ID of commit. For example "79d123f0c1".
+```
 
-## Notes:
+### Extra Notes
 Default Bot Settings:
 - Constraints
 - Max Vel: 30in/s
