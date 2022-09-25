@@ -7,7 +7,8 @@ Path creation/visualization tool for Road Runner
 
 # 🔨 Installing (Android Studio)
 **You can also find a Video version of Similar instructions here (https://youtu.be/vdn1v404go8), However please do note that it may be outdated**
-1. In android studio, first click on the "FtcRobotController" Module, then right click on the Project Window and click New > Module
+1. In android studio, first click on the "FtcRobotController" Module so that it is highlighted, then right click on the FtcRobotController folder and click New > Module
+        <img src="/images/readme/installationStep1.png" width="751" height="287"/>
     
 2. On the left part of this window, instead of having "Phone & Tablet" Selected, select "Java or Kotlin Library" (See below image)
         <img src="/images/readme/installationStep2.png" width="544" height="381.818181818"/>
