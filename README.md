@@ -35,7 +35,7 @@ Path creation/visualization tool for Road Runner
 
         ```groovy
         repositories {
-            maven { url 'https://jitpack.io' }
+            maven { url = 'https://jitpack.io' }
             maven { url = 'https://maven.brott.dev/' }
         }
 
