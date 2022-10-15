@@ -33,7 +33,7 @@ Path creation/visualization tool for Road Runner
 
 6.  At the bottom of the file add the following gradle snippet:
 
-        ```groovy
+        ```
         repositories {
             maven { url = 'https://jitpack.io' }
             maven { url = 'https://maven.brott.dev/' }
@@ -88,7 +88,7 @@ public class MeepMeepTesting {
 }
 ```
 
-8. Create a run configuration for Android Studio.
+9. Create a run configuration for Android Studio.
    1. First, click on the drop down menu on the top bar of Android Studio, where it says "TeamCode" with a little Android logo next to it.
    2. Click `Edit Configurations`
    3. Click on the "+" symbol in the top left of the window, and when it prompts you, select "Application".
@@ -98,7 +98,7 @@ public class MeepMeepTesting {
    7. Where it says "Main Class", click the little "file" icon to the right of the text and then select the name of the main class for your MeepMeepTesting module.
    8. From here, in the bottom right of the window, press "Apply" then "Ok".
    9. It will now automatically switch to that Run/Debug Configuration profile.
-9. If at any point you would like to build code onto your Control Hub or Phone, then click the Run/Debug configuration profile at the top to open the dropdown menu and select TeamCode. Perform the same steps to switch back to MeepMeepRun.
+10. If at any point you would like to build code onto your Control Hub or Phone, then click the Run/Debug configuration profile at the top to open the dropdown menu and select TeamCode. Perform the same steps to switch back to MeepMeepRun.
 
 # Misc
 
