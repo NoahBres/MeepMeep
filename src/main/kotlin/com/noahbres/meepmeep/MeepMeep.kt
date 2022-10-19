@@ -158,10 +158,10 @@ open class MeepMeep @JvmOverloads constructor(private val windowSize: Int, fps: 
         val classLoader = Thread.currentThread().contextClassLoader
 
         FONT_CMU_BOLD_LIGHT = Font.createFont(
-            Font.TRUETYPE_FONT, classLoader.getResourceAsStream("font/cmunbi.ttf")
+            Font.TRUETYPE_FONT, classLoader.getResourceAsStream("font/firacode-bold.ttf")
         ).deriveFont(20f)
-        FONT_CMU = Font.createFont(Font.TRUETYPE_FONT, classLoader.getResourceAsStream("font/cmunrm.ttf"))
-        FONT_CMU_BOLD = Font.createFont(Font.TRUETYPE_FONT, classLoader.getResourceAsStream("font/cmunbx.ttf"))
+        FONT_CMU = Font.createFont(Font.TRUETYPE_FONT, classLoader.getResourceAsStream("font/firacode.ttf"))
+        FONT_CMU_BOLD = Font.createFont(Font.TRUETYPE_FONT, classLoader.getResourceAsStream("font/firacode-bold.ttf"))
 
         FieldUtil.CANVAS_WIDTH = windowSize.toDouble()
         FieldUtil.CANVAS_HEIGHT = windowSize.toDouble()
