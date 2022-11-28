@@ -28,7 +28,7 @@ class DriveShim(driveTrainType: DriveTrainType, private val constraints: Constra
             velConstraint,
             accelConstraint,
             constraints.maxAngVel,
-            constraints.maxAngVel,
+            constraints.maxAngAccel,
         )
     }
 }
