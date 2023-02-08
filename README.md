@@ -33,16 +33,16 @@ Path creation/visualization tool for Road Runner
 
 6.  At the bottom of the file add the following gradle snippet:
 
-        ```
-        repositories {
-            maven { url = 'https://jitpack.io' }
-            maven { url = 'https://maven.brott.dev/' }
-        }
+```
+repositories {
+    maven { url = 'https://jitpack.io' }
+    maven { url = 'https://maven.brott.dev/' }
+}
 
-        dependencies {
-            implementation 'com.github.NoahBres:MeepMeep:2.0.2'
-        }
-        ```
+dependencies {
+    implementation 'com.github.NoahBres:MeepMeep:2.0.2'
+}
+```
 
 7.  When android studio prompts you to make a gradle sync, click "Sync Now".
     <img src="/images/readme/installationStep7.png" width="644" height="20"/>
