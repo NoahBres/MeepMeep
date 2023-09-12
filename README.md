@@ -9,6 +9,7 @@ Path creation/visualization tool for Road Runner
 # Table of Contents
 
 - [Installing (Android Studio)](#-installing-android-studio)
+- [Custom Background](#custom-backgroud)
 - [Misc](#misc)
   - [Poor Performance?](#poor-performance)
   - [Adding a second bot](#adding-a-second-bot)
@@ -100,6 +101,19 @@ public class MeepMeepTesting {
    9. It will now automatically switch to that Run/Debug Configuration profile.
 10. If at any point you would like to build code onto your Control Hub or Phone, then click the Run/Debug configuration profile at the top to open the dropdown menu and select TeamCode. Perform the same steps to switch back to MeepMeepRun.
 
+# Custom Background
+Before the `meepmeep.setBackground(MeepMeep.Background.FIELD_POWERPLAY_OFFICIAL)`, add the following lines of code and update the setBackground() command:
+```java
+Image img = null;
+try { img = ImageIO.read(new File("<PATH TO IMAGE>")); }
+catch (IOException e) {}
+
+meepMeep.setBackground(img)
+//  <following code you were using previously>
+```
+where <PATH TO IMAGE> is your path to the image you want to use for example:
+    - On MacOs: `/Users/<username>/Documents/field.png`
+    - On Windows: `C:\Users\<username>\Documents\field.png`
 # Misc
 
 ### Poor Performance?
