@@ -8,11 +8,13 @@ Path creation/visualization tool for Road Runner
 
 # Table of Contents
 
-- [Installing (Android Studio)](#-installing-android-studio)
-- [Misc](#misc)
-  - [Poor Performance?](#poor-performance)
+- [Installing (Android Studio)](#installing-android-studio)
+- [Extra Documentation](#extra-documentation)
+  - [Custom Background](#custom-background)
   - [Adding a second bot](#adding-a-second-bot)
   - [Pulling Specific Jitpack Commits](#pulling-specific-jitpack-commits)
+- [Misc](#misc)
+  - [Poor Performance?](#poor-performance)
   - [Misc. Notes](#notes)
 
 # Installing (Android Studio)
@@ -100,15 +102,20 @@ public class MeepMeepTesting {
    9. It will now automatically switch to that Run/Debug Configuration profile.
 10. If at any point you would like to build code onto your Control Hub or Phone, then click the Run/Debug configuration profile at the top to open the dropdown menu and select TeamCode. Perform the same steps to switch back to MeepMeepRun.
 
-# Misc
+# Extra Documentation
+### Custom Background
+Before the `meepmeep.setBackground(MeepMeep.Background.FIELD_POWERPLAY_OFFICIAL)`, add the following lines of code and update the setBackground() command:
+```java
+Image img = null;
+try { img = ImageIO.read(new File("<PATH TO IMAGE>")); }
+catch (IOException e) {}
 
-### Poor Performance?
-
-On some systems, hardware acceleration may not be enabled by default.
-To enable hardware acceleration use the cli flag: `-Dsun.java2d.opengl=true`.
-
-Or, enable it _before_ initializing your `MeepMeep` instance with the following snippet:
-`System.setProperty("sun.java2d.opengl", "true");`
+meepMeep.setBackground(img)
+//  <following code you were using previously>
+```
+where <PATH TO IMAGE> is your path to the image you want to use for example:
+    - On MacOs: `/Users/<username>/Documents/field.png`
+    - On Windows: `C:\Users\<username>\Documents\field.png`
 
 ### Adding a second bot:
 
@@ -192,6 +199,16 @@ MeepMeep is hosted on JitPack. This allows the user to pull dependencies from an
   - `implementation 'com.github.NoahBres:MeepMeep:<commit version ID>'`
   - `<commit ID>` is replaced with ID of commit. For example "79d123f0c1"
   - This is not the full commit hash. It is the first 10 characters of the comit hash
+ 
+# Misc
+
+### Poor Performance?
+
+On some systems, hardware acceleration may not be enabled by default.
+To enable hardware acceleration use the cli flag: `-Dsun.java2d.opengl=true`.
+
+Or, enable it _before_ initializing your `MeepMeep` instance with the following snippet:
+`System.setProperty("sun.java2d.opengl", "true");`
 
 ### Notes:
 
