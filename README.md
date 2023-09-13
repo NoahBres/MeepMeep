@@ -92,12 +92,25 @@ public class MeepMeepTesting {
 
 9. Create a run configuration for Android Studio.
    1. First, click on the drop down menu on the top bar of Android Studio, where it says "TeamCode" with a little Android logo next to it.
+      <img src="/images/readme/installationStep9i.png" width="649" height="188"/>
    2. Click `Edit Configurations`
+
+      <img src="/images/readme/installationStep9ii.png" width="550" height="238"/>
    3. Click on the "+" symbol in the top left of the window, and when it prompts you, select "Application".
+
+      <img src="/images/readme/installationStep9iii.png" width="518" height="334"/>
    4. Change the name to your liking (ex. meepmeep-run)
+
+      <img src="/images/readme/installationStep9iv.png" width="578" height="480"/>
    5. Where it says "cp <no module>" click it to open the dropdown, and then select FtcRobotController.MeepMeepTesting.main
+
+      <img src="/images/readme/installationStep9v.png" width="719" height="380"/>
    6. Where it says "Main Class", click the little "file" icon to the right of the text and then select the name of the main class for your MeepMeepTesting module.
+
+      <img src="/images/readme/installationStep9vi.png" width="705" height="359"/>
    7. From here, in the bottom right of the window, press "Apply" then "Ok".
+
+      <img src="/images/readme/installationStep9vii.png" width="710" height="630"/>
    8. It will now automatically switch to that Run/Debug Configuration profile.
 10. If at any point you would like to build code onto your Control Hub or Phone, then click the Run/Debug configuration profile at the top to open the dropdown menu and select TeamCode. Perform the same steps to switch back to MeepMeepRun.
 
