@@ -95,11 +95,10 @@ public class MeepMeepTesting {
    2. Click `Edit Configurations`
    3. Click on the "+" symbol in the top left of the window, and when it prompts you, select "Application".
    4. Change the name to your liking (ex. meepmeep-run)
-   5. Where it says "module not specified", click to open the dropdown, then select your JRE.
-   6. Where it says "cp <no module>" click it to open the dropdown, and then select FtcRobotController.MeepMeepTesting.main
-   7. Where it says "Main Class", click the little "file" icon to the right of the text and then select the name of the main class for your MeepMeepTesting module.
-   8. From here, in the bottom right of the window, press "Apply" then "Ok".
-   9. It will now automatically switch to that Run/Debug Configuration profile.
+   5. Where it says "cp <no module>" click it to open the dropdown, and then select FtcRobotController.MeepMeepTesting.main
+   6. Where it says "Main Class", click the little "file" icon to the right of the text and then select the name of the main class for your MeepMeepTesting module.
+   7. From here, in the bottom right of the window, press "Apply" then "Ok".
+   8. It will now automatically switch to that Run/Debug Configuration profile.
 10. If at any point you would like to build code onto your Control Hub or Phone, then click the Run/Debug configuration profile at the top to open the dropdown menu and select TeamCode. Perform the same steps to switch back to MeepMeepRun.
 
 # Extra Documentation
