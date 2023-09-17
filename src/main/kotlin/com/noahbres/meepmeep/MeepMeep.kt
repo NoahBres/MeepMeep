@@ -321,6 +321,18 @@ open class MeepMeep @JvmOverloads constructor(private val windowSize: Int, fps: 
                 colorManager.isDarkMode = false
                 ImageIO.read(classLoader.getResourceAsStream("background/season-2022-powerplay/field-2022-kai-light.png"))
             }
+            Background.FIELD_CENTERSTAGE_OFFICIAL -> {
+                colorManager.isDarkMode = false
+                ImageIO.read(classLoader.getResourceAsStream("background/season-2023-centerstage/field-2023-official.png"))
+            }
+            Background.FIELD_CENTERSTAGE_JUICE_DARK -> {
+                colorManager.isDarkMode = false
+                ImageIO.read(classLoader.getResourceAsStream("background/season-2023-centerstage/field-2023-juice-dark.png"))
+            }
+            Background.FIELD_CENTERSTAGE_JUICE_LIGHT -> {
+                colorManager.isDarkMode = false
+                ImageIO.read(classLoader.getResourceAsStream("background/season-2023-centerstage/field-2023-juice-light.png"))
+            }
 
         }.getScaledInstance(windowSize, windowSize, Image.SCALE_SMOOTH)
 
@@ -457,6 +469,9 @@ open class MeepMeep @JvmOverloads constructor(private val windowSize: Int, fps: 
         FIELD_FREIGHTFRENZY_ADI_DARK,
         FIELD_POWERPLAY_OFFICIAL,
         FIELD_POWERPLAY_KAI_DARK,
-        FIELD_POWERPLAY_KAI_LIGHT
+        FIELD_POWERPLAY_KAI_LIGHT,
+        FIELD_CENTERSTAGE_OFFICIAL,
+        FIELD_CENTERSTAGE_JUICE_DARK,
+        FIELD_CENTERSTAGE_JUICE_LIGHT
     }
 }
