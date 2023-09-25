@@ -329,10 +329,6 @@ open class MeepMeep @JvmOverloads constructor(private val windowSize: Int, fps: 
                 colorManager.isDarkMode = false
                 ImageIO.read(classLoader.getResourceAsStream("background/season-2023-centerstage/field-2023-juice-dark.png"))
             }
-            Background.FIELD_CENTERSTAGE_JUICE_DARK_ROTATED -> {
-                colorManager.isDarkMode = false
-                ImageIO.read(classLoader.getResourceAsStream("background/season-2023-centerstage/field-2023-juice-dark-rotated.png"))
-            }
             Background.FIELD_CENTERSTAGE_JUICE_LIGHT -> {
                 colorManager.isDarkMode = false
                 ImageIO.read(classLoader.getResourceAsStream("background/season-2023-centerstage/field-2023-juice-light.png"))
@@ -476,7 +472,6 @@ open class MeepMeep @JvmOverloads constructor(private val windowSize: Int, fps: 
         FIELD_POWERPLAY_KAI_LIGHT,
         FIELD_CENTERSTAGE_OFFICIAL,
         FIELD_CENTERSTAGE_JUICE_DARK,
-        FIELD_CENTERSTAGE_JUICE_LIGHT,
-        FIELD_CENTERSTAGE_JUICE_DARK_ROTATED
+        FIELD_CENTERSTAGE_JUICE_LIGHT
     }
 }
