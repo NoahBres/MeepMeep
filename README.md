@@ -42,7 +42,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.NoahBres:MeepMeep:2.0.2'
+    implementation 'com.github.NoahBres:MeepMeep:2.0.3'
 }
 ```
 
@@ -203,8 +203,8 @@ public class MeepMeepTesting {
 MeepMeep is hosted on JitPack. This allows the user to pull dependencies from any Git commit. Change the dependency version in `build.gradle` to do so.
 
 - Pull from a specific tagged version (same as install instructions)
-  - `implementation 'com.github.NoahBres:MeepMeep:2.0.2'`
-  - `2.0.2` can be replaced with whatever version specified on the [GitHub releases page](https://github.com/NoahBres/MeepMeep/releases)
+  - `implementation 'com.github.NoahBres:MeepMeep:2.0.3'`
+  - `2.0.3` can be replaced with whatever version specified on the [GitHub releases page](https://github.com/NoahBres/MeepMeep/releases)
 - Pull from whatever the latest commit on the master branch is
   - `implementation 'com.github.NoahBres:MeepMeep:-SNAPSHOT'`
 - Pull from a specific commit
