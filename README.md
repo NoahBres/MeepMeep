@@ -237,5 +237,14 @@ Default Bot Settings:
 - Start Pose: (x: 0in, y: 0in, heading: 0rad)
 - Color Scheme: Inherited from MeepMeep.colorManager unless overriden
 - Drive Train Type: Mecanum
+- 
+### Compatibility with 1.X Roadrunner:
+MeepMeep is now compatible with the most important path planning functions introduced in Roadrunner 1.X.  
+The lineToX and lineToY functions and their variants have been implemented and may be called in the MeepMeep trajectory builder in the same way as .forward() or .turn() would be.
+
+These functions are implemented under the TrajectoryBuilder legacy framework and do not use the RR 1.X ActionBuilder framework. The reason for this is threefold:
+1. The action builder framework is optimized for parallelization (ex. raising linear slides while driving along a spline), which MeepMeep as a driving visualizer does not need to simulate.
+2. Under the RR action builder framework, trajectories are still defined as subparts and may be directly copy/pasted into MeepMeep (and vice versa).
+3. Such a shift would require a full MeepMeep refactor.
 
 <!-- [![YouTube Installation Video](/images/readme/thumbnail-half.jpg?raw=true)](https://youtu.be/vdn1v404go8) -->

@@ -166,6 +166,97 @@ public class TrajectorySequenceBuilder {
     ) {
         return addPath(() -> currentTrajectoryBuilder.lineToSplineHeading(endPose, velConstraint, accelConstraint));
     }
+    //lineToY variants implementations from RR 1.X
+    public TrajectorySequenceBuilder lineToY(Double posY) {
+        double heading = setAbsoluteTangent ? absoluteTangent : lastPose.getHeading();
+        double deltaX;
+        if (Math.cos(heading) == 0) {
+            throw new IllegalArgumentException("Heading is perpendicular to the Y-axis, use setTangent() or lineToX() depending on intended behavior.");
+        } else {
+            deltaX = (posY - lastPose.getY()) / Math.tan(heading);
+        }
+        double targetX = lastPose.getX() + deltaX;
+        Vector2d targetPosition = new Vector2d(targetX, posY);
+        return addPath(() -> currentTrajectoryBuilder.lineTo(targetPosition, currentVelConstraint, currentAccelConstraint));
+    }
+    public TrajectorySequenceBuilder lineToYConstantHeading(Double posY) {
+        double heading = setAbsoluteTangent ? absoluteTangent : lastPose.getHeading();
+        if (Math.cos(heading) == 0) {
+            throw new IllegalArgumentException("Heading is perpendicular to the Y-axis, can't use lineToYConstantHeading in this case.");
+        }
+        double deltaX = (posY - lastPose.getY()) / Math.tan(heading);
+        double targetX = lastPose.getX() + deltaX;
+        Vector2d targetPosition = new Vector2d(targetX, posY);
+        return addPath(() -> currentTrajectoryBuilder.lineToConstantHeading(targetPosition, currentVelConstraint, currentAccelConstraint));
+    }
+
+    public TrajectorySequenceBuilder lineToYLinearHeading(Double posY, double endHeading) {
+        double heading = setAbsoluteTangent ? absoluteTangent : lastPose.getHeading();
+        if (Math.cos(heading) == 0) {
+            throw new IllegalArgumentException("Heading is perpendicular to the Y-axis, can't use lineToYLinearHeading in this case.");
+        }
+        double deltaX = (posY - lastPose.getY()) / Math.tan(heading);
+        double targetX = lastPose.getX() + deltaX;
+        Vector2d targetPosition = new Vector2d(targetX, posY);
+        return addPath(() -> currentTrajectoryBuilder.lineToLinearHeading(new Pose2d(targetPosition, endHeading), currentVelConstraint, currentAccelConstraint));
+    }
+
+    public TrajectorySequenceBuilder lineToYSplineHeading(Double posY, double endHeading) {
+        double heading = setAbsoluteTangent ? absoluteTangent : lastPose.getHeading();
+        if (Math.cos(heading) == 0) {
+            throw new IllegalArgumentException("Heading is perpendicular to the Y-axis, can't use lineToYSplineHeading in this case.");
+        }
+        double deltaX = (posY - lastPose.getY()) / Math.tan(heading);
+        double targetX = lastPose.getX() + deltaX;
+        Vector2d targetPosition = new Vector2d(targetX, posY);
+        return addPath(() -> currentTrajectoryBuilder.lineToSplineHeading(new Pose2d(targetPosition, endHeading), currentVelConstraint, currentAccelConstraint));
+    }
+
+    //lineToX variants implementations from RR 1.X
+    public TrajectorySequenceBuilder lineToX(Double posX) {
+        double heading = setAbsoluteTangent ? absoluteTangent : lastPose.getHeading();
+        double deltaY;
+        if (Math.sin(heading) == 0) {
+            throw new IllegalArgumentException("Heading is perpendicular to the X-axis, use setTangent() or lineToY() depending on intended behavior.");
+        } else {
+            deltaY = (posX - lastPose.getX()) * Math.tan(heading);
+        }
+        double targetY = lastPose.getY() + deltaY;
+        Vector2d targetPosition = new Vector2d(posX, targetY);
+        return addPath(() -> currentTrajectoryBuilder.lineTo(targetPosition, currentVelConstraint, currentAccelConstraint));
+    }
+    public TrajectorySequenceBuilder lineToXConstantHeading(Double posX) {
+        double heading = setAbsoluteTangent ? absoluteTangent : lastPose.getHeading();
+        if (Math.sin(heading) == 0) {
+            throw new IllegalArgumentException("Heading is perpendicular to the X-axis, can't use lineToXConstantHeading.");
+        }
+        double deltaY = (posX - lastPose.getX()) * Math.tan(heading);
+        double targetY = lastPose.getY() + deltaY;
+        Vector2d targetPosition = new Vector2d(posX, targetY);
+        return addPath(() -> currentTrajectoryBuilder.lineToConstantHeading(targetPosition, currentVelConstraint, currentAccelConstraint));
+    }
+
+    public TrajectorySequenceBuilder lineToXLinearHeading(Double posX, double endHeading) {
+        double heading = setAbsoluteTangent ? absoluteTangent : lastPose.getHeading();
+        if (Math.sin(heading) == 0) {
+            throw new IllegalArgumentException("Heading is perpendicular to the X-axis, can't use lineToXLinearHeading.");
+        }
+        double deltaY = (posX - lastPose.getX()) * Math.tan(heading);
+        double targetY = lastPose.getY() + deltaY;
+        Vector2d targetPosition = new Vector2d(posX, targetY);
+        return addPath(() -> currentTrajectoryBuilder.lineToLinearHeading(new Pose2d(targetPosition, endHeading), currentVelConstraint, currentAccelConstraint));
+    }
+
+    public TrajectorySequenceBuilder lineToXSplineHeading(Double posX, double endHeading) {
+        double heading = setAbsoluteTangent ? absoluteTangent : lastPose.getHeading();
+        if (Math.sin(heading) == 0) {
+            throw new IllegalArgumentException("Heading is perpendicular to the X-axis, can't use lineToXSplineHeading.");
+        }
+        double deltaY = (posX - lastPose.getX()) * Math.tan(heading);
+        double targetY = lastPose.getY() + deltaY;
+        Vector2d targetPosition = new Vector2d(posX, targetY);
+        return addPath(() -> currentTrajectoryBuilder.lineToSplineHeading(new Pose2d(targetPosition, endHeading), currentVelConstraint, currentAccelConstraint));
+    }
 
     public TrajectorySequenceBuilder strafeTo(Vector2d endPosition) {
         return addPath(() -> currentTrajectoryBuilder.strafeTo(endPosition, currentVelConstraint, currentAccelConstraint));
