@@ -35,7 +35,6 @@ open class MeepMeep @JvmOverloads constructor(private val windowSize: Int, fps: 
         @JvmStatic
         lateinit var FONT_CMU_BOLD: Font
     }
-
     val windowFrame = WindowFrame("Meep Meep", windowSize)
     val canvas = windowFrame.canvas
 
@@ -52,7 +51,7 @@ open class MeepMeep @JvmOverloads constructor(private val windowSize: Int, fps: 
     // TODO: Make custom dirty list that auto sorts
     // Returns true if entity list needs to be sorted
     private var entityListDirty = false
-
+    private var showNotification = false
     private var bgAlpha = 1.0f
 
     private val render: () -> Unit = {
@@ -73,6 +72,16 @@ open class MeepMeep @JvmOverloads constructor(private val windowSize: Int, fps: 
             }
         }
 
+        // Draw Copied Notif
+        if (showNotification) {
+            g.font = Font("Sans", Font.BOLD, 20)
+            g.color = ColorManager.COLOR_PALETTE.GREEN_600
+            val message = "Copied!"
+            val x = canvas.width - g.fontMetrics.stringWidth(message) - 10
+            val y = 20
+
+            g.drawString(message, x, y)
+        }
         entityList.forEach { it.render(g, canvas.width, canvas.height) }
 
         // Draw fps
@@ -98,6 +107,7 @@ open class MeepMeep @JvmOverloads constructor(private val windowSize: Int, fps: 
                 mouseToFieldCoords.y,
             ), 10, canvas.height - 8
         )
+
 
         g.dispose()
         canvas.bufferStrat.show()
@@ -201,6 +211,23 @@ open class MeepMeep @JvmOverloads constructor(private val windowSize: Int, fps: 
             }
         })
 
+        canvas.addMouseListener(object : MouseAdapter() {
+            override fun mouseClicked(e: MouseEvent) {
+
+                val mouseToFieldCoords = FieldUtil.screenCoordsToFieldCoords(
+                    Vector2d(
+                        canvasMouseX.toDouble(),
+                        canvasMouseY.toDouble()
+                    )
+                )
+                val coordString = "%.1f, %.1f".format(mouseToFieldCoords.x, mouseToFieldCoords.y)
+                val stringSelection = StringSelection(coordString)
+                val clipboard = Toolkit.getDefaultToolkit().systemClipboard
+                clipboard.setContents(stringSelection, null)
+                showCopiedNotification()
+            }
+        })
+
         canvas.addKeyListener(object : KeyListener {
             override fun keyTyped(p0: KeyEvent?) {}
 
@@ -241,7 +268,13 @@ open class MeepMeep @JvmOverloads constructor(private val windowSize: Int, fps: 
         addEntity(DEFAULT_AXES_ENTITY)
         addEntity(DEFAULT_COMPASS_ENTITY)
     }
+    fun showCopiedNotification() {
+        showNotification = true
 
+        Timer(400) {
+            showNotification = false
+        }.start()
+    }
     fun start(): MeepMeep {
         if (bg == null) setBackground(Background.GRID_BLUE)
         windowFrame.isVisible = true
