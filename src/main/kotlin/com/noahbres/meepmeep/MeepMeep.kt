@@ -17,7 +17,7 @@ import javax.swing.*
 import javax.swing.border.EtchedBorder
 
 
-open class MeepMeep @JvmOverloads constructor(private val windowSize: Int, fps: Int = 60) {
+open class MeepMeep @JvmOverloads constructor(private val windowX: Int, private val windowY: Int, fps: Int = 60) {
     companion object {
         @JvmStatic
         lateinit var DEFAULT_AXES_ENTITY: AxesEntity
@@ -36,7 +36,7 @@ open class MeepMeep @JvmOverloads constructor(private val windowSize: Int, fps: 
         lateinit var FONT_CMU_BOLD: Font
     }
 
-    val windowFrame = WindowFrame("Meep Meep", windowSize)
+    val windowFrame = WindowFrame("Meep Meep", windowX, windowY)
     val canvas = windowFrame.canvas
 
     val colorManager = ColorManager()
@@ -103,6 +103,8 @@ open class MeepMeep @JvmOverloads constructor(private val windowSize: Int, fps: 
         canvas.bufferStrat.show()
     }
 
+    constructor(windowSize: Int) : this(windowSize, windowSize)
+
     private val update: (deltaTime: Long) -> Unit = { deltaTime ->
         if (entityListDirty) {
             requestedRemoveEntityList.forEach {
@@ -163,8 +165,8 @@ open class MeepMeep @JvmOverloads constructor(private val windowSize: Int, fps: 
         FONT_CMU = Font.createFont(Font.TRUETYPE_FONT, classLoader.getResourceAsStream("font/cmunrm.ttf"))
         FONT_CMU_BOLD = Font.createFont(Font.TRUETYPE_FONT, classLoader.getResourceAsStream("font/cmunbx.ttf"))
 
-        FieldUtil.CANVAS_WIDTH = windowSize.toDouble()
-        FieldUtil.CANVAS_HEIGHT = windowSize.toDouble()
+        FieldUtil.CANVAS_WIDTH = windowX.toDouble()
+        FieldUtil.CANVAS_HEIGHT = windowY.toDouble()
 
         DEFAULT_AXES_ENTITY = AxesEntity(this, 0.8, colorManager.theme, FONT_CMU_BOLD_LIGHT, 20f)
         DEFAULT_COMPASS_ENTITY = CompassEntity(
@@ -334,7 +336,7 @@ open class MeepMeep @JvmOverloads constructor(private val windowSize: Int, fps: 
                 ImageIO.read(classLoader.getResourceAsStream("background/season-2023-centerstage/field-2023-juice-light.png"))
             }
 
-        }.getScaledInstance(windowSize, windowSize, Image.SCALE_SMOOTH)
+        }.getScaledInstance(windowX, windowY, Image.SCALE_SMOOTH)
 
         refreshTheme()
 
@@ -342,7 +344,7 @@ open class MeepMeep @JvmOverloads constructor(private val windowSize: Int, fps: 
     }
 
     fun setBackground(image: Image): MeepMeep {
-        bg = image.getScaledInstance(windowSize, windowSize, Image.SCALE_SMOOTH)
+        bg = image.getScaledInstance(windowX, windowY, Image.SCALE_SMOOTH)
 
         return this
     }
@@ -380,8 +382,8 @@ open class MeepMeep @JvmOverloads constructor(private val windowSize: Int, fps: 
     }
 
     private fun onCanvasResize() {
-        FieldUtil.CANVAS_WIDTH = windowSize.toDouble()
-        FieldUtil.CANVAS_HEIGHT = windowSize.toDouble()
+        FieldUtil.CANVAS_WIDTH = windowX.toDouble()
+        FieldUtil.CANVAS_HEIGHT = windowY.toDouble()
 
         entityList.forEach {
             it.setCanvasDimensions(FieldUtil.CANVAS_WIDTH, FieldUtil.CANVAS_HEIGHT)
