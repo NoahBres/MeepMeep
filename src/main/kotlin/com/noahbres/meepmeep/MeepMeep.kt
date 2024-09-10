@@ -47,6 +47,14 @@ open class MeepMeep @JvmOverloads constructor(private val windowX: Int, private 
     private val requestedAddEntityList = mutableListOf<Entity>()
     private val requestedRemoveEntityList = mutableListOf<Entity>()
 
+    // Controls the x and y position of the display for the mouse coordinates
+    private var mouseCoordinateDisplayX = 10
+    private var mouseCoordinateDisplayY = canvas.height - 8
+
+    // Publicly accessible canvas width & height
+    val canvasWidth = canvas.width
+    val canvasHeight = canvas.height
+
     private val zIndexManager = ZIndexManager();
 
     // TODO: Make custom dirty list that auto sorts
@@ -96,7 +104,7 @@ open class MeepMeep @JvmOverloads constructor(private val windowX: Int, private 
             "(%.1f, %.1f)".format(
                 mouseToFieldCoords.x,
                 mouseToFieldCoords.y,
-            ), 10, canvas.height - 8
+            ), mouseCoordinateDisplayX, mouseCoordinateDisplayY
         )
 
         g.dispose()
@@ -366,6 +374,11 @@ open class MeepMeep @JvmOverloads constructor(private val windowX: Int, private 
         bg = image.getScaledInstance(windowX, windowY, Image.SCALE_SMOOTH)
 
         return this
+    }
+
+    fun setMouseCoordinateDisplayPosition(x: Int, y: Int) {
+        mouseCoordinateDisplayX = x
+        mouseCoordinateDisplayY = y
     }
 
     @JvmOverloads
