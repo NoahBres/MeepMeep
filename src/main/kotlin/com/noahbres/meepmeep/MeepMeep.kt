@@ -335,7 +335,26 @@ open class MeepMeep @JvmOverloads constructor(private val windowX: Int, private 
                 colorManager.isDarkMode = false
                 ImageIO.read(classLoader.getResourceAsStream("background/season-2023-centerstage/field-2023-juice-light.png"))
             }
-
+            Background.FIELD_INTOTHEDEEP_OFFICIAL -> {
+                colorManager.isDarkMode = false
+                ImageIO.read(classLoader.getResourceAsStream("background/season-2024-intothedeep/field-2024-official.png"))
+            }
+            Background.FIELD_INTOTHEDEEP_JUICE_DARK -> {
+                colorManager.isDarkMode = true
+                ImageIO.read(classLoader.getResourceAsStream("background/season-2024-intothedeep/field-2024-juice-dark.png"))
+            }
+            Background.FIELD_INTOTHEDEEP_JUICE_LIGHT -> {
+                colorManager.isDarkMode = false
+                ImageIO.read(classLoader.getResourceAsStream("background/season-2024-intothedeep/field-2024-juice-light.png"))
+            }
+            Background.FIELD_INTOTHEDEEP_JUICE_GREYSCALE -> {
+                colorManager.isDarkMode = false
+                ImageIO.read(classLoader.getResourceAsStream("background/season-2024-intothedeep/field-2024-juice-greyscale.png"))
+            }
+            Background.FIELD_INTOTHEDEEP_JUICE_BLACK -> {
+                colorManager.isDarkMode = true
+                ImageIO.read(classLoader.getResourceAsStream("background/season-2024-intothedeep/field-2024-juice-black.png"))
+            }
         }.getScaledInstance(windowX, windowY, Image.SCALE_SMOOTH)
 
         refreshTheme()
@@ -474,6 +493,11 @@ open class MeepMeep @JvmOverloads constructor(private val windowX: Int, private 
         FIELD_POWERPLAY_KAI_LIGHT,
         FIELD_CENTERSTAGE_OFFICIAL,
         FIELD_CENTERSTAGE_JUICE_DARK,
-        FIELD_CENTERSTAGE_JUICE_LIGHT
+        FIELD_CENTERSTAGE_JUICE_LIGHT,
+        FIELD_INTOTHEDEEP_OFFICIAL,
+        FIELD_INTOTHEDEEP_JUICE_DARK,
+        FIELD_INTOTHEDEEP_JUICE_LIGHT,
+        FIELD_INTOTHEDEEP_JUICE_GREYSCALE,
+        FIELD_INTOTHEDEEP_JUICE_BLACK
     }
 }
