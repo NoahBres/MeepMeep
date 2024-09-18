@@ -1,8 +1,6 @@
 package com.noahbres.meepmeep
 
 import com.acmerobotics.roadrunner.geometry.Vector2d
-import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity
-import com.noahbres.meepmeep.roadrunner.ui.TrajectoryProgressSliderMaster
 import com.noahbres.meepmeep.core.colorscheme.ColorManager
 import com.noahbres.meepmeep.core.colorscheme.ColorScheme
 import com.noahbres.meepmeep.core.entity.AxesEntity
@@ -14,6 +12,8 @@ import com.noahbres.meepmeep.core.entity.ZIndexManager
 import com.noahbres.meepmeep.core.ui.WindowFrame
 import com.noahbres.meepmeep.core.util.FieldUtil
 import com.noahbres.meepmeep.core.util.LoopManager
+import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity
+import com.noahbres.meepmeep.roadrunner.ui.TrajectoryProgressSliderMaster
 import java.awt.AlphaComposite
 import java.awt.Font
 import java.awt.Graphics2D
@@ -776,6 +776,18 @@ class MeepMeep @JvmOverloads constructor(
         return this
     }
 
+    /**
+     * Enum class representing various background options for the MeepMeep
+     * application.
+     *
+     * Each enum constant corresponds to a specific background image that
+     * can be set using the [MeepMeep.setBackground] method. The backgrounds
+     * include grid patterns, official field images from different seasons, and
+     * custom themes.
+     *
+     * @see [MeepMeep.setBackground]
+     * @see [MeepMeep.setBackgroundAlpha]
+     */
     enum class Background {
         GRID_BLUE,
         GRID_GREEN,

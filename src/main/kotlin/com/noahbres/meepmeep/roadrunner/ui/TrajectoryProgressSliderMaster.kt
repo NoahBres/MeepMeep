@@ -28,7 +28,7 @@ class TrajectoryProgressSliderMaster(
     private val meepMeep: MeepMeep,
     private val sliderWidth: Int,
     private val sliderHeight: Int
-) : JPanel(), MouseMotionListener, MouseListener {
+): JPanel(), MouseMotionListener, MouseListener {
     /**
      * List of pairs containing [RoadRunnerBotEntity] instances and their
      * corresponding [TrajectoryProgressSubSlider].
@@ -62,7 +62,7 @@ class TrajectoryProgressSliderMaster(
         getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("SPACE"), "space_pressed")
 
         // Define the action for "space_pressed" to toggle the pause state
-        actionMap.put("space_pressed", object : AbstractAction() {
+        actionMap.put("space_pressed", object: AbstractAction() {
             override fun actionPerformed(p0: ActionEvent?) {
                 // Toggle the internal pause state
                 internalIsPaused = !internalIsPaused
@@ -102,7 +102,7 @@ class TrajectoryProgressSliderMaster(
 
         // Ensure the maximum trajectory duration is updated
         maxTrajectoryDuration =
-            max(bot.currentTrajectorySequence?.duration() ?: 0.0, maxTrajectoryDuration)
+                max(bot.currentTrajectorySequence?.duration() ?: 0.0, maxTrajectoryDuration)
 
         // Update the maximum trajectory duration for all sliders
         for ((_, slider) in botList) {
@@ -115,9 +115,9 @@ class TrajectoryProgressSliderMaster(
         else {
             // Pause or unpause the bot based on the internal pause state
             if (internalIsPaused) bot.pause() else bot.unpause()
+
             // Disable looping for the first bot and the new bot
             botList[0].first.looping = false
-            bot.looping = false
         }
 
         // Create a new TrajectoryProgressSubSlider for the bot
@@ -177,8 +177,17 @@ class TrajectoryProgressSliderMaster(
         // Check if the bot at the given index has the maximum trajectory duration
         if (index == maxTrajectoryIndex) {
             // Start all bots
-            for ((bot, _) in botList) {
-                bot.start()
+            for ((bot, slider) in botList) {
+                // Check if bot looping is set to true
+                if (bot.looping) {
+                    bot.start()
+                } else {
+                    bot.pause()
+
+                    // Set the slider progress to 100% (1.0)
+                    slider.progress = 1.0
+                    slider.redraw()
+                }
             }
         }
     }
