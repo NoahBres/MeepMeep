@@ -6,6 +6,7 @@ plugins {
     `java-library`
     `maven-publish`
     kotlin("jvm") version "1.6.20-RC"
+    id("org.jetbrains.dokka") version "1.5.0"
 }
 
 val meepMeepVersion = "1.0-SNAPSHOT"
@@ -29,8 +30,8 @@ repositories {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 dependencies {
@@ -43,7 +44,7 @@ dependencies {
     // Use the Kotlin test library.
     testImplementation("org.jetbrains.kotlin:kotlin-test")
 
-    api("com.acmerobotics.roadrunner:core:0.5.5")
+    api("com.acmerobotics.roadrunner:core:0.5.6")
 }
 
 sourceSets["main"].java {

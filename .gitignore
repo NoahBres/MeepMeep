@@ -1,7 +1,10 @@
-# Compiled class file
+# Local Properties
+local.properties
+
+# Compiled class files
 *.class
 
-# Log file
+# Log files
 *.log
 
 # BlueJ files
@@ -10,10 +13,9 @@
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
-# Package Files #
+# Package Files
 *.jar
 !gradle-wrapper.jar
-
 *.war
 *.nar
 *.ear
@@ -21,29 +23,25 @@
 *.tar.gz
 *.rar
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+# Virtual Machine Crash Logs
 hs_err_pid*
 
-# Ignore Gradle project-specific cache directory
+# Gradle Files
 .gradle
-
-# Ignore Gradle build output directory
 build
+.idea/**/gradle.xml
+.idea/**/libraries
 
-# macOS
+# MacOS
 .DS_STORE
 
-# User-specific stuff
+# IntelliJ Files
 .idea/**/workspace.xml
 .idea/**/tasks.xml
 .idea/**/usage.statistics.xml
 .idea/**/dictionaries
 .idea/**/shelf
-
-# Generated files
 .idea/**/contentModel.xml
-
-# Sensitive or high-churn files
 .idea/**/dataSources/
 .idea/**/dataSources.ids
 .idea/**/dataSources.local.xml
@@ -51,10 +49,4 @@ build
 .idea/**/dynamic.xml
 .idea/**/uiDesigner.xml
 .idea/**/dbnavigator.xml
-
-# Gradle
-.idea/**/gradle.xml
-.idea/**/libraries
-
-# IntelliJ
 out/

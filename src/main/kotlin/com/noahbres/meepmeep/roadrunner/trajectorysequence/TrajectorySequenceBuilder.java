@@ -27,42 +27,129 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class TrajectorySequenceBuilder {
-    private final double resolution = 0.25;
+import kotlin.Deprecated;
 
+/**
+ * Builder class for creating a sequence of trajectory segments.
+ */
+@SuppressWarnings("unused")
+public class TrajectorySequenceBuilder {
+
+    /**
+     * Base velocity constraint for the trajectory.
+     */
     private final TrajectoryVelocityConstraint baseVelConstraint;
+
+    /**
+     * Base acceleration constraint for the trajectory.
+     */
     private final TrajectoryAccelerationConstraint baseAccelConstraint;
 
-    private TrajectoryVelocityConstraint currentVelConstraint;
-    private TrajectoryAccelerationConstraint currentAccelConstraint;
-
+    /**
+     * Maximum angular velocity for turns.
+     */
     private final double baseTurnConstraintMaxAngVel;
+
+    /**
+     * Maximum angular acceleration for turns.
+     */
     private final double baseTurnConstraintMaxAngAccel;
 
-    private double currentTurnConstraintMaxAngVel;
-    private double currentTurnConstraintMaxAngAccel;
-
+    /**
+     * List of sequence segments in the trajectory.
+     */
     private final List<SequenceSegment> sequenceSegments;
 
+    /**
+     * List of temporal markers in the trajectory.
+     */
     private final List<TemporalMarker> temporalMarkers;
+
+    /**
+     * List of displacement markers in the trajectory.
+     */
     private final List<DisplacementMarker> displacementMarkers;
+
+    /**
+     * List of spatial markers in the trajectory.
+     */
     private final List<SpatialMarker> spatialMarkers;
 
+    /**
+     * Current velocity constraint for the trajectory.
+     */
+    private TrajectoryVelocityConstraint currentVelConstraint;
+
+    /**
+     * Current acceleration constraint for the trajectory.
+     */
+    private TrajectoryAccelerationConstraint currentAccelConstraint;
+
+    /**
+     * Current maximum angular velocity for turns.
+     */
+    private double currentTurnConstraintMaxAngVel;
+
+    /**
+     * Current maximum angular acceleration for turns.
+     */
+    private double currentTurnConstraintMaxAngAccel;
+
+    /**
+     * Last pose in the trajectory.
+     */
     private Pose2d lastPose;
 
+    /**
+     * Tangent offset for the trajectory.
+     */
     private double tangentOffset;
 
+    /**
+     * Flag indicating if the tangent is set absolutely.
+     */
     private boolean setAbsoluteTangent;
+
+    /**
+     * Absolute tangent value.
+     */
     private double absoluteTangent;
 
+    /**
+     * Current trajectory builder.
+     */
     private TrajectoryBuilder currentTrajectoryBuilder;
 
+    /**
+     * Current duration of the trajectory.
+     */
     private double currentDuration;
+
+    /**
+     * Current displacement of the trajectory.
+     */
     private double currentDisplacement;
 
+    /**
+     * Last duration of the trajectory segment.
+     */
     private double lastDurationTraj;
+
+    /**
+     * Last displacement of the trajectory segment.
+     */
     private double lastDisplacementTraj;
 
+    /**
+     * Constructs a new TrajectorySequenceBuilder.
+     *
+     * @param startPose                     The starting pose of the trajectory.
+     * @param startTangent                  The starting tangent of the trajectory, or null if not set.
+     * @param baseVelConstraint             The base velocity constraint for the trajectory.
+     * @param baseAccelConstraint           The base acceleration constraint for the trajectory.
+     * @param baseTurnConstraintMaxAngVel   The maximum angular velocity for turns.
+     * @param baseTurnConstraintMaxAngAccel The maximum angular acceleration for turns.
+     */
     public TrajectorySequenceBuilder(
             Pose2d startPose,
             Double startTangent,
@@ -105,6 +192,15 @@ public class TrajectorySequenceBuilder {
         lastDisplacementTraj = 0.0;
     }
 
+    /**
+     * Constructs a new `TrajectorySequenceBuilder` with the specified parameters.
+     *
+     * @param startPose                     The starting pose of the trajectory.
+     * @param baseVelConstraint             The base velocity constraint for the trajectory.
+     * @param baseAccelConstraint           The base acceleration constraint for the trajectory.
+     * @param baseTurnConstraintMaxAngVel   The maximum angular velocity for turns.
+     * @param baseTurnConstraintMaxAngAccel The maximum angular acceleration for turns.
+     */
     public TrajectorySequenceBuilder(
             Pose2d startPose,
             TrajectoryVelocityConstraint baseVelConstraint,
@@ -119,10 +215,16 @@ public class TrajectorySequenceBuilder {
         );
     }
 
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
     public TrajectorySequenceBuilder lineTo(Vector2d endPosition) {
         return addPath(() -> currentTrajectoryBuilder.lineTo(endPosition, currentVelConstraint, currentAccelConstraint));
     }
 
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
     public TrajectorySequenceBuilder lineTo(
             Vector2d endPosition,
             TrajectoryVelocityConstraint velConstraint,
@@ -131,10 +233,16 @@ public class TrajectorySequenceBuilder {
         return addPath(() -> currentTrajectoryBuilder.lineTo(endPosition, velConstraint, accelConstraint));
     }
 
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
     public TrajectorySequenceBuilder lineToConstantHeading(Vector2d endPosition) {
         return addPath(() -> currentTrajectoryBuilder.lineToConstantHeading(endPosition, currentVelConstraint, currentAccelConstraint));
     }
 
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
     public TrajectorySequenceBuilder lineToConstantHeading(
             Vector2d endPosition,
             TrajectoryVelocityConstraint velConstraint,
@@ -143,10 +251,16 @@ public class TrajectorySequenceBuilder {
         return addPath(() -> currentTrajectoryBuilder.lineToConstantHeading(endPosition, velConstraint, accelConstraint));
     }
 
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
     public TrajectorySequenceBuilder lineToLinearHeading(Pose2d endPose) {
         return addPath(() -> currentTrajectoryBuilder.lineToLinearHeading(endPose, currentVelConstraint, currentAccelConstraint));
     }
 
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
     public TrajectorySequenceBuilder lineToLinearHeading(
             Pose2d endPose,
             TrajectoryVelocityConstraint velConstraint,
@@ -155,10 +269,16 @@ public class TrajectorySequenceBuilder {
         return addPath(() -> currentTrajectoryBuilder.lineToLinearHeading(endPose, velConstraint, accelConstraint));
     }
 
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
     public TrajectorySequenceBuilder lineToSplineHeading(Pose2d endPose) {
         return addPath(() -> currentTrajectoryBuilder.lineToSplineHeading(endPose, currentVelConstraint, currentAccelConstraint));
     }
 
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
     public TrajectorySequenceBuilder lineToSplineHeading(
             Pose2d endPose,
             TrajectoryVelocityConstraint velConstraint,
@@ -167,10 +287,16 @@ public class TrajectorySequenceBuilder {
         return addPath(() -> currentTrajectoryBuilder.lineToSplineHeading(endPose, velConstraint, accelConstraint));
     }
 
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
     public TrajectorySequenceBuilder strafeTo(Vector2d endPosition) {
         return addPath(() -> currentTrajectoryBuilder.strafeTo(endPosition, currentVelConstraint, currentAccelConstraint));
     }
 
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
     public TrajectorySequenceBuilder strafeTo(
             Vector2d endPosition,
             TrajectoryVelocityConstraint velConstraint,
@@ -179,10 +305,16 @@ public class TrajectorySequenceBuilder {
         return addPath(() -> currentTrajectoryBuilder.strafeTo(endPosition, velConstraint, accelConstraint));
     }
 
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
     public TrajectorySequenceBuilder forward(double distance) {
         return addPath(() -> currentTrajectoryBuilder.forward(distance, currentVelConstraint, currentAccelConstraint));
     }
 
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
     public TrajectorySequenceBuilder forward(
             double distance,
             TrajectoryVelocityConstraint velConstraint,
@@ -191,10 +323,16 @@ public class TrajectorySequenceBuilder {
         return addPath(() -> currentTrajectoryBuilder.forward(distance, velConstraint, accelConstraint));
     }
 
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
     public TrajectorySequenceBuilder back(double distance) {
         return addPath(() -> currentTrajectoryBuilder.back(distance, currentVelConstraint, currentAccelConstraint));
     }
 
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
     public TrajectorySequenceBuilder back(
             double distance,
             TrajectoryVelocityConstraint velConstraint,
@@ -203,10 +341,16 @@ public class TrajectorySequenceBuilder {
         return addPath(() -> currentTrajectoryBuilder.back(distance, velConstraint, accelConstraint));
     }
 
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
     public TrajectorySequenceBuilder strafeLeft(double distance) {
         return addPath(() -> currentTrajectoryBuilder.strafeLeft(distance, currentVelConstraint, currentAccelConstraint));
     }
 
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
     public TrajectorySequenceBuilder strafeLeft(
             double distance,
             TrajectoryVelocityConstraint velConstraint,
@@ -215,10 +359,16 @@ public class TrajectorySequenceBuilder {
         return addPath(() -> currentTrajectoryBuilder.strafeLeft(distance, velConstraint, accelConstraint));
     }
 
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
     public TrajectorySequenceBuilder strafeRight(double distance) {
         return addPath(() -> currentTrajectoryBuilder.strafeRight(distance, currentVelConstraint, currentAccelConstraint));
     }
 
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
     public TrajectorySequenceBuilder strafeRight(
             double distance,
             TrajectoryVelocityConstraint velConstraint,
@@ -227,10 +377,16 @@ public class TrajectorySequenceBuilder {
         return addPath(() -> currentTrajectoryBuilder.strafeRight(distance, velConstraint, accelConstraint));
     }
 
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
     public TrajectorySequenceBuilder splineTo(Vector2d endPosition, double endHeading) {
         return addPath(() -> currentTrajectoryBuilder.splineTo(endPosition, endHeading, currentVelConstraint, currentAccelConstraint));
     }
 
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
     public TrajectorySequenceBuilder splineTo(
             Vector2d endPosition,
             double endHeading,
@@ -240,10 +396,16 @@ public class TrajectorySequenceBuilder {
         return addPath(() -> currentTrajectoryBuilder.splineTo(endPosition, endHeading, velConstraint, accelConstraint));
     }
 
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
     public TrajectorySequenceBuilder splineToConstantHeading(Vector2d endPosition, double endHeading) {
         return addPath(() -> currentTrajectoryBuilder.splineToConstantHeading(endPosition, endHeading, currentVelConstraint, currentAccelConstraint));
     }
 
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
     public TrajectorySequenceBuilder splineToConstantHeading(
             Vector2d endPosition,
             double endHeading,
@@ -253,10 +415,16 @@ public class TrajectorySequenceBuilder {
         return addPath(() -> currentTrajectoryBuilder.splineToConstantHeading(endPosition, endHeading, velConstraint, accelConstraint));
     }
 
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
     public TrajectorySequenceBuilder splineToLinearHeading(Pose2d endPose, double endHeading) {
         return addPath(() -> currentTrajectoryBuilder.splineToLinearHeading(endPose, endHeading, currentVelConstraint, currentAccelConstraint));
     }
 
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
     public TrajectorySequenceBuilder splineToLinearHeading(
             Pose2d endPose,
             double endHeading,
@@ -266,10 +434,16 @@ public class TrajectorySequenceBuilder {
         return addPath(() -> currentTrajectoryBuilder.splineToLinearHeading(endPose, endHeading, velConstraint, accelConstraint));
     }
 
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
     public TrajectorySequenceBuilder splineToSplineHeading(Pose2d endPose, double endHeading) {
         return addPath(() -> currentTrajectoryBuilder.splineToSplineHeading(endPose, endHeading, currentVelConstraint, currentAccelConstraint));
     }
 
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
     public TrajectorySequenceBuilder splineToSplineHeading(
             Pose2d endPose,
             double endHeading,
@@ -279,6 +453,308 @@ public class TrajectorySequenceBuilder {
         return addPath(() -> currentTrajectoryBuilder.splineToSplineHeading(endPose, endHeading, velConstraint, accelConstraint));
     }
 
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
+    public TrajectorySequenceBuilder setTangent(double tangent) {
+        setAbsoluteTangent = true;
+        absoluteTangent = tangent;
+
+        pushPath();
+
+        return this;
+    }
+
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
+    private TrajectorySequenceBuilder setTangentOffset(double offset) {
+        setAbsoluteTangent = false;
+
+        this.tangentOffset = offset;
+        this.pushPath();
+
+        return this;
+    }
+
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
+    public TrajectorySequenceBuilder setReversed(boolean reversed) {
+        return reversed ? this.setTangentOffset(Math.toRadians(180.0)) : this.setTangentOffset(0.0);
+    }
+
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
+    public TrajectorySequenceBuilder setConstraints(
+            TrajectoryVelocityConstraint velConstraint,
+            TrajectoryAccelerationConstraint accelConstraint
+    ) {
+        this.currentVelConstraint = velConstraint;
+        this.currentAccelConstraint = accelConstraint;
+
+        return this;
+    }
+
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
+    public TrajectorySequenceBuilder resetConstraints() {
+        this.currentVelConstraint = this.baseVelConstraint;
+        this.currentAccelConstraint = this.baseAccelConstraint;
+
+        return this;
+    }
+
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
+    public TrajectorySequenceBuilder setVelConstraint(TrajectoryVelocityConstraint velConstraint) {
+        this.currentVelConstraint = velConstraint;
+
+        return this;
+    }
+
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
+    public TrajectorySequenceBuilder resetVelConstraint() {
+        this.currentVelConstraint = this.baseVelConstraint;
+
+        return this;
+    }
+
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
+    public TrajectorySequenceBuilder setAccelConstraint(TrajectoryAccelerationConstraint accelConstraint) {
+        this.currentAccelConstraint = accelConstraint;
+
+        return this;
+    }
+
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
+    public TrajectorySequenceBuilder resetAccelConstraint() {
+        this.currentAccelConstraint = this.baseAccelConstraint;
+
+        return this;
+    }
+
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
+    public TrajectorySequenceBuilder setTurnConstraint(double maxAngVel, double maxAngAccel) {
+        this.currentTurnConstraintMaxAngVel = maxAngVel;
+        this.currentTurnConstraintMaxAngAccel = maxAngAccel;
+
+        return this;
+    }
+
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
+    public TrajectorySequenceBuilder resetTurnConstraint() {
+        this.currentTurnConstraintMaxAngVel = baseTurnConstraintMaxAngVel;
+        this.currentTurnConstraintMaxAngAccel = baseTurnConstraintMaxAngAccel;
+
+        return this;
+    }
+
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
+    public TrajectorySequenceBuilder addTemporalMarker(MarkerCallback callback) {
+        return this.addTemporalMarker(currentDuration, callback);
+    }
+
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
+    @Deprecated(message = "This be an experiment.")
+    public TrajectorySequenceBuilder addTemporalMarkerOffset(double offset, MarkerCallback callback) {
+        return this.addTemporalMarker(currentDuration + offset, callback);
+    }
+
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
+    public TrajectorySequenceBuilder addTemporalMarker(double time, MarkerCallback callback) {
+        return this.addTemporalMarker(0.0, time, callback);
+    }
+
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
+    public TrajectorySequenceBuilder addTemporalMarker(double scale, double offset, MarkerCallback callback) {
+        return this.addTemporalMarker(time -> scale * time + offset, callback);
+    }
+
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
+    public TrajectorySequenceBuilder addTemporalMarker(TimeProducer time, MarkerCallback callback) {
+        this.temporalMarkers.add(new TemporalMarker(time, callback));
+        return this;
+    }
+
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
+    public TrajectorySequenceBuilder addSpatialMarker(Vector2d point, MarkerCallback callback) {
+        this.spatialMarkers.add(new SpatialMarker(point, callback));
+        return this;
+    }
+
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
+    public TrajectorySequenceBuilder addDisplacementMarker(MarkerCallback callback) {
+        return this.addDisplacementMarker(currentDisplacement, callback);
+    }
+
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
+    public TrajectorySequenceBuilder UNSTABLE_addDisplacementMarkerOffset(double offset, MarkerCallback callback) {
+        return this.addDisplacementMarker(currentDisplacement + offset, callback);
+    }
+
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
+    public TrajectorySequenceBuilder addDisplacementMarker(double displacement, MarkerCallback callback) {
+        return this.addDisplacementMarker(0.0, displacement, callback);
+    }
+
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
+    public TrajectorySequenceBuilder addDisplacementMarker(double scale, double offset, MarkerCallback callback) {
+        return addDisplacementMarker((displacement -> scale * displacement + offset), callback);
+    }
+
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
+    public TrajectorySequenceBuilder addDisplacementMarker(DisplacementProducer displacement, MarkerCallback callback) {
+        displacementMarkers.add(new DisplacementMarker(displacement, callback));
+
+        return this;
+    }
+
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
+    public TrajectorySequenceBuilder turn(double angle) {
+        return turn(angle, currentTurnConstraintMaxAngVel, currentTurnConstraintMaxAngAccel);
+    }
+
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
+    public TrajectorySequenceBuilder turn(double angle, double maxAngVel, double maxAngAccel) {
+        pushPath();
+
+        MotionProfile turnProfile = MotionProfileGenerator.generateSimpleMotionProfile(
+                new MotionState(lastPose.getHeading(), 0.0, 0.0, 0.0),
+                new MotionState(lastPose.getHeading() + angle, 0.0, 0.0, 0.0),
+                maxAngVel,
+                maxAngAccel
+        );
+
+        sequenceSegments.add(new TurnSegment(lastPose, angle, turnProfile, Collections.emptyList()));
+
+        lastPose = new Pose2d(
+                lastPose.getX(), lastPose.getY(),
+                Angle.norm(lastPose.getHeading() + angle)
+        );
+
+        currentDuration += turnProfile.duration();
+
+        return this;
+    }
+
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
+    public TrajectorySequenceBuilder waitSeconds(double seconds) {
+        pushPath();
+        sequenceSegments.add(new WaitSegment(lastPose, seconds, Collections.emptyList()));
+        currentDuration += seconds;
+
+        return this;
+    }
+
+    /**
+     * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
+     */
+    public TrajectorySequenceBuilder addTrajectory(Trajectory trajectory) {
+        pushPath();
+        sequenceSegments.add(new TrajectorySegment(trajectory));
+
+        return this;
+    }
+
+    /**
+     * Pushes the current trajectory path to the sequence segments.
+     * If there is a current trajectory builder, it builds the trajectory
+     * and adds it to the sequence segments. Then, it resets the current
+     * trajectory builder to null.
+     */
+    private void pushPath() {
+        if (currentTrajectoryBuilder != null) {
+            Trajectory builtTraj = currentTrajectoryBuilder.build();
+            sequenceSegments.add(new TrajectorySegment(builtTraj));
+        }
+
+        currentTrajectoryBuilder = null;
+    }
+
+    private void newPath() {
+        final double resolution = 0.25;
+        double tangent;
+
+        if (currentTrajectoryBuilder != null) {
+            pushPath();
+        }
+
+        lastDurationTraj = 0.0;
+        lastDisplacementTraj = 0.0;
+        tangent = setAbsoluteTangent ? absoluteTangent : Angle.norm(lastPose.getHeading() + tangentOffset);
+        currentTrajectoryBuilder = new TrajectoryBuilder(lastPose, tangent, currentVelConstraint, currentAccelConstraint, resolution);
+    }
+
+    /**
+     * Initializes a new path for the trajectory sequence.
+     * <p>
+     * This method resets the last duration and displacement of the trajectory segment,
+     * calculates the tangent for the new path, and creates a new `TrajectoryBuilder`
+     * with the current pose, tangent, velocity constraint, and acceleration constraint.
+     * If there is an existing trajectory builder, it pushes the current path to the sequence segments.
+     */
+    public TrajectorySequence build() {
+        pushPath();
+
+        List<TrajectoryMarker> globalMarkers = convertMarkersToGlobal(
+                sequenceSegments,
+                temporalMarkers, displacementMarkers, spatialMarkers
+        );
+
+        return new TrajectorySequence(projectGlobalMarkersToLocalSegments(globalMarkers, sequenceSegments));
+    }
+
+    /**
+     * Adds a path to the trajectory sequence using the provided callback.
+     * If the current trajectory builder is null, a new path is initialized.
+     * If a `PathContinuityViolationException` is thrown, a new path is initialized
+     * and the callback is run again.
+     *
+     * @param callback The callback to add the path.
+     * @return The `TrajectorySequenceBuilder` instance.
+     */
     private TrajectorySequenceBuilder addPath(AddPathCallback callback) {
         if (currentTrajectoryBuilder == null) newPath();
 
@@ -304,204 +780,15 @@ public class TrajectorySequenceBuilder {
         return this;
     }
 
-    public TrajectorySequenceBuilder setTangent(double tangent) {
-        setAbsoluteTangent = true;
-        absoluteTangent = tangent;
-
-        pushPath();
-
-        return this;
-    }
-
-    private TrajectorySequenceBuilder setTangentOffset(double offset) {
-        setAbsoluteTangent = false;
-
-        this.tangentOffset = offset;
-        this.pushPath();
-
-        return this;
-    }
-
-    public TrajectorySequenceBuilder setReversed(boolean reversed) {
-        return reversed ? this.setTangentOffset(Math.toRadians(180.0)) : this.setTangentOffset(0.0);
-    }
-
-    public TrajectorySequenceBuilder setConstraints(
-            TrajectoryVelocityConstraint velConstraint,
-            TrajectoryAccelerationConstraint accelConstraint
-    ) {
-        this.currentVelConstraint = velConstraint;
-        this.currentAccelConstraint = accelConstraint;
-
-        return this;
-    }
-
-    public TrajectorySequenceBuilder resetConstraints() {
-        this.currentVelConstraint = this.baseVelConstraint;
-        this.currentAccelConstraint = this.baseAccelConstraint;
-
-        return this;
-    }
-
-    public TrajectorySequenceBuilder setVelConstraint(TrajectoryVelocityConstraint velConstraint) {
-        this.currentVelConstraint = velConstraint;
-
-        return this;
-    }
-
-    public TrajectorySequenceBuilder resetVelConstraint() {
-        this.currentVelConstraint = this.baseVelConstraint;
-
-        return this;
-    }
-
-    public TrajectorySequenceBuilder setAccelConstraint(TrajectoryAccelerationConstraint accelConstraint) {
-        this.currentAccelConstraint = accelConstraint;
-
-        return this;
-    }
-
-    public TrajectorySequenceBuilder resetAccelConstraint() {
-        this.currentAccelConstraint = this.baseAccelConstraint;
-
-        return this;
-    }
-
-    public TrajectorySequenceBuilder setTurnConstraint(double maxAngVel, double maxAngAccel) {
-        this.currentTurnConstraintMaxAngVel = maxAngVel;
-        this.currentTurnConstraintMaxAngAccel = maxAngAccel;
-
-        return this;
-    }
-
-    public TrajectorySequenceBuilder resetTurnConstraint() {
-        this.currentTurnConstraintMaxAngVel = baseTurnConstraintMaxAngVel;
-        this.currentTurnConstraintMaxAngAccel = baseTurnConstraintMaxAngAccel;
-
-        return this;
-    }
-
-    public TrajectorySequenceBuilder addTemporalMarker(MarkerCallback callback) {
-        return this.addTemporalMarker(currentDuration, callback);
-    }
-
-    public TrajectorySequenceBuilder UNSTABLE_addTemporalMarkerOffset(double offset, MarkerCallback callback) {
-        return this.addTemporalMarker(currentDuration + offset, callback);
-    }
-
-    public TrajectorySequenceBuilder addTemporalMarker(double time, MarkerCallback callback) {
-        return this.addTemporalMarker(0.0, time, callback);
-    }
-
-    public TrajectorySequenceBuilder addTemporalMarker(double scale, double offset, MarkerCallback callback) {
-        return this.addTemporalMarker(time -> scale * time + offset, callback);
-    }
-
-    public TrajectorySequenceBuilder addTemporalMarker(TimeProducer time, MarkerCallback callback) {
-        this.temporalMarkers.add(new TemporalMarker(time, callback));
-        return this;
-    }
-
-    public TrajectorySequenceBuilder addSpatialMarker(Vector2d point, MarkerCallback callback) {
-        this.spatialMarkers.add(new SpatialMarker(point, callback));
-        return this;
-    }
-
-    public TrajectorySequenceBuilder addDisplacementMarker(MarkerCallback callback) {
-        return this.addDisplacementMarker(currentDisplacement, callback);
-    }
-
-    public TrajectorySequenceBuilder UNSTABLE_addDisplacementMarkerOffset(double offset, MarkerCallback callback) {
-        return this.addDisplacementMarker(currentDisplacement + offset, callback);
-    }
-
-    public TrajectorySequenceBuilder addDisplacementMarker(double displacement, MarkerCallback callback) {
-        return this.addDisplacementMarker(0.0, displacement, callback);
-    }
-
-    public TrajectorySequenceBuilder addDisplacementMarker(double scale, double offset, MarkerCallback callback) {
-        return addDisplacementMarker((displacement -> scale * displacement + offset), callback);
-    }
-
-    public TrajectorySequenceBuilder addDisplacementMarker(DisplacementProducer displacement, MarkerCallback callback) {
-        displacementMarkers.add(new DisplacementMarker(displacement, callback));
-
-        return this;
-    }
-
-    public TrajectorySequenceBuilder turn(double angle) {
-        return turn(angle, currentTurnConstraintMaxAngVel, currentTurnConstraintMaxAngAccel);
-    }
-
-    public TrajectorySequenceBuilder turn(double angle, double maxAngVel, double maxAngAccel) {
-        pushPath();
-
-        MotionProfile turnProfile = MotionProfileGenerator.generateSimpleMotionProfile(
-                new MotionState(lastPose.getHeading(), 0.0, 0.0, 0.0),
-                new MotionState(lastPose.getHeading() + angle, 0.0, 0.0, 0.0),
-                maxAngVel,
-                maxAngAccel
-        );
-
-        sequenceSegments.add(new TurnSegment(lastPose, angle, turnProfile, Collections.emptyList()));
-
-        lastPose = new Pose2d(
-                lastPose.getX(), lastPose.getY(),
-                Angle.norm(lastPose.getHeading() + angle)
-        );
-
-        currentDuration += turnProfile.duration();
-
-        return this;
-    }
-
-    public TrajectorySequenceBuilder waitSeconds(double seconds) {
-        pushPath();
-        sequenceSegments.add(new WaitSegment(lastPose, seconds, Collections.emptyList()));
-
-        currentDuration += seconds;
-        return this;
-    }
-
-    public TrajectorySequenceBuilder addTrajectory(Trajectory trajectory) {
-        pushPath();
-
-        sequenceSegments.add(new TrajectorySegment(trajectory));
-        return this;
-    }
-
-    private void pushPath() {
-        if (currentTrajectoryBuilder != null) {
-            Trajectory builtTraj = currentTrajectoryBuilder.build();
-            sequenceSegments.add(new TrajectorySegment(builtTraj));
-        }
-
-        currentTrajectoryBuilder = null;
-    }
-
-    private void newPath() {
-        if (currentTrajectoryBuilder != null)
-            pushPath();
-
-        lastDurationTraj = 0.0;
-        lastDisplacementTraj = 0.0;
-
-        double tangent = setAbsoluteTangent ? absoluteTangent : Angle.norm(lastPose.getHeading() + tangentOffset);
-
-        currentTrajectoryBuilder = new TrajectoryBuilder(lastPose, tangent, currentVelConstraint, currentAccelConstraint, resolution);
-    }
-
-    public TrajectorySequence build() {
-        pushPath();
-
-        List<TrajectoryMarker> globalMarkers = convertMarkersToGlobal(
-                sequenceSegments,
-                temporalMarkers, displacementMarkers, spatialMarkers
-        );
-
-        return new TrajectorySequence(projectGlobalMarkersToLocalSegments(globalMarkers, sequenceSegments));
-    }
-
+    /**
+     * Converts the provided markers (temporal, displacement, and spatial) to global trajectory markers.
+     *
+     * @param sequenceSegments    The list of sequence segments in the trajectory.
+     * @param temporalMarkers     The list of temporal markers to be converted.
+     * @param displacementMarkers The list of displacement markers to be converted.
+     * @param spatialMarkers      The list of spatial markers to be converted.
+     * @return A list of global trajectory markers.
+     */
     private List<TrajectoryMarker> convertMarkersToGlobal(
             List<SequenceSegment> sequenceSegments,
             List<TemporalMarker> temporalMarkers,
@@ -510,14 +797,14 @@ public class TrajectorySequenceBuilder {
     ) {
         ArrayList<TrajectoryMarker> trajectoryMarkers = new ArrayList<>();
 
-        // Convert temporal markers
+        // Convert temporal markers.
         for (TemporalMarker marker : temporalMarkers) {
             trajectoryMarkers.add(
                     new TrajectoryMarker(marker.getProducer().produce(currentDuration), marker.getCallback())
             );
         }
 
-        // Convert displacement markers
+        // Convert displacement markers.
         for (DisplacementMarker marker : displacementMarkers) {
             double time = displacementToTime(
                     sequenceSegments,
@@ -532,7 +819,7 @@ public class TrajectorySequenceBuilder {
             );
         }
 
-        // Convert spatial markers
+        // Convert spatial markers.
         for (SpatialMarker marker : spatialMarkers) {
             trajectoryMarkers.add(
                     new TrajectoryMarker(
@@ -545,10 +832,22 @@ public class TrajectorySequenceBuilder {
         return trajectoryMarkers;
     }
 
+    /**
+     * Projects global trajectory markers to local sequence segments.
+     * <p>
+     * This method takes a list of global trajectory markers and projects them onto the local sequence segments.
+     * It iterates through the sequence segments and calculates the appropriate segment and offset time for each marker.
+     * The markers are then added to the corresponding segment, creating new segments with the updated markers.
+     *
+     * @param markers          The list of global trajectory markers.
+     * @param sequenceSegments The list of sequence segments in the trajectory.
+     * @return A list of sequence segments with the projected markers.
+     */
     private List<SequenceSegment> projectGlobalMarkersToLocalSegments(List<TrajectoryMarker> markers, List<SequenceSegment> sequenceSegments) {
         if (sequenceSegments.isEmpty()) return Collections.emptyList();
 
         double totalSequenceDuration = 0;
+
         for (SequenceSegment segment : sequenceSegments) {
             totalSequenceDuration += segment.getDuration();
         }
@@ -577,24 +876,21 @@ public class TrajectorySequenceBuilder {
 
             SequenceSegment newSegment = null;
 
-            if (segment instanceof WaitSegment) {
+            if (segment instanceof WaitSegment thisSegment) {
                 List<TrajectoryMarker> newMarkers = new ArrayList<>(segment.getMarkers());
 
                 newMarkers.addAll(sequenceSegments.get(segmentIndex).getMarkers());
                 newMarkers.add(new TrajectoryMarker(segmentOffsetTime, marker.getCallback()));
 
-                WaitSegment thisSegment = (WaitSegment) segment;
                 newSegment = new WaitSegment(thisSegment.getStartPose(), thisSegment.getDuration(), newMarkers);
-            } else if (segment instanceof TurnSegment) {
+            } else if (segment instanceof TurnSegment thisSegment) {
                 List<TrajectoryMarker> newMarkers = new ArrayList<>(segment.getMarkers());
 
                 newMarkers.addAll(sequenceSegments.get(segmentIndex).getMarkers());
                 newMarkers.add(new TrajectoryMarker(segmentOffsetTime, marker.getCallback()));
 
-                TurnSegment thisSegment = (TurnSegment) segment;
                 newSegment = new TurnSegment(thisSegment.getStartPose(), thisSegment.getTotalRotation(), thisSegment.getMotionProfile(), newMarkers);
-            } else if (segment instanceof TrajectorySegment) {
-                TrajectorySegment thisSegment = (TrajectorySegment) segment;
+            } else if (segment instanceof TrajectorySegment thisSegment) {
 
                 List<TrajectoryMarker> newMarkers = new ArrayList<>(thisSegment.getTrajectory().getMarkers());
                 newMarkers.add(new TrajectoryMarker(segmentOffsetTime, marker.getCallback()));
@@ -610,6 +906,15 @@ public class TrajectorySequenceBuilder {
 
     // Taken from Road Runner's TrajectoryGenerator.displacementToTime() since it's private
     // note: this assumes that the profile position is monotonic increasing
+
+    /**
+     * Converts a displacement value to a time value using a binary search algorithm.
+     * This method assumes that the profile position is monotonically increasing.
+     *
+     * @param profile The motion profile to search within.
+     * @param s       The displacement value to convert to time.
+     * @return The time value corresponding to the given displacement.
+     */
     private Double motionProfileDisplacementToTime(MotionProfile profile, double s) {
         double tLo = 0.0;
         double tHi = profile.duration();
@@ -624,13 +929,21 @@ public class TrajectorySequenceBuilder {
         return 0.5 * (tLo + tHi);
     }
 
+    /**
+     * Converts a displacement value to a time value based on the sequence segments.
+     * This method iterates through the sequence segments and calculates the time
+     * corresponding to the given displacement.
+     *
+     * @param sequenceSegments The list of sequence segments in the trajectory.
+     * @param s                The displacement value to convert to time.
+     * @return The time value corresponding to the given displacement.
+     */
     private Double displacementToTime(List<SequenceSegment> sequenceSegments, double s) {
         double currentTime = 0.0;
         double currentDisplacement = 0.0;
 
         for (SequenceSegment segment : sequenceSegments) {
-            if (segment instanceof TrajectorySegment) {
-                TrajectorySegment thisSegment = (TrajectorySegment) segment;
+            if (segment instanceof TrajectorySegment thisSegment) {
 
                 double segmentLength = thisSegment.getTrajectory().getPath().length();
 
@@ -654,6 +967,16 @@ public class TrajectorySequenceBuilder {
         return 0.0;
     }
 
+    /**
+     * Converts a point to a time value based on the sequence segments.
+     * This method iterates through the sequence segments and calculates the time
+     * corresponding to the given point by projecting the point onto the path
+     * and finding the closest point.
+     *
+     * @param sequenceSegments The list of sequence segments in the trajectory.
+     * @param point            The point to convert to time.
+     * @return The time value corresponding to the given point.
+     */
     private Double pointToTime(List<SequenceSegment> sequenceSegments, Vector2d point) {
         class ComparingPoints {
             private final double distanceToPoint;
@@ -670,8 +993,7 @@ public class TrajectorySequenceBuilder {
         List<ComparingPoints> projectedPoints = new ArrayList<>();
 
         for (SequenceSegment segment : sequenceSegments) {
-            if (segment instanceof TrajectorySegment) {
-                TrajectorySegment thisSegment = (TrajectorySegment) segment;
+            if (segment instanceof TrajectorySegment thisSegment) {
 
                 double displacement = thisSegment.getTrajectory().getPath().project(point, 0.25);
                 Vector2d projectedPoint = thisSegment.getTrajectory().getPath().get(displacement).vec();
@@ -701,9 +1023,14 @@ public class TrajectorySequenceBuilder {
                 closestPoint = comparingPoint;
         }
 
+        assert closestPoint != null;
         return displacementToTime(sequenceSegments, closestPoint.thisPathDisplacement);
     }
 
+    /**
+     * Callback interface for adding a path to the trajectory sequence.
+     * The `run` method is called to execute the path addition logic.
+     */
     private interface AddPathCallback {
         void run();
     }

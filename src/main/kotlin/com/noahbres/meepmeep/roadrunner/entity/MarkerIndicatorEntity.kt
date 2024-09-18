@@ -17,95 +17,155 @@ import java.awt.Graphics2D
 import kotlin.math.cos
 import kotlin.math.sin
 
+/**
+ * Entity representing a marker in the MeepMeep simulation.
+ *
+ * @property meepMeep The MeepMeep instance.
+ * @property colorScheme The color scheme used for rendering.
+ * @property pos The position of the marker.
+ * @property callback The callback to be invoked when the marker is
+ *    reached.
+ * @property time The time at which the marker is reached.
+ */
 class MarkerIndicatorEntity(
-        override val meepMeep: MeepMeep,
-        private var colorScheme: ColorScheme,
-        private val pos: Pose2d,
-        private val callback: MarkerCallback,
-        val time: Double,
+    override val meepMeep: MeepMeep,
+    private var colorScheme: ColorScheme,
+    private val pos: Pose2d,
+    private val callback: MarkerCallback,
+    val time: Double,
 ) : ThemedEntity {
-    private var canvasWidth = FieldUtil.CANVAS_WIDTH
-    private var canvasHeight = FieldUtil.CANVAS_HEIGHT
-
+    /** Tag for the marker entity. */
     override val tag = "MARKER_INDICATOR_ENTITY"
 
+    /** Z-index for rendering order. */
     override var zIndex: Int = 0
 
-    private val MARKER_X_RADIUS = 0.15
-    private val MARKER_X_STROKE_WIDTH = 0.3
-    private val MARKER_CIRCLE_RADIUS = 3.9
-    private val MARKER_CIRCLE_STROKE_WIDTH = 0.4
+    /** Canvas width. */
+    private var canvasWidth = FieldUtil.CANVAS_WIDTH
 
-    private var currentCircleRadius = MARKER_CIRCLE_RADIUS
-    private val animationController = AnimationController(MARKER_CIRCLE_RADIUS).clip(
-            0.0, MARKER_CIRCLE_RADIUS
+    /** Canvas height. */
+    private var canvasHeight = FieldUtil.CANVAS_HEIGHT
+
+    // Radius of the marker's X shape
+    private val markerXRadius = 0.15
+
+    // Stroke width of the marker's X shape
+    private val markerXStrokeWidth = 0.3
+
+    // Radius of the marker's circle
+    private val markerCircleRadius = 3.9
+
+    // Stroke width of the marker's circle
+    private val markerCircleStrokeWidth = 0.4
+
+    // Current radius of the marker's circle
+    private var currentCircleRadius = markerCircleRadius
+
+    // Animation controller for the marker's circle radius
+    private val animationController = AnimationController(markerCircleRadius).clip(
+        0.0, markerCircleRadius
     )
 
+    // Flag indicating weather the marker has been passed
     private var passed = false
 
+    /**
+     * Updates the MarkerIndicator entity.
+     *
+     * @param deltaTime The time since the last update.
+     */
     override fun update(deltaTime: Long) {
         currentCircleRadius = animationController.value
 
         animationController.update()
     }
 
+    /**
+     * Renders the marker on the given graphics context.
+     *
+     * @param gfx The graphics context.
+     * @param canvasWidth The width of the canvas.
+     * @param canvasHeight The height of the canvas.
+     */
     override fun render(gfx: Graphics2D, canvasWidth: Int, canvasHeight: Int) {
-        gfx.color = colorScheme.TRAJECTORY_MARKER_COLOR
+        gfx.color = colorScheme.trajectoryMarkerColor
 
-        val X_LEFT_UP = ((Vector2d(
-                cos((-45.0).toRadians()), sin((-45.0).toRadians())
-        ) * MARKER_X_RADIUS.scaleInToPixel()).rotated(pos.heading) + pos.vec()).toScreenCoord()
-        val X_LEFT_DOWN = ((Vector2d(
-                cos((135.0).toRadians()), sin((135.0).toRadians())
-        ) * MARKER_X_RADIUS.scaleInToPixel()).rotated(pos.heading) + pos.vec()).toScreenCoord()
-        val X_RIGHT_UP = ((Vector2d(
-                cos((45.0).toRadians()), sin((45.0).toRadians())
-        ) * MARKER_X_RADIUS.scaleInToPixel()).rotated(pos.heading) + pos.vec()).toScreenCoord()
-        val X_RIGHT_DOWN = ((Vector2d(
-                cos((225.0).toRadians()), sin((255.0).toRadians())
-        ) * MARKER_X_RADIUS.scaleInToPixel()).rotated(pos.heading) + pos.vec()).toScreenCoord()
+        // Calculate the coordinates  for the X shape of the marker
+        val xLeftUp = ((Vector2d(
+            cos((-45.0).toRadians()), sin((-45.0).toRadians())
+        ) * markerXRadius.scaleInToPixel()).rotated(pos.heading) + pos.vec()).toScreenCoord()
+        val xLeftDown = ((Vector2d(
+            cos((135.0).toRadians()), sin((135.0).toRadians())
+        ) * markerXRadius.scaleInToPixel()).rotated(pos.heading) + pos.vec()).toScreenCoord()
+        val xRightUp = ((Vector2d(
+            cos((45.0).toRadians()), sin((45.0).toRadians())
+        ) * markerXRadius.scaleInToPixel()).rotated(pos.heading) + pos.vec()).toScreenCoord()
+        val xRightDown = ((Vector2d(
+            cos((225.0).toRadians()), sin((255.0).toRadians())
+        ) * markerXRadius.scaleInToPixel()).rotated(pos.heading) + pos.vec()).toScreenCoord()
 
-        gfx.stroke = BasicStroke(MARKER_X_STROKE_WIDTH.scaleInToPixel().toFloat())
+        // Draw the X shape of the marker
+        gfx.stroke = BasicStroke(markerXStrokeWidth.scaleInToPixel().toFloat())
         gfx.drawLine(
-                X_LEFT_UP.x.toInt(), X_LEFT_UP.y.toInt(),
-                X_LEFT_DOWN.x.toInt(), X_LEFT_DOWN.y.toInt()
+            xLeftUp.x.toInt(), xLeftUp.y.toInt(),
+            xLeftDown.x.toInt(), xLeftDown.y.toInt()
         )
         gfx.drawLine(
-                X_RIGHT_UP.x.toInt(), X_RIGHT_UP.y.toInt(),
-                X_RIGHT_DOWN.x.toInt(), X_RIGHT_DOWN.y.toInt()
+            xRightUp.x.toInt(), xRightUp.y.toInt(),
+            xRightDown.x.toInt(), xRightDown.y.toInt()
         )
 
-        gfx.stroke = BasicStroke(MARKER_CIRCLE_STROKE_WIDTH.scaleInToPixel().toFloat())
+        // Draw the circle of the marker
+        gfx.stroke = BasicStroke(markerCircleStrokeWidth.scaleInToPixel().toFloat())
         gfx.drawArc(
-                (pos.vec().toScreenCoord().x - currentCircleRadius.scaleInToPixel() / 2).toInt(),
-                (pos.vec().toScreenCoord().y - currentCircleRadius.scaleInToPixel() / 2).toInt(),
-                currentCircleRadius.scaleInToPixel().toInt(),
-                currentCircleRadius.scaleInToPixel().toInt(),
-                0, 360
+            (pos.vec().toScreenCoord().x - currentCircleRadius.scaleInToPixel() / 2).toInt(),
+            (pos.vec().toScreenCoord().y - currentCircleRadius.scaleInToPixel() / 2).toInt(),
+            currentCircleRadius.scaleInToPixel().toInt(),
+            currentCircleRadius.scaleInToPixel().toInt(),
+            0, 360
         )
     }
 
-    fun passed() {
-        if (!passed) {
-            passed = true
-            animationController.anim(0.0, 200.0, Ease.EASE_IN_OUT_CUBIC)
-            callback.onMarkerReached()
-        }
-    }
-
-    fun reset() {
-        if (passed) {
-            passed = false
-            animationController.anim(MARKER_CIRCLE_RADIUS, 200.0, Ease.EASE_IN_CUBIC)
-        }
-    }
-
+    /**
+     * Sets the dimensions of the canvas.
+     *
+     * @param canvasWidth The width of the canvas.
+     * @param canvasHeight The height of the canvas.
+     */
     override fun setCanvasDimensions(canvasWidth: Double, canvasHeight: Double) {
         this.canvasWidth = canvasWidth
         this.canvasHeight = canvasHeight
     }
 
+    /**
+     * Switches the color scheme of the marker.
+     *
+     * @param scheme The new color scheme.
+     */
     override fun switchScheme(scheme: ColorScheme) {
         this.colorScheme = scheme
+    }
+
+    /** Marks the indicator as passed and triggers the callback. */
+    fun passed() {
+        if (!passed) {
+            passed = true
+
+            // Animate the circle radius to 0
+            animationController.anim(0.0, 200.0, Ease.EASE_IN_OUT_CUBIC)
+
+            // Trigger the callback
+            callback.onMarkerReached()
+        }
+    }
+
+    /** Resets the marker indicator to its initial state. */
+    fun reset() {
+        if (passed) {
+            passed = false
+
+            // Animate the circle radius back to its original value
+            animationController.anim(markerCircleRadius, 200.0, Ease.EASE_IN_CUBIC)
+        }
     }
 }
