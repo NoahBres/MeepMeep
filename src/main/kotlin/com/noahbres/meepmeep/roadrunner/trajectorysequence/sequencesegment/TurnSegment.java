@@ -7,10 +7,28 @@ import com.acmerobotics.roadrunner.util.Angle;
 
 import java.util.List;
 
+/**
+ * Represents a segment of a trajectory sequence that involves a turn.
+ */
 public final class TurnSegment extends SequenceSegment {
+    /**
+     * The total rotation for the turn.
+     */
     private final double totalRotation;
+
+    /**
+     * The motion profile for the turn.
+     */
     private final MotionProfile motionProfile;
 
+    /**
+     * Constructs a new TurnSegment.
+     *
+     * @param startPose     The starting pose of the segment.
+     * @param totalRotation The total rotation for the turn.
+     * @param motionProfile The motion profile for the turn.
+     * @param markers       The list of trajectory markers.
+     */
     public TurnSegment(Pose2d startPose, double totalRotation, MotionProfile motionProfile, List<TrajectoryMarker> markers) {
         super(
                 motionProfile.duration(),
@@ -26,11 +44,21 @@ public final class TurnSegment extends SequenceSegment {
         this.motionProfile = motionProfile;
     }
 
-    public final double getTotalRotation() {
+    /**
+     * Returns the total rotation for the turn.
+     *
+     * @return The total rotation.
+     */
+    public double getTotalRotation() {
         return this.totalRotation;
     }
 
-    public final MotionProfile getMotionProfile() {
+    /**
+     * Returns the motion profile for the turn.
+     *
+     * @return The motion profile.
+     */
+    public MotionProfile getMotionProfile() {
         return this.motionProfile;
     }
 }

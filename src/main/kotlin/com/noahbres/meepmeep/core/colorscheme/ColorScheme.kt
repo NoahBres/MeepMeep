@@ -2,26 +2,50 @@ package com.noahbres.meepmeep.core.colorscheme
 
 import java.awt.Color
 
-
+/** Abstract class for representing a color scheme */
 abstract class ColorScheme {
+    /** Indicates if the color scheme is dark or not. */
     abstract val isDark: Boolean
 
-    abstract val BOT_BODY_COLOR: Color
-    abstract val BOT_WHEEL_COLOR: Color
-    abstract val BOT_DIRECTION_COLOR: Color
+    /** Color for the robot body. */
+    abstract val botBodyColor: Color
 
-    abstract val AXIS_X_COLOR: Color
-    abstract val AXIS_Y_COLOR: Color
-    abstract val AXIS_NORMAL_OPACITY: Double
-    abstract val AXIS_HOVER_OPACITY: Double
+    /** Color for the robot wheels. */
+    abstract val botWheelColor: Color
 
-    abstract val TRAJCETORY_PATH_COLOR: Color
-    abstract val TRAJECTORY_TURN_COLOR: Color
-    abstract val TRAJECTORY_MARKER_COLOR: Color
+    /** Color for the robot direction indicator. */
+    abstract val botDirectionColor: Color
 
-    abstract val TRAJECTORY_SLIDER_BG: Color
-    abstract val TRAJECTORY_SLIDER_FG: Color
-    abstract val TRAJECTORY_TEXT_COLOR: Color
+    /** Color for the X-axis. */
+    abstract val axisXColor: Color
 
-    abstract val UI_MAIN_BG: Color
+    /** Color for the Y-axis. */
+    abstract val axisYColor: Color
+
+    /** Opacity for the axis lines in normal state. */
+    abstract val axisNormalOpacity: Double
+
+    /** Opacity for the axis lines in hover state. */
+    abstract val axisHoverOpacity: Double
+
+    /** Color for the trajectory paths. */
+    abstract val trajectoryPathColor: Color
+
+    /** Color for the trajectory turns. */
+    abstract val trajectoryTurnColor: Color
+
+    /** Color for the trajectory markers. */
+    abstract val trajectoryMarkerColor: Color
+
+    /** Background color for the trajectory slider. */
+    abstract val trajectorySliderBG: Color
+
+    /** Foreground color for the trajectory slider. */
+    abstract val trajectorySliderFG: Color
+
+    /** Text color for the trajectory slider. */
+    abstract val trajectoryTextColor: Color
+
+    /** Main background color for the UI. */
+    abstract val uiMainBG: Color
 }

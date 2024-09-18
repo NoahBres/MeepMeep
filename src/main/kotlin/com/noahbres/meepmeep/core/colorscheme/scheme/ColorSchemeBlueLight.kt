@@ -4,27 +4,50 @@ import com.noahbres.meepmeep.core.colorscheme.ColorManager
 import com.noahbres.meepmeep.core.colorscheme.ColorScheme
 import java.awt.Color
 
+/** Class representing a light blue color scheme. */
 open class ColorSchemeBlueLight : ColorScheme() {
+    /** Indicates that this is a light color scheme. */
     override val isDark: Boolean = false
 
-    override val BOT_BODY_COLOR = ColorManager.COLOR_PALETTE.BLUE_600
-    override val BOT_WHEEL_COLOR = ColorManager.COLOR_PALETTE.BLUE_800
-    override val BOT_DIRECTION_COLOR = ColorManager.COLOR_PALETTE.BLUE_800
+    /** Color for the robot body. */
+    override val botBodyColor = ColorManager.COLOR_PALETTE.blue600
 
-    override val AXIS_X_COLOR: Color = ColorManager.COLOR_PALETTE.GRAY_900
-    override val AXIS_Y_COLOR: Color = ColorManager.COLOR_PALETTE.GRAY_900
+    /** Color for the robot wheels. */
+    override val botWheelColor = ColorManager.COLOR_PALETTE.blue800
 
-    override val TRAJCETORY_PATH_COLOR: Color = ColorManager.COLOR_PALETTE.RED_600
-    override val TRAJECTORY_TURN_COLOR: Color = ColorManager.COLOR_PALETTE.ORANGE_600
-    override val TRAJECTORY_MARKER_COLOR: Color = ColorManager.COLOR_PALETTE.GREEN_600
+    /** Color for the robot direction indicator. */
+    override val botDirectionColor = ColorManager.COLOR_PALETTE.blue800
 
+    /** Color for the X-axis. */
+    override val axisXColor: Color = ColorManager.COLOR_PALETTE.gray900
 
-    override val AXIS_NORMAL_OPACITY: Double = 0.2
-    override val AXIS_HOVER_OPACITY: Double = 0.8
+    /** Color for the Y-axis. */
+    override val axisYColor: Color = ColorManager.COLOR_PALETTE.gray900
 
-    override val TRAJECTORY_SLIDER_BG: Color = ColorManager.COLOR_PALETTE.GRAY_200
-    override val TRAJECTORY_SLIDER_FG: Color = ColorManager.COLOR_PALETTE.BLUE_600
-    override val TRAJECTORY_TEXT_COLOR: Color = ColorManager.COLOR_PALETTE.GRAY_900
+    /** Color for the trajectory paths. */
+    override val trajectoryPathColor: Color = ColorManager.COLOR_PALETTE.red600
 
-    override val UI_MAIN_BG: Color = ColorManager.COLOR_PALETTE.GRAY_200
+    /** Color for the trajectory turns. */
+    override val trajectoryTurnColor: Color = ColorManager.COLOR_PALETTE.orange600
+
+    /** Color for the trajectory markers. */
+    override val trajectoryMarkerColor: Color = ColorManager.COLOR_PALETTE.green600
+
+    /** Opacity for the axis lines in normal state. */
+    override val axisNormalOpacity: Double = 0.2
+
+    /** Opacity for the axis lines in hover state. */
+    override val axisHoverOpacity: Double = 0.8
+
+    /** Background color for the trajectory slider. */
+    override val trajectorySliderBG: Color = ColorManager.COLOR_PALETTE.gray200
+
+    /** Foreground color for the trajectory slider. */
+    override val trajectorySliderFG: Color = ColorManager.COLOR_PALETTE.blue600
+
+    /** Text color for the trajectory slider. */
+    override val trajectoryTextColor: Color = ColorManager.COLOR_PALETTE.gray900
+
+    /** Main background color for the UI. */
+    override val uiMainBG: Color = ColorManager.COLOR_PALETTE.gray200
 }
