@@ -2,6 +2,10 @@ package com.noahbres.meepmeep.roadrunner.entity
 
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.noahbres.meepmeep.MeepMeep
+import com.noahbres.meepmeep.core.colorscheme.ColorScheme
+import com.noahbres.meepmeep.core.entity.BotEntity
+import com.noahbres.meepmeep.core.entity.EntityEventListener
+import com.noahbres.meepmeep.core.exhaustive
 import com.noahbres.meepmeep.roadrunner.Constraints
 import com.noahbres.meepmeep.roadrunner.DriveShim
 import com.noahbres.meepmeep.roadrunner.DriveTrainType
@@ -11,10 +15,6 @@ import com.noahbres.meepmeep.roadrunner.trajectorysequence.sequencesegment.Traje
 import com.noahbres.meepmeep.roadrunner.trajectorysequence.sequencesegment.TurnSegment
 import com.noahbres.meepmeep.roadrunner.trajectorysequence.sequencesegment.WaitSegment
 import com.noahbres.meepmeep.roadrunner.ui.TrajectoryProgressSliderMaster
-import com.noahbres.meepmeep.core.colorscheme.ColorScheme
-import com.noahbres.meepmeep.core.entity.BotEntity
-import com.noahbres.meepmeep.core.entity.EntityEventListener
-import com.noahbres.meepmeep.core.exhaustive
 import kotlin.math.min
 
 /**
@@ -40,7 +40,7 @@ class RoadRunnerBotEntity(
     opacity: Double,
     private var driveTrainType: DriveTrainType = DriveTrainType.MECANUM,
     private var listenToSwitchThemeRequest: Boolean = false
-) : BotEntity(meepMeep, width, height, pose, colorScheme, opacity), EntityEventListener {
+): BotEntity(meepMeep, width, height, pose, colorScheme, opacity), EntityEventListener {
     /** Tag for the bot entity. */
     override val tag = "RR_BOT_ENTITY"
 
@@ -68,7 +68,7 @@ class RoadRunnerBotEntity(
     var looping = true
 
     /** Flag indicating if the bot is currently running. */
-    private var isExcutingTrajectory = false
+    private var isExecutingTrajectory = false
 
     /** Elapsed time for the current trajectory sequence. */
     private var trajectorySequenceElapsedTime = 0.0
@@ -95,7 +95,7 @@ class RoadRunnerBotEntity(
      * @param deltaTime The time since the last update.
      */
     override fun update(deltaTime: Long) {
-        if (!isExcutingTrajectory) return
+        if (!isExecutingTrajectory) return
 
         // Skip initial loops to avoid startup issues
         if (skippedLoops++ < SKIP_LOOPS) return
@@ -152,7 +152,7 @@ class RoadRunnerBotEntity(
             else -> {
                 // Stop running when the sequence is done
                 trajectorySequenceElapsedTime = 0.0
-                isExcutingTrajectory = false
+                isExecutingTrajectory = false
                 sliderMaster?.reportDone(sliderMasterIndex ?: -1)
             }
         }.exhaustive
@@ -160,13 +160,13 @@ class RoadRunnerBotEntity(
 
     /** Starts the trajectory sequence. */
     fun start() {
-        isExcutingTrajectory = true
+        isExecutingTrajectory = true
         trajectorySequenceElapsedTime = 0.0
     }
 
     /** Resumes the trajectory sequence. */
     fun resume() {
-        isExcutingTrajectory = true
+        isExecutingTrajectory = true
     }
 
     /** Pauses the trajectory sequence. */
@@ -245,13 +245,11 @@ class RoadRunnerBotEntity(
 
     /** Called when the bot is added to the entity list. */
     override fun onAddToEntityList() {
-        if (trajectorySequenceEntity != null)
-            meepMeep.requestToAddEntity(trajectorySequenceEntity!!)
+        trajectorySequenceEntity?.let { meepMeep.requestToAddEntity(it) }
     }
 
     /** Called when the bot is removed from the entity list. */
     override fun onRemoveFromEntityList() {
-        if (trajectorySequenceEntity != null)
-            meepMeep.requestToRemoveEntity(trajectorySequenceEntity!!)
+        trajectorySequenceEntity?.let { meepMeep.requestToRemoveEntity(it) }
     }
 }
