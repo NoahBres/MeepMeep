@@ -187,7 +187,7 @@ Default Bot Settings:
 - Max Ang Accel: 60deg/s/s
 - Track Width: 15in
 - Bot Width: 18in
-- Bot Width: 18in
+- Bot Height: 18in
 - Start Pose: (x: 0in, y: 0in, heading: 0rad)
 - Color Scheme: Inherited from MeepMeep.colorManager unless overriden
 - Drive Train Type: Mecanum
