@@ -36,7 +36,7 @@ class TrajectoryProgressSubSlider(
     private var bg: Color,
     private var textColor: Color,
     font: Font? = null
-) : JPanel() {
+): JPanel() {
     /**
      * The progress of the trajectory, represented as a value between 0.0 and
      * 1.0.
@@ -116,7 +116,7 @@ class TrajectoryProgressSubSlider(
                 progress * maxTrajectoryDuration
             )
             val totalText =
-                DecimalFormat("0.00").format(entity.currentTrajectorySequence!!.duration())
+                    DecimalFormat("0.00").format(entity.currentTrajectorySequence!!.duration())
             val mainDrawString = "$progressText / ${totalText}s"
 
             // Draw the progress text centered in the slider

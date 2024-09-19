@@ -4,7 +4,7 @@ import com.noahbres.meepmeep.core.colorscheme.ColorManager
 import java.awt.Color
 
 /** Class representing a dark red color scheme. */
-open class ColorSchemeRedDark : ColorSchemeRedLight() {
+open class ColorSchemeRedDark: ColorSchemeRedLight() {
     /** Indicates that this is a dark color scheme. */
     override val isDark: Boolean = true
 

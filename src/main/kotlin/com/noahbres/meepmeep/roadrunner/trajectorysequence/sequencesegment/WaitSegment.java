@@ -13,7 +13,7 @@ public final class WaitSegment extends SequenceSegment {
     /**
      * Constructs a new WaitSegment.
      *
-     * @param pose The pose of the robot during the wait.
+     * @param pose    The pose of the robot during the wait.
      * @param seconds The duration of the wait in seconds.
      * @param markers A list of trajectory markers to be executed during the wait.
      */

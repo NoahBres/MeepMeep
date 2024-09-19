@@ -136,6 +136,9 @@ class MeepMeep @JvmOverloads constructor(
     /** The height of the canvas, publicly accessible. */
     val canvasHeight = canvas.height
 
+    /** Control visibility of FPS display. */
+    private var showFPS: Boolean = false
+
     /**
      * Initializes the [TrajectoryProgressSliderMaster] panel.
      *
@@ -339,10 +342,11 @@ class MeepMeep @JvmOverloads constructor(
         // Render all entities in the entity list
         entityList.forEach { it.render(g, canvas.width, canvas.height) }
 
-        // Draw the FPS counter
-        g.font = FONT_ROBOTO_BOLD_ITALIC.deriveFont(20f)
-        g.color = ColorManager.COLOR_PALETTE.green600
-        g.drawString("%.1f FPS".format(loopManager.fps), 10, 20)
+        if (showFPS) {
+            g.font = FONT_ROBOTO_BOLD_ITALIC.deriveFont(20f)
+            g.color = ColorManager.COLOR_PALETTE.green600
+            g.drawString("%.1f FPS".format(loopManager.fps), 10, 20)
+        }
 
         // Convert mouse coordinates from screen to field coordinates
         val mouseToFieldCoords = FieldUtil.screenCoordsToFieldCoords(
@@ -514,6 +518,20 @@ class MeepMeep @JvmOverloads constructor(
 
         // Update the y-coordinate for the mouse coordinate display
         mouseCoordinateDisplayY = y
+    }
+
+    /**
+     * Sets the visibility of the FPS display.
+     *
+     * @param showFPS A boolean indicating whether the FPS display should be
+     *    shown.
+     * @return The [MeepMeep] instance for method chaining.
+     */
+    fun setShowFPS(showFPS: Boolean): MeepMeep {
+        // Update the showFPS property
+        this.showFPS = showFPS
+
+        return this
     }
 
     /**

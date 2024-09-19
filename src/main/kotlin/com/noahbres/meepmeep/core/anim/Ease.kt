@@ -18,7 +18,7 @@ class Ease {
         /** Quadratic easing in/out - acceleration until halfway, then deceleration. */
         @JvmStatic
         val EASE_IN_OUT_QUAD: (t: Double) -> Double =
-            { if (it < 0.5) 2 * it * it else -1 + (4 - 2 * it) * it }
+                { if (it < 0.5) 2 * it * it else -1 + (4 - 2 * it) * it }
 
         /** Cubic easing in - accelerating from zero velocity. */
         @JvmStatic
@@ -34,7 +34,7 @@ class Ease {
         /** Cubic easing in/out - acceleration until halfway, then deceleration. */
         @JvmStatic
         val EASE_IN_OUT_CUBIC: (t: Double) -> Double =
-            { if (it < 0.5) 4 * it * it * it else (it - 1) * (2 * it - 2) * (2 * it - 2) + 1 }
+                { if (it < 0.5) 4 * it * it * it else (it - 1) * (2 * it - 2) * (2 * it - 2) + 1 }
 
         /** Quartic easing in - accelerating from zero velocity. */
         @JvmStatic

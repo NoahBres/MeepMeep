@@ -38,11 +38,7 @@ public abstract class SequenceSegment {
      * @param endPose   The ending pose of the segment.
      * @param markers   The list of trajectory markers associated with the segment.
      */
-    protected SequenceSegment(
-            double duration,
-            Pose2d startPose, Pose2d endPose,
-            List<TrajectoryMarker> markers
-    ) {
+    protected SequenceSegment(double duration, Pose2d startPose, Pose2d endPose, List<TrajectoryMarker> markers) {
         this.duration = duration;
         this.startPose = startPose;
         this.endPose = endPose;

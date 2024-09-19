@@ -20,7 +20,7 @@ class TurnIndicatorEntity(
     private val pos: Vector2d,
     private val startAngle: Double,
     private val endAngle: Double,
-) : ThemedEntity {
+): ThemedEntity {
     /** The tag for the turn indicator entity. */
     override val tag = "TURN_INDICATOR_ENTITY"
 
@@ -73,11 +73,11 @@ class TurnIndicatorEntity(
         // Set the color and stroke for the turn indicator
         gfx.color = colorScheme.trajectoryTurnColor
         gfx.stroke =
-            BasicStroke(
-                turnStrokeWidth.scaleInToPixel().toFloat(),
-                BasicStroke.CAP_ROUND,
-                BasicStroke.JOIN_ROUND,
-            )
+                BasicStroke(
+                    turnStrokeWidth.scaleInToPixel().toFloat(),
+                    BasicStroke.CAP_ROUND,
+                    BasicStroke.JOIN_ROUND,
+                )
 
         // Draw the turn circle
         gfx.fillOval(
@@ -103,23 +103,23 @@ class TurnIndicatorEntity(
 
         // Calculate the rotation for the first arrow line
         var arrow1Rotated =
-            endAngle - 90.0.toRadians() + turnArrowAngle + turnArrowAngleAdjustment
+                endAngle - 90.0.toRadians() + turnArrowAngle + turnArrowAngleAdjustment
         if (endAngle < startAngle) arrow1Rotated = 360.0.toRadians() - arrow1Rotated
 
         // Calculate the rotation for the second arrow line
         var arrow2Rotated =
-            endAngle - 90.0.toRadians() - turnArrowAngle + turnArrowAngleAdjustment
+                endAngle - 90.0.toRadians() - turnArrowAngle + turnArrowAngleAdjustment
         if (endAngle < startAngle) arrow2Rotated = 360.0.toRadians() - arrow2Rotated
 
         // Calculate the end points for the arrow lines and their screen coordinates
         val arrowEndVec1 =
-            (pos + arrowPointVec) +
-                Vector2d(turnArrowLength, 0.0)
-                    .rotated(arrow1Rotated)
+                (pos + arrowPointVec) +
+                        Vector2d(turnArrowLength, 0.0)
+                            .rotated(arrow1Rotated)
         val translatedArrowEndVec1 = arrowEndVec1.toScreenCoord()
 
         val arrowEndVec2 =
-            (pos + arrowPointVec) + Vector2d(turnArrowLength, 0.0).rotated(arrow2Rotated)
+                (pos + arrowPointVec) + Vector2d(turnArrowLength, 0.0).rotated(arrow2Rotated)
         val translatedArrowEndVec2 = arrowEndVec2.toScreenCoord()
 
         // Draw the arrow lines

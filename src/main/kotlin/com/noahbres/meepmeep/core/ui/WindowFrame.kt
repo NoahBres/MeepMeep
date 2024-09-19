@@ -14,7 +14,7 @@ import kotlin.system.exitProcess
  * @property windowX The width of the window.
  * @property windowY The height of the window.
  */
-class WindowFrame(title: String, windowX: Int, windowY: Int) : JFrame() {
+class WindowFrame(title: String, windowX: Int, windowY: Int): JFrame() {
     private var internalWidth = windowX
     private var internalHeight = windowY
 
@@ -32,7 +32,7 @@ class WindowFrame(title: String, windowX: Int, windowY: Int) : JFrame() {
         defaultCloseOperation = DO_NOTHING_ON_CLOSE
 
         // Add a window listener to handle the window closing event
-        addWindowListener(object : WindowAdapter() {
+        addWindowListener(object: WindowAdapter() {
             override fun windowClosing(we: WindowEvent?) {
                 super.windowClosing(we)
 

@@ -33,7 +33,7 @@ class MarkerIndicatorEntity(
     private val pos: Pose2d,
     private val callback: MarkerCallback,
     val time: Double,
-) : ThemedEntity {
+): ThemedEntity {
     /** Tag for the marker entity. */
     override val tag = "MARKER_INDICATOR_ENTITY"
 

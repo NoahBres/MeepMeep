@@ -6,7 +6,7 @@ import com.noahbres.meepmeep.core.colorscheme.ColorScheme
  * Interface representing an entity that can switch between different color
  * schemes.
  */
-interface ThemedEntity : Entity {
+interface ThemedEntity: Entity {
     /**
      * Switches the color scheme of the entity.
      *

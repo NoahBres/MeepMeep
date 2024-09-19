@@ -2,9 +2,9 @@ package com.noahbres.meepmeep.roadrunner
 
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.noahbres.meepmeep.MeepMeep
+import com.noahbres.meepmeep.core.colorscheme.ColorScheme
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity
 import com.noahbres.meepmeep.roadrunner.trajectorysequence.TrajectorySequence
-import com.noahbres.meepmeep.core.colorscheme.ColorScheme
 
 /**
  * [DefaultBotBuilder] is a builder class for creating instances of

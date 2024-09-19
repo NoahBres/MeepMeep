@@ -11,7 +11,7 @@ import java.awt.image.BufferStrategy
  * @property internalWidth The width of the canvas.
  * @property internalHeight The height of the canvas.
  */
-class MainCanvas(private var internalWidth: Int, private var internalHeight: Int) : Canvas() {
+class MainCanvas(private var internalWidth: Int, private var internalHeight: Int): Canvas() {
     // Buffer strategy for the canvas
     lateinit var bufferStrat: BufferStrategy
 

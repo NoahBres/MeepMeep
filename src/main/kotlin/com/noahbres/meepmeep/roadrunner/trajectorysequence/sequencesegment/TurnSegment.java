@@ -30,15 +30,7 @@ public final class TurnSegment extends SequenceSegment {
      * @param markers       The list of trajectory markers.
      */
     public TurnSegment(Pose2d startPose, double totalRotation, MotionProfile motionProfile, List<TrajectoryMarker> markers) {
-        super(
-                motionProfile.duration(),
-                startPose,
-                new Pose2d(
-                        startPose.getX(), startPose.getY(),
-                        Angle.norm(startPose.getHeading() + totalRotation)
-                ),
-                markers
-        );
+        super(motionProfile.duration(), startPose, new Pose2d(startPose.getX(), startPose.getY(), Angle.norm(startPose.getHeading() + totalRotation)), markers);
 
         this.totalRotation = totalRotation;
         this.motionProfile = motionProfile;
