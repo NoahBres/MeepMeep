@@ -54,7 +54,7 @@ class LoopManager(
         // Calculate FPS every fpsCalculationInterval
         if (currentLoopTime - fpsCounterStartTime > fpsCalculationInterval) {
             fps =
-                fpsCount.toDouble() / ((currentLoopTime - fpsCounterStartTime).toDouble() / NANOSECONDS_IN_SECOND)
+                    fpsCount.toDouble() / ((currentLoopTime - fpsCounterStartTime).toDouble() / NANOSECONDS_IN_SECOND)
             fpsCount = 0
             fpsCounterStartTime = currentLoopTime
         }

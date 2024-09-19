@@ -4,7 +4,7 @@ import com.noahbres.meepmeep.core.colorscheme.ColorManager
 import java.awt.Color
 
 /** Class representing a dark blue color scheme. */
-open class ColorSchemeBlueDark : ColorSchemeBlueLight() {
+open class ColorSchemeBlueDark: ColorSchemeBlueLight() {
     /** Indicates that this is a dark color scheme. */
     override val isDark: Boolean = true
 

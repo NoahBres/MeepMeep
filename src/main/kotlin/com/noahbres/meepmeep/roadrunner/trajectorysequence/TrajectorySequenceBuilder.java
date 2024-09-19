@@ -150,14 +150,7 @@ public class TrajectorySequenceBuilder {
      * @param baseTurnConstraintMaxAngVel   The maximum angular velocity for turns.
      * @param baseTurnConstraintMaxAngAccel The maximum angular acceleration for turns.
      */
-    public TrajectorySequenceBuilder(
-            Pose2d startPose,
-            Double startTangent,
-            TrajectoryVelocityConstraint baseVelConstraint,
-            TrajectoryAccelerationConstraint baseAccelConstraint,
-            double baseTurnConstraintMaxAngVel,
-            double baseTurnConstraintMaxAngAccel
-    ) {
+    public TrajectorySequenceBuilder(Pose2d startPose, Double startTangent, TrajectoryVelocityConstraint baseVelConstraint, TrajectoryAccelerationConstraint baseAccelConstraint, double baseTurnConstraintMaxAngVel, double baseTurnConstraintMaxAngAccel) {
         this.baseVelConstraint = baseVelConstraint;
         this.baseAccelConstraint = baseAccelConstraint;
 
@@ -201,18 +194,8 @@ public class TrajectorySequenceBuilder {
      * @param baseTurnConstraintMaxAngVel   The maximum angular velocity for turns.
      * @param baseTurnConstraintMaxAngAccel The maximum angular acceleration for turns.
      */
-    public TrajectorySequenceBuilder(
-            Pose2d startPose,
-            TrajectoryVelocityConstraint baseVelConstraint,
-            TrajectoryAccelerationConstraint baseAccelConstraint,
-            double baseTurnConstraintMaxAngVel,
-            double baseTurnConstraintMaxAngAccel
-    ) {
-        this(
-                startPose, null,
-                baseVelConstraint, baseAccelConstraint,
-                baseTurnConstraintMaxAngVel, baseTurnConstraintMaxAngAccel
-        );
+    public TrajectorySequenceBuilder(Pose2d startPose, TrajectoryVelocityConstraint baseVelConstraint, TrajectoryAccelerationConstraint baseAccelConstraint, double baseTurnConstraintMaxAngVel, double baseTurnConstraintMaxAngAccel) {
+        this(startPose, null, baseVelConstraint, baseAccelConstraint, baseTurnConstraintMaxAngVel, baseTurnConstraintMaxAngAccel);
     }
 
     /**
@@ -225,11 +208,7 @@ public class TrajectorySequenceBuilder {
     /**
      * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
      */
-    public TrajectorySequenceBuilder lineTo(
-            Vector2d endPosition,
-            TrajectoryVelocityConstraint velConstraint,
-            TrajectoryAccelerationConstraint accelConstraint
-    ) {
+    public TrajectorySequenceBuilder lineTo(Vector2d endPosition, TrajectoryVelocityConstraint velConstraint, TrajectoryAccelerationConstraint accelConstraint) {
         return addPath(() -> currentTrajectoryBuilder.lineTo(endPosition, velConstraint, accelConstraint));
     }
 
@@ -243,11 +222,7 @@ public class TrajectorySequenceBuilder {
     /**
      * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
      */
-    public TrajectorySequenceBuilder lineToConstantHeading(
-            Vector2d endPosition,
-            TrajectoryVelocityConstraint velConstraint,
-            TrajectoryAccelerationConstraint accelConstraint
-    ) {
+    public TrajectorySequenceBuilder lineToConstantHeading(Vector2d endPosition, TrajectoryVelocityConstraint velConstraint, TrajectoryAccelerationConstraint accelConstraint) {
         return addPath(() -> currentTrajectoryBuilder.lineToConstantHeading(endPosition, velConstraint, accelConstraint));
     }
 
@@ -261,11 +236,7 @@ public class TrajectorySequenceBuilder {
     /**
      * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
      */
-    public TrajectorySequenceBuilder lineToLinearHeading(
-            Pose2d endPose,
-            TrajectoryVelocityConstraint velConstraint,
-            TrajectoryAccelerationConstraint accelConstraint
-    ) {
+    public TrajectorySequenceBuilder lineToLinearHeading(Pose2d endPose, TrajectoryVelocityConstraint velConstraint, TrajectoryAccelerationConstraint accelConstraint) {
         return addPath(() -> currentTrajectoryBuilder.lineToLinearHeading(endPose, velConstraint, accelConstraint));
     }
 
@@ -279,11 +250,7 @@ public class TrajectorySequenceBuilder {
     /**
      * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
      */
-    public TrajectorySequenceBuilder lineToSplineHeading(
-            Pose2d endPose,
-            TrajectoryVelocityConstraint velConstraint,
-            TrajectoryAccelerationConstraint accelConstraint
-    ) {
+    public TrajectorySequenceBuilder lineToSplineHeading(Pose2d endPose, TrajectoryVelocityConstraint velConstraint, TrajectoryAccelerationConstraint accelConstraint) {
         return addPath(() -> currentTrajectoryBuilder.lineToSplineHeading(endPose, velConstraint, accelConstraint));
     }
 
@@ -297,11 +264,7 @@ public class TrajectorySequenceBuilder {
     /**
      * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
      */
-    public TrajectorySequenceBuilder strafeTo(
-            Vector2d endPosition,
-            TrajectoryVelocityConstraint velConstraint,
-            TrajectoryAccelerationConstraint accelConstraint
-    ) {
+    public TrajectorySequenceBuilder strafeTo(Vector2d endPosition, TrajectoryVelocityConstraint velConstraint, TrajectoryAccelerationConstraint accelConstraint) {
         return addPath(() -> currentTrajectoryBuilder.strafeTo(endPosition, velConstraint, accelConstraint));
     }
 
@@ -315,11 +278,7 @@ public class TrajectorySequenceBuilder {
     /**
      * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
      */
-    public TrajectorySequenceBuilder forward(
-            double distance,
-            TrajectoryVelocityConstraint velConstraint,
-            TrajectoryAccelerationConstraint accelConstraint
-    ) {
+    public TrajectorySequenceBuilder forward(double distance, TrajectoryVelocityConstraint velConstraint, TrajectoryAccelerationConstraint accelConstraint) {
         return addPath(() -> currentTrajectoryBuilder.forward(distance, velConstraint, accelConstraint));
     }
 
@@ -333,11 +292,7 @@ public class TrajectorySequenceBuilder {
     /**
      * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
      */
-    public TrajectorySequenceBuilder back(
-            double distance,
-            TrajectoryVelocityConstraint velConstraint,
-            TrajectoryAccelerationConstraint accelConstraint
-    ) {
+    public TrajectorySequenceBuilder back(double distance, TrajectoryVelocityConstraint velConstraint, TrajectoryAccelerationConstraint accelConstraint) {
         return addPath(() -> currentTrajectoryBuilder.back(distance, velConstraint, accelConstraint));
     }
 
@@ -351,11 +306,7 @@ public class TrajectorySequenceBuilder {
     /**
      * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
      */
-    public TrajectorySequenceBuilder strafeLeft(
-            double distance,
-            TrajectoryVelocityConstraint velConstraint,
-            TrajectoryAccelerationConstraint accelConstraint
-    ) {
+    public TrajectorySequenceBuilder strafeLeft(double distance, TrajectoryVelocityConstraint velConstraint, TrajectoryAccelerationConstraint accelConstraint) {
         return addPath(() -> currentTrajectoryBuilder.strafeLeft(distance, velConstraint, accelConstraint));
     }
 
@@ -369,11 +320,7 @@ public class TrajectorySequenceBuilder {
     /**
      * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
      */
-    public TrajectorySequenceBuilder strafeRight(
-            double distance,
-            TrajectoryVelocityConstraint velConstraint,
-            TrajectoryAccelerationConstraint accelConstraint
-    ) {
+    public TrajectorySequenceBuilder strafeRight(double distance, TrajectoryVelocityConstraint velConstraint, TrajectoryAccelerationConstraint accelConstraint) {
         return addPath(() -> currentTrajectoryBuilder.strafeRight(distance, velConstraint, accelConstraint));
     }
 
@@ -387,12 +334,7 @@ public class TrajectorySequenceBuilder {
     /**
      * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
      */
-    public TrajectorySequenceBuilder splineTo(
-            Vector2d endPosition,
-            double endHeading,
-            TrajectoryVelocityConstraint velConstraint,
-            TrajectoryAccelerationConstraint accelConstraint
-    ) {
+    public TrajectorySequenceBuilder splineTo(Vector2d endPosition, double endHeading, TrajectoryVelocityConstraint velConstraint, TrajectoryAccelerationConstraint accelConstraint) {
         return addPath(() -> currentTrajectoryBuilder.splineTo(endPosition, endHeading, velConstraint, accelConstraint));
     }
 
@@ -406,12 +348,7 @@ public class TrajectorySequenceBuilder {
     /**
      * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
      */
-    public TrajectorySequenceBuilder splineToConstantHeading(
-            Vector2d endPosition,
-            double endHeading,
-            TrajectoryVelocityConstraint velConstraint,
-            TrajectoryAccelerationConstraint accelConstraint
-    ) {
+    public TrajectorySequenceBuilder splineToConstantHeading(Vector2d endPosition, double endHeading, TrajectoryVelocityConstraint velConstraint, TrajectoryAccelerationConstraint accelConstraint) {
         return addPath(() -> currentTrajectoryBuilder.splineToConstantHeading(endPosition, endHeading, velConstraint, accelConstraint));
     }
 
@@ -425,12 +362,7 @@ public class TrajectorySequenceBuilder {
     /**
      * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
      */
-    public TrajectorySequenceBuilder splineToLinearHeading(
-            Pose2d endPose,
-            double endHeading,
-            TrajectoryVelocityConstraint velConstraint,
-            TrajectoryAccelerationConstraint accelConstraint
-    ) {
+    public TrajectorySequenceBuilder splineToLinearHeading(Pose2d endPose, double endHeading, TrajectoryVelocityConstraint velConstraint, TrajectoryAccelerationConstraint accelConstraint) {
         return addPath(() -> currentTrajectoryBuilder.splineToLinearHeading(endPose, endHeading, velConstraint, accelConstraint));
     }
 
@@ -444,12 +376,7 @@ public class TrajectorySequenceBuilder {
     /**
      * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
      */
-    public TrajectorySequenceBuilder splineToSplineHeading(
-            Pose2d endPose,
-            double endHeading,
-            TrajectoryVelocityConstraint velConstraint,
-            TrajectoryAccelerationConstraint accelConstraint
-    ) {
+    public TrajectorySequenceBuilder splineToSplineHeading(Pose2d endPose, double endHeading, TrajectoryVelocityConstraint velConstraint, TrajectoryAccelerationConstraint accelConstraint) {
         return addPath(() -> currentTrajectoryBuilder.splineToSplineHeading(endPose, endHeading, velConstraint, accelConstraint));
     }
 
@@ -487,10 +414,7 @@ public class TrajectorySequenceBuilder {
     /**
      * For documentation on this function, see the <a href="https://learnroadrunner.com">Roadrunner documentation</a>.
      */
-    public TrajectorySequenceBuilder setConstraints(
-            TrajectoryVelocityConstraint velConstraint,
-            TrajectoryAccelerationConstraint accelConstraint
-    ) {
+    public TrajectorySequenceBuilder setConstraints(TrajectoryVelocityConstraint velConstraint, TrajectoryAccelerationConstraint accelConstraint) {
         this.currentVelConstraint = velConstraint;
         this.currentAccelConstraint = accelConstraint;
 
@@ -658,19 +582,11 @@ public class TrajectorySequenceBuilder {
     public TrajectorySequenceBuilder turn(double angle, double maxAngVel, double maxAngAccel) {
         pushPath();
 
-        MotionProfile turnProfile = MotionProfileGenerator.generateSimpleMotionProfile(
-                new MotionState(lastPose.getHeading(), 0.0, 0.0, 0.0),
-                new MotionState(lastPose.getHeading() + angle, 0.0, 0.0, 0.0),
-                maxAngVel,
-                maxAngAccel
-        );
+        MotionProfile turnProfile = MotionProfileGenerator.generateSimpleMotionProfile(new MotionState(lastPose.getHeading(), 0.0, 0.0, 0.0), new MotionState(lastPose.getHeading() + angle, 0.0, 0.0, 0.0), maxAngVel, maxAngAccel);
 
         sequenceSegments.add(new TurnSegment(lastPose, angle, turnProfile, Collections.emptyList()));
 
-        lastPose = new Pose2d(
-                lastPose.getX(), lastPose.getY(),
-                Angle.norm(lastPose.getHeading() + angle)
-        );
+        lastPose = new Pose2d(lastPose.getX(), lastPose.getY(), Angle.norm(lastPose.getHeading() + angle));
 
         currentDuration += turnProfile.duration();
 
@@ -738,10 +654,7 @@ public class TrajectorySequenceBuilder {
     public TrajectorySequence build() {
         pushPath();
 
-        List<TrajectoryMarker> globalMarkers = convertMarkersToGlobal(
-                sequenceSegments,
-                temporalMarkers, displacementMarkers, spatialMarkers
-        );
+        List<TrajectoryMarker> globalMarkers = convertMarkersToGlobal(sequenceSegments, temporalMarkers, displacementMarkers, spatialMarkers);
 
         return new TrajectorySequence(projectGlobalMarkersToLocalSegments(globalMarkers, sequenceSegments));
     }
@@ -789,44 +702,24 @@ public class TrajectorySequenceBuilder {
      * @param spatialMarkers      The list of spatial markers to be converted.
      * @return A list of global trajectory markers.
      */
-    private List<TrajectoryMarker> convertMarkersToGlobal(
-            List<SequenceSegment> sequenceSegments,
-            List<TemporalMarker> temporalMarkers,
-            List<DisplacementMarker> displacementMarkers,
-            List<SpatialMarker> spatialMarkers
-    ) {
+    private List<TrajectoryMarker> convertMarkersToGlobal(List<SequenceSegment> sequenceSegments, List<TemporalMarker> temporalMarkers, List<DisplacementMarker> displacementMarkers, List<SpatialMarker> spatialMarkers) {
         ArrayList<TrajectoryMarker> trajectoryMarkers = new ArrayList<>();
 
         // Convert temporal markers.
         for (TemporalMarker marker : temporalMarkers) {
-            trajectoryMarkers.add(
-                    new TrajectoryMarker(marker.getProducer().produce(currentDuration), marker.getCallback())
-            );
+            trajectoryMarkers.add(new TrajectoryMarker(marker.getProducer().produce(currentDuration), marker.getCallback()));
         }
 
         // Convert displacement markers.
         for (DisplacementMarker marker : displacementMarkers) {
-            double time = displacementToTime(
-                    sequenceSegments,
-                    marker.getProducer().produce(currentDisplacement)
-            );
+            double time = displacementToTime(sequenceSegments, marker.getProducer().produce(currentDisplacement));
 
-            trajectoryMarkers.add(
-                    new TrajectoryMarker(
-                            time,
-                            marker.getCallback()
-                    )
-            );
+            trajectoryMarkers.add(new TrajectoryMarker(time, marker.getCallback()));
         }
 
         // Convert spatial markers.
         for (SpatialMarker marker : spatialMarkers) {
-            trajectoryMarkers.add(
-                    new TrajectoryMarker(
-                            pointToTime(sequenceSegments, marker.getPoint()),
-                            marker.getCallback()
-                    )
-            );
+            trajectoryMarkers.add(new TrajectoryMarker(pointToTime(sequenceSegments, marker.getPoint()), marker.getCallback()));
         }
 
         return trajectoryMarkers;
@@ -949,10 +842,7 @@ public class TrajectorySequenceBuilder {
 
                 if (currentDisplacement + segmentLength > s) {
                     double target = s - currentDisplacement;
-                    double timeInSegment = motionProfileDisplacementToTime(
-                            thisSegment.getTrajectory().getProfile(),
-                            target
-                    );
+                    double timeInSegment = motionProfileDisplacementToTime(thisSegment.getTrajectory().getProfile(), target);
 
                     return currentTime + timeInSegment;
                 } else {

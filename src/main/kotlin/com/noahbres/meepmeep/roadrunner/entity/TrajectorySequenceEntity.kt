@@ -2,14 +2,14 @@ package com.noahbres.meepmeep.roadrunner.entity
 
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.noahbres.meepmeep.MeepMeep
-import com.noahbres.meepmeep.roadrunner.trajectorysequence.TrajectorySequence
-import com.noahbres.meepmeep.roadrunner.trajectorysequence.sequencesegment.TrajectorySegment
-import com.noahbres.meepmeep.roadrunner.trajectorysequence.sequencesegment.TurnSegment
-import com.noahbres.meepmeep.roadrunner.trajectorysequence.sequencesegment.WaitSegment
 import com.noahbres.meepmeep.core.colorscheme.ColorScheme
 import com.noahbres.meepmeep.core.entity.ThemedEntity
 import com.noahbres.meepmeep.core.toScreenCoord
 import com.noahbres.meepmeep.core.util.FieldUtil
+import com.noahbres.meepmeep.roadrunner.trajectorysequence.TrajectorySequence
+import com.noahbres.meepmeep.roadrunner.trajectorysequence.sequencesegment.TrajectorySegment
+import com.noahbres.meepmeep.roadrunner.trajectorysequence.sequencesegment.TurnSegment
+import com.noahbres.meepmeep.roadrunner.trajectorysequence.sequencesegment.WaitSegment
 import java.awt.BasicStroke
 import java.awt.Color
 import java.awt.Graphics2D
@@ -24,7 +24,7 @@ class TrajectorySequenceEntity(
     override val meepMeep: MeepMeep,
     private val trajectorySequence: TrajectorySequence,
     private var colorScheme: ColorScheme,
-) : ThemedEntity {
+): ThemedEntity {
     /** Tag for the trajectory sequence entity. */
     override val tag = "TRAJECTORY_SEQUENCE_ENTITY"
 
@@ -102,11 +102,11 @@ class TrajectorySequenceEntity(
 
         // Create a compatible image for the trajectory sequence
         baseBufferedImage =
-            config.createCompatibleImage(
-                canvasWidth.toInt(),
-                canvasHeight.toInt(),
-                Transparency.TRANSLUCENT,
-            )
+                config.createCompatibleImage(
+                    canvasWidth.toInt(),
+                    canvasHeight.toInt(),
+                    Transparency.TRANSLUCENT,
+                )
         val gfx = baseBufferedImage.createGraphics()
 
         // Set rendering hints for the graphics
@@ -118,11 +118,11 @@ class TrajectorySequenceEntity(
 
         // Create strokes for the inner path
         val innerStroke =
-            BasicStroke(
-                FieldUtil.scaleInchesToPixel(PATH_INNER_STROKE_WIDTH).toFloat(),
-                BasicStroke.CAP_BUTT,
-                BasicStroke.JOIN_ROUND,
-            )
+                BasicStroke(
+                    FieldUtil.scaleInchesToPixel(PATH_INNER_STROKE_WIDTH).toFloat(),
+                    BasicStroke.CAP_BUTT,
+                    BasicStroke.JOIN_ROUND,
+                )
 
         var currentEndPose = trajectorySequence.start()
         val firstVec = trajectorySequence.start().vec().toScreenCoord()
@@ -137,13 +137,13 @@ class TrajectorySequenceEntity(
 
                     // Calculate the number of samples based on the trajectory length and sample resolution
                     val displacementSamples =
-                        (trajectory.path.length() / SAMPLE_RESOLUTION).roundToInt()
+                            (trajectory.path.length() / SAMPLE_RESOLUTION).roundToInt()
 
                     // Generate a list of displacements along the trajectory path
                     val displacements =
-                        (0..displacementSamples).map {
-                            it / displacementSamples.toDouble() * trajectory.path.length()
-                        }
+                            (0..displacementSamples).map {
+                                it / displacementSamples.toDouble() * trajectory.path.length()
+                            }
 
                     // Map the displacements to poses along the trajectory path
                     val poses = displacements.map { trajectory.path[it] }
@@ -161,13 +161,13 @@ class TrajectorySequenceEntity(
                 is TurnSegment -> {
                     // Create a turn indicator entity for the turn segment
                     val turnEntity =
-                        TurnIndicatorEntity(
-                            meepMeep,
-                            colorScheme,
-                            currentEndPose.vec(),
-                            currentEndPose.heading,
-                            currentEndPose.heading + step.totalRotation,
-                        )
+                            TurnIndicatorEntity(
+                                meepMeep,
+                                colorScheme,
+                                currentEndPose.vec(),
+                                currentEndPose.heading,
+                                currentEndPose.heading + step.totalRotation,
+                            )
 
                     // Add the turn entity to the list and request to add it to MeepMeep
                     turnEntityList.add(turnEntity)
@@ -190,21 +190,21 @@ class TrajectorySequenceEntity(
                 segment.markers.forEach { marker ->
                     // Determine the pose based on the segment type
                     val pose =
-                        when (segment) {
-                            is WaitSegment -> segment.startPose
-                            is TurnSegment -> segment.startPose.copy(heading = segment.motionProfile[marker.time].x)
-                            else -> Pose2d()
-                        }
+                            when (segment) {
+                                is WaitSegment -> segment.startPose
+                                is TurnSegment -> segment.startPose.copy(heading = segment.motionProfile[marker.time].x)
+                                else -> Pose2d()
+                            }
 
                     // Create a new marker entity with the determined pose and add it to the list
                     val markerEntity =
-                        MarkerIndicatorEntity(
-                            meepMeep,
-                            colorScheme,
-                            pose,
-                            marker.callback,
-                            currentTime + marker.time,
-                        )
+                            MarkerIndicatorEntity(
+                                meepMeep,
+                                colorScheme,
+                                pose,
+                                marker.callback,
+                                currentTime + marker.time,
+                            )
                     markerEntityList.add(markerEntity)
                     meepMeep.requestToAddEntity(markerEntity)
                 }
@@ -216,13 +216,13 @@ class TrajectorySequenceEntity(
 
                     // Create a new marker entity with the determined pose and add it to the list
                     val markerEntity =
-                        MarkerIndicatorEntity(
-                            meepMeep,
-                            colorScheme,
-                            pose,
-                            marker.callback,
-                            currentTime + marker.time,
-                        )
+                            MarkerIndicatorEntity(
+                                meepMeep,
+                                colorScheme,
+                                pose,
+                                marker.callback,
+                                currentTime + marker.time,
+                            )
                     markerEntityList.add(markerEntity)
                     meepMeep.requestToAddEntity(markerEntity)
                 }
@@ -235,12 +235,12 @@ class TrajectorySequenceEntity(
         gfx.stroke = innerStroke
         gfx.color = colorScheme.trajectoryPathColor
         gfx.color =
-            Color(
-                colorScheme.trajectoryPathColor.red,
-                colorScheme.trajectoryPathColor.green,
-                colorScheme.trajectoryPathColor.blue,
-                (PATH_UNFOCUSED_OPACITY * 255).toInt(),
-            )
+                Color(
+                    colorScheme.trajectoryPathColor.red,
+                    colorScheme.trajectoryPathColor.green,
+                    colorScheme.trajectoryPathColor.blue,
+                    (PATH_UNFOCUSED_OPACITY * 255).toInt(),
+                )
         gfx.draw(trajectoryDrawnPath)
     }
 
@@ -259,11 +259,11 @@ class TrajectorySequenceEntity(
 
         // Create a compatible image for the current segment
         currentSegmentImage =
-            config.createCompatibleImage(
-                canvasWidth.toInt(),
-                canvasHeight.toInt(),
-                Transparency.TRANSLUCENT,
-            )
+                config.createCompatibleImage(
+                    canvasWidth.toInt(),
+                    canvasHeight.toInt(),
+                    Transparency.TRANSLUCENT,
+                )
         val gfx = currentSegmentImage!!.createGraphics()
 
         // Set rendering hints for the graphics
@@ -275,17 +275,17 @@ class TrajectorySequenceEntity(
 
         // Create stroke for the outer and inner paths
         val outerStroke =
-            BasicStroke(
-                FieldUtil.scaleInchesToPixel(PATH_OUTER_STROKE_WIDTH).toFloat(),
-                BasicStroke.CAP_BUTT,
-                BasicStroke.JOIN_ROUND,
-            )
+                BasicStroke(
+                    FieldUtil.scaleInchesToPixel(PATH_OUTER_STROKE_WIDTH).toFloat(),
+                    BasicStroke.CAP_BUTT,
+                    BasicStroke.JOIN_ROUND,
+                )
         val innerStroke =
-            BasicStroke(
-                FieldUtil.scaleInchesToPixel(PATH_INNER_STROKE_WIDTH).toFloat(),
-                BasicStroke.CAP_BUTT,
-                BasicStroke.JOIN_ROUND,
-            )
+                BasicStroke(
+                    FieldUtil.scaleInchesToPixel(PATH_INNER_STROKE_WIDTH).toFloat(),
+                    BasicStroke.CAP_BUTT,
+                    BasicStroke.JOIN_ROUND,
+                )
 
         // Get the trajectory from the current segment
         val trajectory = currentSegment!!.trajectory
@@ -299,9 +299,9 @@ class TrajectorySequenceEntity(
 
         // Generate a list of displacements along the trajectory path
         val displacements =
-            (0..displacementSamples).map {
-                it / displacementSamples.toDouble() * trajectory.path.length()
-            }
+                (0..displacementSamples).map {
+                    it / displacementSamples.toDouble() * trajectory.path.length()
+                }
 
         // Map the displacements to poses along the trajectory path
         val poses = displacements.map { trajectory.path[it] }
@@ -315,12 +315,12 @@ class TrajectorySequenceEntity(
         // Draw the outer path with the specified opacity and color
         gfx.stroke = outerStroke
         gfx.color =
-            Color(
-                colorScheme.trajectoryPathColor.red,
-                colorScheme.trajectoryPathColor.green,
-                colorScheme.trajectoryPathColor.blue,
-                (PATH_OUTER_OPACITY * 255).toInt(),
-            )
+                Color(
+                    colorScheme.trajectoryPathColor.red,
+                    colorScheme.trajectoryPathColor.green,
+                    colorScheme.trajectoryPathColor.blue,
+                    (PATH_OUTER_OPACITY * 255).toInt(),
+                )
         gfx.draw(trajectoryDrawnPath)
 
         // Draw the inner path with the full color

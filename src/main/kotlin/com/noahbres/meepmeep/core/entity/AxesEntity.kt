@@ -87,7 +87,7 @@ class AxesEntity
 
     private var font: Font? = null,
     private var fontSize: Float = 20f
-) : ThemedEntity, MouseMotionListener {
+): ThemedEntity, MouseMotionListener {
     /** Tag for the axes entity. */
     override val tag = "AXES_ENTITY"
 
@@ -123,7 +123,7 @@ class AxesEntity
         currentOpacity = animationController.value
         // TODO: fix issue that necessitates the controller needing a clip
         // Starts at like 30 or 28 for some reason
-//        println(currentOpacity)
+        //        println(currentOpacity)
         animationController.update()
     }
 
@@ -345,7 +345,7 @@ class AxesEntity
         val hoverTargetPixels = HOVER_TARGET.scaleInToPixel()
 
         if ((me!!.x > canvasWidth / 2 - hoverTargetPixels / 2 && me.x < canvasWidth / 2 + hoverTargetPixels / 2) ||
-            me.y > canvasHeight / 2 - hoverTargetPixels / 2 && me.y < canvasHeight / 2 + hoverTargetPixels / 2
+                me.y > canvasHeight / 2 - hoverTargetPixels / 2 && me.y < canvasHeight / 2 + hoverTargetPixels / 2
         ) {
             animationController.anim(colorScheme.axisHoverOpacity, 200.0, Ease.EASE_OUT_CUBIC)
         } else {
