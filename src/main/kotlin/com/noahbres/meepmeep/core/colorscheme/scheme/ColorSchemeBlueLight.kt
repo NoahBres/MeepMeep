@@ -37,7 +37,7 @@ open class ColorSchemeBlueLight: ColorScheme() {
     override val axisNormalOpacity: Double = 0.2
 
     /** Opacity for the axis lines in hover state. */
-    override val axisHoverOpacity: Double = 0.8
+    override val axisHoverOpacity: Double = 1.0
 
     /** Background color for the trajectory slider. */
     override val trajectorySliderBG: Color = ColorManager.COLOR_PALETTE.gray200

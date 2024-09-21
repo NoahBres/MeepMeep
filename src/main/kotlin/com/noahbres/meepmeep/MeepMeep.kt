@@ -13,6 +13,7 @@ import com.noahbres.meepmeep.core.ui.WindowFrame
 import com.noahbres.meepmeep.core.util.FieldUtil
 import com.noahbres.meepmeep.core.util.LoopManager
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity
+import com.noahbres.meepmeep.roadrunner.entity.TrajectorySequenceEntity
 import com.noahbres.meepmeep.roadrunner.ui.TrajectoryProgressSliderMaster
 import java.awt.AlphaComposite
 import java.awt.Font
@@ -26,6 +27,9 @@ import java.awt.event.KeyListener
 import java.awt.event.MouseEvent
 import java.awt.event.MouseListener
 import java.awt.event.MouseMotionListener
+import java.awt.image.BufferedImage
+import java.io.File
+import java.io.IOException
 import javax.imageio.ImageIO
 import javax.swing.BorderFactory
 import javax.swing.Box
@@ -378,8 +382,6 @@ class MeepMeep @JvmOverloads constructor(
      * the entity list by their z-index, and updates each entity based on the
      * provided delta time.
      *
-     * @param deltaTime The time in milliseconds since the last update.
-     *    milliseconds.
      * @see [Entity]
      * @see [ZIndexManager]
      */
@@ -439,6 +441,12 @@ class MeepMeep @JvmOverloads constructor(
         return this
     }
 
+    /**
+     * Sets the background of the MeepMeep application.
+     *
+     * @param background The [Background] enum representing the background.
+     * @return The [MeepMeep] instance for method chaining.
+     */
     fun setBackground(background: Background): MeepMeep {
         val classLoader = Thread.currentThread().contextClassLoader
 
