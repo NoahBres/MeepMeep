@@ -14,7 +14,7 @@ class FieldUtil {
 
         /** The height of the field. */
         @JvmStatic
-        var FIELD_HEIGHT = 141
+        var FIELD_HEIGHT = 143
 
         /** The width of the canvas in pixels. */
         @JvmStatic

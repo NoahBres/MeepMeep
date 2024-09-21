@@ -66,10 +66,10 @@ class CompassEntity(
         val classLoader = Thread.currentThread().contextClassLoader
 
         // Initialize the light background image
-        bgLight = ImageIO.read(classLoader.getResourceAsStream("misc/compass-rose-black-text.png"))
+        bgLight = ImageIO.read(classLoader.getResourceAsStream("misc/simple-compass-black.png"))
 
         // Initialize the dark background image
-        bgDark = ImageIO.read(classLoader.getResourceAsStream("misc/compass-rose-white-text.png"))
+        bgDark = ImageIO.read(classLoader.getResourceAsStream("misc/simple-compass-white.png"))
         redraw()
     }
 
