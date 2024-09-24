@@ -13,9 +13,9 @@ import com.noahbres.meepmeep.core.ui.WindowFrame
 import com.noahbres.meepmeep.core.util.FieldUtil
 import com.noahbres.meepmeep.core.util.LoopManager
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity
-import com.noahbres.meepmeep.roadrunner.entity.TrajectorySequenceEntity
 import com.noahbres.meepmeep.roadrunner.ui.TrajectoryProgressSliderMaster
 import java.awt.AlphaComposite
+import java.awt.Desktop
 import java.awt.Font
 import java.awt.Graphics2D
 import java.awt.Image
@@ -27,14 +27,13 @@ import java.awt.event.KeyListener
 import java.awt.event.MouseEvent
 import java.awt.event.MouseListener
 import java.awt.event.MouseMotionListener
-import java.awt.image.BufferedImage
-import java.io.File
-import java.io.IOException
+import java.net.URI
 import javax.imageio.ImageIO
 import javax.swing.BorderFactory
 import javax.swing.Box
 import javax.swing.BoxLayout
 import javax.swing.JButton
+import javax.swing.JOptionPane
 import javax.swing.JPanel
 import javax.swing.UIManager
 import javax.swing.border.EtchedBorder
@@ -412,6 +411,32 @@ class MeepMeep @JvmOverloads constructor(
     private val loopManager = LoopManager(fps, update, render)
 
     /**
+     * Function to show a warning dialog when the application is started.
+     *
+     * This details how the repository is being moved to a new location.
+     */
+    private fun showWarningDialog() {
+        val message =
+                "This version of MeepMeep has been replaced with a version developed by FTC Team 19922, The Iron Lions.\nAll further development will take place there, and it is recommended you switch maven repositories.\nMore information can be found on the web at https://github.com/rh-robotics/MeepMeep".trimIndent()
+
+        val button = JButton("Open in browser")
+        button.addActionListener {
+            try {
+                Desktop.getDesktop().browse(URI("https://github.com/rh-robotics/MeepMeep"))
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
+        JOptionPane.showMessageDialog(
+            null,
+            arrayOf(message, button),
+            "Warning",
+            JOptionPane.WARNING_MESSAGE
+        )
+    }
+
+    /**
      * Starts the MeepMeep application.
      *
      * This method initializes the background, sets the window visibility,
@@ -421,6 +446,9 @@ class MeepMeep @JvmOverloads constructor(
      * @return The [MeepMeep] instance.
      */
     fun start(): MeepMeep {
+        // Show the warning dialog that the repository has moved
+        showWarningDialog()
+
         // Set the default background if none is set
         if (bg == null) setBackground(Background.GRID_BLUE)
         windowFrame.isVisible = true
